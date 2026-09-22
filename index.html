@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Opportunity Masterfile</title>
+<meta name="description" content="Live opportunity board — internships, certifications, and work, filterable by batch, industry, and more." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#16233f;
+    --navy-light:#26375c;
+    --gold:#c9a24b;
+    --gold-light:#f4e7c9;
+    --cream:#faf7f0;
+    --paper:#ffffff;
+    --ink:#1b1f2a;
+    --ink-soft:#5b6270;
+    --line:#e5e1d6;
+    --green:#2f7d5a;
+    --green-bg:#e7f3ec;
+    --red:#a3403a;
+    --red-bg:#f6e9e7;
+    --radius:14px;
+    --shadow: 0 1px 2px rgba(22,35,63,.06), 0 8px 24px rgba(22,35,63,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#0f1830; --navy-light:#1c2b4a; --gold:#d9b869; --gold-light:#3a3320;
+      --cream:#11151f; --paper:#171c29; --ink:#eef0f5; --ink-soft:#a7adba;
+      --line:#2a3040; --green:#5fbd8e; --green-bg:#12291f; --red:#e08a83; --red-bg:#2c1917;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.brand{font-family:'Poppins',sans-serif}
+  a{color:inherit}
+
+  .topbar{
+    background:var(--navy);
+    color:#fff;
+    padding:18px 20px;
+  }
+  .topbar-inner{
+    max-width:1100px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .brand{font-weight:700;font-size:1.15rem;letter-spacing:.2px;display:flex;align-items:center;gap:10px}
+  .brand-badge{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg,var(--gold),#a97f2e);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1rem;flex:none;
+  }
+  .brand-sub{font-size:.78rem;color:#c7cee0;font-weight:500;margin-top:2px}
+  .updated{font-size:.78rem;color:#c7cee0}
+  .updated strong{color:#fff}
+
+  .hero{
+    max-width:1100px;margin:0 auto;
+    padding:28px 20px 8px;
+  }
+  .hero h1{font-size:1.5rem;margin:0 0 6px;color:var(--navy)}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .hero h1{color:var(--ink)} }
+  .hero p{margin:0;color:var(--ink-soft);font-size:.95rem;max-width:60ch}
+
+  .stats{
+    display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;
+  }
+  .stat{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:8px 14px;font-size:.82rem;color:var(--ink-soft);
+  }
+  .stat b{color:var(--navy);font-size:.95rem;display:block;font-family:'Poppins',sans-serif}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .stat b{color:var(--gold)} }
+
+  .controls{
+    max-width:1100px;margin:18px auto 0;padding:0 20px;
+  }
+  .search-row{display:flex;gap:10px;margin-bottom:12px}
+  .search-row input[type="search"]{
+    flex:1;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+    font-size:.95rem;
+    font-family:inherit;
+  }
+  .search-row input[type="search"]:focus,
+  select:focus, button:focus, .card:focus-visible{
+    outline:2px solid var(--gold);outline-offset:1px;
+  }
+
+  .filter-panel{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px;
+    box-shadow:var(--shadow);
+  }
+  .filter-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(150px,1fr));
+    gap:10px;
+  }
+  .filter-field label{
+    display:block;font-size:.72rem;font-weight:600;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;
+  }
+  select{
+    width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--line);
+    background:var(--cream);color:var(--ink);font-size:.87rem;font-family:inherit;
+  }
+
+  .batch-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .pill{
+    border:1px solid var(--line);background:var(--cream);color:var(--ink-soft);
+    padding:7px 14px;border-radius:999px;font-size:.82rem;font-weight:600;cursor:pointer;
+    font-family:inherit;
+  }
+  .pill.active{background:var(--navy);border-color:var(--navy);color:#fff}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .pill.active{background:var(--gold);border-color:var(--gold);color:#171308} }
+
+  .toolbar-row{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:12px;flex-wrap:wrap;gap:10px;
+  }
+  .toggle-line{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--ink-soft)}
+  .toggle-line input{width:16px;height:16px}
+  .reset-btn{
+    background:none;border:1px solid var(--line);color:var(--ink-soft);
+    padding:7px 12px;border-radius:9px;font-size:.82rem;cursor:pointer;font-family:inherit;
+  }
+  .reset-btn:hover{border-color:var(--gold);color:var(--navy)}
+
+  .results-meta{
+    max-width:1100px;margin:18px auto 8px;padding:0 20px;
+    font-size:.85rem;color:var(--ink-soft);
+  }
+
+  .grid{
+    max-width:1100px;margin:0 auto;padding:0 20px 60px;
+    display:grid;grid-template-columns:repeat(auto-fill, minmax(280px,1fr));gap:14px;
+  }
+  .card{
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px;box-shadow:var(--shadow);cursor:pointer;text-align:left;
+    font-family:inherit;color:inherit;display:flex;flex-direction:column;gap:8px;
+  }
+  .card:hover{border-color:var(--gold)}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .badge{
+    font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:999px;
+    text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;flex:none;
+  }
+  .badge.open{background:var(--green-bg);color:var(--green)}
+  .badge.closed{background:var(--red-bg);color:var(--red)}
+  .card h3{margin:0;font-size:1.02rem;color:var(--navy);line-height:1.3}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .card h3{color:#fff} }
+  .card .company{font-size:.86rem;color:var(--ink-soft);font-weight:600;margin:-4px 0 0}
+  .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+  .tag{
+    font-size:.72rem;background:var(--cream);border:1px solid var(--line);
+    color:var(--ink-soft);padding:3px 9px;border-radius:999px;
+  }
+  .tag.paid{background:var(--gold-light);border-color:transparent;color:#7a5c17}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tag.paid{color:var(--gold)} }
+  .card .deadline{font-size:.78rem;color:var(--ink-soft);margin-top:auto;padding-top:6px}
+  .card .deadline b{color:var(--ink)}
+
+  .empty, .loading, .error{
+    max-width:1100px;margin:40px auto;padding:0 20px;text-align:center;color:var(--ink-soft);
+  }
+  .error{color:var(--red)}
+  .spinner{
+    width:28px;height:28px;border-radius:50%;border:3px solid var(--line);
+    border-top-color:var(--gold);margin:0 auto 14px;animation:spin 1s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion: reduce){ .spinner{animation:none} }
+
+  .show-more-wrap{max-width:1100px;margin:0 auto;padding:0 20px 40px;text-align:center}
+  .show-more{
+    background:var(--navy);color:#fff;border:none;padding:11px 22px;border-radius:10px;
+    font-family:inherit;font-weight:600;font-size:.88rem;cursor:pointer;
+  }
+  .show-more:hover{background:var(--navy-light)}
+
+  /* Detail modal */
+  .overlay{
+    position:fixed;inset:0;background:rgba(15,20,32,.5);
+    display:none;align-items:flex-start;justify-content:center;
+    padding:24px 16px;overflow-y:auto;z-index:50;
+  }
+  .overlay.open{display:flex}
+  .modal{
+    background:var(--paper);border-radius:var(--radius);max-width:640px;width:100%;
+    padding:24px;box-shadow:var(--shadow);position:relative;margin-top:20px;
+  }
+  .modal-close{
+    position:absolute;top:14px;right:14px;background:var(--cream);border:1px solid var(--line);
+    width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;color:var(--ink-soft);
+  }
+  .modal h2{margin:0 0 2px;font-size:1.25rem;color:var(--navy);padding-right:36px}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .modal h2{color:#fff} }
+  .modal .company{color:var(--ink-soft);font-weight:600;font-size:.92rem;margin:0 0 12px}
+  .modal-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .modal-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:10px 16px;margin-bottom:18px;padding:14px;background:var(--cream);border-radius:10px;
+  }
+  .modal-grid div span{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:2px}
+  .modal-grid div b{font-size:.88rem}
+  .modal section{margin-bottom:16px}
+  .modal section h4{margin:0 0 6px;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft)}
+  .modal section p{margin:0;font-size:.92rem;line-height:1.55;white-space:pre-line}
+  .apply-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .apply-btn{
+    background:var(--navy);color:#fff;text-decoration:none;padding:10px 18px;border-radius:10px;
+    font-weight:600;font-size:.88rem;display:inline-block;
+  }
+  .apply-btn.secondary{background:transparent;border:1px solid var(--line);color:var(--ink)}
+
+  footer{
+    max-width:1100px;margin:0 auto;padding:20px 20px 50px;
+    font-size:.78rem;color:var(--ink-soft);text-align:center;line-height:1.6;
+  }
+
+  @media (max-width:520px){
+    .filter-grid{grid-template-columns:repeat(2,1fr)}
+    .modal{margin-top:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div>
+      <div class="brand"><span class="brand-badge">🎯</span> Opportunity Masterfile</div>
+      <div class="brand-sub">Your gateway to curated opportunities</div>
+    </div>
+    <div class="updated" id="updatedLine">Loading live data…</div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Find your next opportunity</h1>
+  <p>Live-synced from the MEA Opportunity Masterfile — search and filter internships, certifications, and work postings by batch, industry, and more.</p>
+  <div class="stats" id="statsRow"></div>
+</div>
+
+<div class="controls">
+  <div class="search-row">
+    <input type="search" id="searchInput" placeholder="Search company, role, or industry…" aria-label="Search opportunities" />
+  </div>
+
+  <div class="filter-panel">
+    <div class="filter-grid" id="filterGrid">
+      <div class="filter-field">
+        <label for="f-type">Type</label>
+        <select id="f-type"><option value="">Any</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="f-industry">Industry</label>
+        <select id="f-industry"><option value="">Any</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="f-paid">Paid</label>
+        <select id="f-paid"><option value="">Any</option><option value="yes">Paid</option><option value="no">Unpaid</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="f-required">Required?</label>
+        <select id="f-required"><option value="">Any</option><option value="yes">Yes</option><option value="no">No</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="f-setup">Work set-up</label>
+        <select id="f-setup"><option value="">Any</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="f-source">Source</label>
+        <select id="f-source"><option value="">Any</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="f-sort">Sort by</label>
+        <select id="f-sort">
+          <option value="new">Newest first</option>
+          <option value="deadline">Deadline soonest</option>
+          <option value="az">Company A–Z</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="batch-row" id="batchRow" aria-label="Filter by batch"></div>
+
+    <div class="toolbar-row">
+      <label class="toggle-line">
+        <input type="checkbox" id="showClosed" />
+        Show closed opportunities too
+      </label>
+      <button class="reset-btn" id="resetBtn">Reset filters</button>
+    </div>
+  </div>
+</div>
+
+<div class="results-meta" id="resultsMeta"></div>
+
+<div id="loadingState" class="loading">
+  <div class="spinner"></div>
+  Pulling the latest opportunities from the sheet…
+</div>
+<div id="errorState" class="error" style="display:none"></div>
+
+<div class="grid" id="grid" style="display:none"></div>
+<div class="empty" id="emptyState" style="display:none">No opportunities match your filters yet — try widening your search.</div>
+<div class="show-more-wrap" id="showMoreWrap" style="display:none">
+  <button class="show-more" id="showMoreBtn">Show more</button>
+</div>
+
+<footer>
+  Data pulled live from the MEA Opportunity Masterfile Google Sheet. This board mirrors whatever's currently in the sheet —
+  reach out to your MEA core contact if a listing looks out of date.
+</footer>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var SHEET_ID = "1v44_bscDWE3G_yUEaqN62oi0q8u-yTAF87xSSTSrCAw";
+  var SHEET_NAME = "[FOR CORE] Input Here";
+  var CSV_URL = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+    "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(SHEET_NAME);
+
+  var PAGE_SIZE = 24;
+  var shown = PAGE_SIZE;
+
+  var allRows = [];
+  var els = {};
+  ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
+   "batchRow","showClosed","resetBtn","resultsMeta","loadingState","errorState","grid",
+   "emptyState","showMoreWrap","showMoreBtn","statsRow","updatedLine","overlay","modal"]
+  .forEach(function(id){ els[id.replace(/-([a-z])/g, function(_,c){return c.toUpperCase();})] = document.getElementById(id); });
+
+  var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false };
+
+  // ---- minimal RFC4180 CSV parser (handles quoted fields, embedded commas/newlines/quotes) ----
+  function parseCSV(text){
+    var rows = [], row = [], field = "", i = 0, inQuotes = false, len = text.length;
+    while (i < len) {
+      var ch = text[i];
+      if (inQuotes) {
+        if (ch === '"') {
+          if (text[i+1] === '"') { field += '"'; i += 2; continue; }
+          inQuotes = false; i++; continue;
+        }
+        field += ch; i++; continue;
+      } else {
+        if (ch === '"') { inQuotes = true; i++; continue; }
+        if (ch === ',') { row.push(field); field = ""; i++; continue; }
+        if (ch === '\r') { i++; continue; }
+        if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ""; i++; continue; }
+        field += ch; i++; continue;
+      }
+    }
+    row.push(field); rows.push(row);
+    return rows;
+  }
+
+  function boolish(v){ return String(v).trim().toUpperCase() === "TRUE" || String(v).trim().toLowerCase() === "yes"; }
+
+  function mapRows(rows){
+    // row[0] blank | 1-5: batch flags 29,28,27,26,25 | 6 Status | 7 Input Date | 8 Deadline
+    // 9 Type | 10 Industry | 11 Company | 12 Position | 13 Function | 14 Job Desc | 15 Skills
+    // 16 Paid | 17 Required | 18 Work Set-up | 19 Email | 20 Source | 22 Name
+    var out = [];
+    for (var r = 2; r < rows.length; r++) {
+      var row = rows[r];
+      if (!row || !row[11] || !row[11].trim()) continue; // no Company => skip
+      out.push({
+        batches: { "29": boolish(row[1]), "28": boolish(row[2]), "27": boolish(row[3]), "26": boolish(row[4]), "25": boolish(row[5]) },
+        status: (row[6]||"").trim() || "Open",
+        inputDate: (row[7]||"").trim(),
+        deadline: (row[8]||"").trim() || "TBA",
+        type: (row[9]||"").trim(),
+        industry: (row[10]||"").trim(),
+        company: (row[11]||"").trim(),
+        position: (row[12]||"").trim(),
+        fn: (row[13]||"").trim(),
+        description: (row[14]||"").trim(),
+        skills: (row[15]||"").trim(),
+        paid: boolish(row[16]),
+        required: boolish(row[17]),
+        setup: (row[18]||"").trim(),
+        email: (row[19]||"").trim(),
+        source: (row[20]||"").trim(),
+        name: (row[22]||"").trim(),
+        _idx: r
+      });
+    }
+    return out;
+  }
+
+  function uniqueSorted(arr){
+    var s = {};
+    arr.forEach(function(v){ if (v) s[v] = true; });
+    return Object.keys(s).sort(function(a,b){ return a.localeCompare(b); });
+  }
+
+  function fillSelect(sel, values){
+    values.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v; opt.textContent = v;
+      sel.appendChild(opt);
+    });
+  }
+
+  function buildBatchPills(){
+    var batches = ["29","28","27","26","25"];
+    els.batchRow.innerHTML = "";
+    batches.forEach(function(b){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pill" + (state.batch === b ? " active" : "");
+      btn.textContent = "Batch " + b;
+      btn.addEventListener("click", function(){
+        state.batch = (state.batch === b) ? "" : b;
+        shown = PAGE_SIZE;
+        buildBatchPills();
+        render();
+      });
+      els.batchRow.appendChild(btn);
+    });
+  }
+
+  function parseDate(d){
+    var t = Date.parse(d);
+    return isNaN(t) ? null : t;
+  }
+
+  function applyFilters(){
+    var q = state.search.trim().toLowerCase();
+    var rows = allRows.filter(function(o){
+      if (!state.showClosed && o.status.toLowerCase() !== "open") return false;
+      if (state.batch && !o.batches[state.batch]) return false;
+      if (state.type && o.type !== state.type) return false;
+      if (state.industry && o.industry !== state.industry) return false;
+      if (state.paid === "yes" && !o.paid) return false;
+      if (state.paid === "no" && o.paid) return false;
+      if (state.required === "yes" && !o.required) return false;
+      if (state.required === "no" && o.required) return false;
+      if (state.setup && o.setup !== state.setup) return false;
+      if (state.source && o.source !== state.source) return false;
+      if (q) {
+        var hay = (o.company + " " + o.position + " " + o.industry + " " + o.fn + " " + o.name).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+
+    rows.sort(function(a,b){
+      if (state.sort === "az") return a.company.localeCompare(b.company);
+      if (state.sort === "deadline") {
+        var da = parseDate(a.deadline), db = parseDate(b.deadline);
+        if (da === null && db === null) return 0;
+        if (da === null) return 1;
+        if (db === null) return -1;
+        return da - db;
+      }
+      // newest first = highest source-row index first
+      return b._idx - a._idx;
+    });
+
+    return rows;
+  }
+
+  function badge(o){
+    return o.status.toLowerCase() === "open"
+      ? '<span class="badge open">Open</span>'
+      : '<span class="badge closed">Closed</span>';
+  }
+
+  function cardHTML(o){
+    var title = o.position || o.name || "Opportunity";
+    var tags = [];
+    if (o.type) tags.push('<span class="tag">'+esc(o.type)+'</span>');
+    if (o.industry) tags.push('<span class="tag">'+esc(o.industry)+'</span>');
+    if (o.setup) tags.push('<span class="tag">'+esc(o.setup)+'</span>');
+    tags.push('<span class="tag paid">'+(o.paid ? "Paid" : "Unpaid")+'</span>');
+    return (
+      '<div class="card-top">' + badge(o) + '</div>' +
+      '<h3>'+esc(title)+'</h3>' +
+      '<p class="company">'+esc(o.company)+'</p>' +
+      '<div class="tag-row">'+tags.join("")+'</div>' +
+      '<div class="deadline">Deadline: <b>'+esc(o.deadline)+'</b></div>'
+    );
+  }
+
+  function esc(s){
+    return String(s||"").replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function render(){
+    var rows = applyFilters();
+
+    els.resultsMeta.textContent = rows.length + " opportunit" + (rows.length===1?"y":"ies") + " found" +
+      (state.showClosed ? "" : " (open only)");
+
+    if (rows.length === 0) {
+      els.grid.style.display = "none";
+      els.emptyState.style.display = "block";
+      els.showMoreWrap.style.display = "none";
+      return;
+    }
+    els.emptyState.style.display = "none";
+    els.grid.style.display = "grid";
+
+    var visible = rows.slice(0, shown);
+    els.grid.innerHTML = "";
+    visible.forEach(function(o){
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "card";
+      card.innerHTML = cardHTML(o);
+      card.addEventListener("click", function(){ openModal(o); });
+      els.grid.appendChild(card);
+    });
+
+    els.showMoreWrap.style.display = rows.length > shown ? "block" : "none";
+  }
+
+  function openModal(o){
+    var title = o.position || o.name || "Opportunity";
+    var html = '<button class="modal-close" id="modalClose" aria-label="Close">✕</button>';
+    html += '<h2>'+esc(title)+'</h2>';
+    html += '<p class="company">'+esc(o.company)+'</p>';
+    html += '<div class="modal-badges">' + badge(o);
+    if (o.type) html += '<span class="tag">'+esc(o.type)+'</span>';
+    if (o.industry) html += '<span class="tag">'+esc(o.industry)+'</span>';
+    html += '<span class="tag paid">'+(o.paid ? "Paid" : "Unpaid")+'</span>';
+    html += '</div>';
+
+    html += '<div class="modal-grid">';
+    html += '<div><span>Deadline</span><b>'+esc(o.deadline)+'</b></div>';
+    html += '<div><span>Work set-up</span><b>'+esc(o.setup || "—")+'</b></div>';
+    html += '<div><span>Function</span><b>'+esc(o.fn || "—")+'</b></div>';
+    html += '<div><span>Required?</span><b>'+(o.required ? "Yes" : "No")+'</b></div>';
+    html += '<div><span>Source</span><b>'+esc(o.source || "—")+'</b></div>';
+    var eligible = Object.keys(o.batches).filter(function(k){return o.batches[k];}).sort();
+    html += '<div><span>Open to</span><b>'+(eligible.length ? "Batch " + eligible.join(", ") : "—")+'</b></div>';
+    html += '</div>';
+
+    if (o.description) {
+      html += '<section><h4>Job description</h4><p>'+esc(o.description)+'</p></section>';
+    }
+    if (o.skills) {
+      html += '<section><h4>Relevant skills</h4><p>'+esc(o.skills)+'</p></section>';
+    }
+
+    html += '<div class="apply-row">';
+    if (o.email) html += '<a class="apply-btn" href="mailto:'+esc(o.email)+'">Apply via email</a>';
+    html += '<span class="apply-btn secondary">via '+esc(o.source || "the sheet")+'</span>';
+    html += '</div>';
+
+    els.modal.innerHTML = html;
+    els.overlay.classList.add("open");
+    document.getElementById("modalClose").addEventListener("click", closeModal);
+  }
+
+  function closeModal(){
+    els.overlay.classList.remove("open");
+    els.modal.innerHTML = "";
+  }
+
+  els.overlay.addEventListener("click", function(e){ if (e.target === els.overlay) closeModal(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeModal(); });
+
+  function wireControls(){
+    var debounceT;
+    els.searchInput.addEventListener("input", function(){
+      clearTimeout(debounceT);
+      var v = els.searchInput.value;
+      debounceT = setTimeout(function(){ state.search = v; shown = PAGE_SIZE; render(); }, 180);
+    });
+    document.getElementById("f-type").addEventListener("change", function(e){ state.type = e.target.value; shown = PAGE_SIZE; render(); });
+    document.getElementById("f-industry").addEventListener("change", function(e){ state.industry = e.target.value; shown = PAGE_SIZE; render(); });
+    document.getElementById("f-paid").addEventListener("change", function(e){ state.paid = e.target.value; shown = PAGE_SIZE; render(); });
+    document.getElementById("f-required").addEventListener("change", function(e){ state.required = e.target.value; shown = PAGE_SIZE; render(); });
+    document.getElementById("f-setup").addEventListener("change", function(e){ state.setup = e.target.value; shown = PAGE_SIZE; render(); });
+    document.getElementById("f-source").addEventListener("change", function(e){ state.source = e.target.value; shown = PAGE_SIZE; render(); });
+    document.getElementById("f-sort").addEventListener("change", function(e){ state.sort = e.target.value; render(); });
+    els.showClosed.addEventListener("change", function(e){ state.showClosed = e.target.checked; shown = PAGE_SIZE; render(); });
+    els.showMoreBtn.addEventListener("click", function(){ shown += PAGE_SIZE; render(); });
+    els.resetBtn.addEventListener("click", function(){
+      state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false };
+      shown = PAGE_SIZE;
+      els.searchInput.value = "";
+      ["f-type","f-industry","f-paid","f-required","f-setup","f-source"].forEach(function(id){ document.getElementById(id).value = ""; });
+      document.getElementById("f-sort").value = "new";
+      els.showClosed.checked = false;
+      buildBatchPills();
+      render();
+    });
+  }
+
+  function renderStats(){
+    var open = allRows.filter(function(o){ return o.status.toLowerCase()==="open"; }).length;
+    var industries = uniqueSorted(allRows.map(function(o){return o.industry;})).length;
+    var paid = allRows.filter(function(o){ return o.status.toLowerCase()==="open" && o.paid; }).length;
+    els.statsRow.innerHTML =
+      '<div class="stat"><b>'+open+'</b>open now</div>' +
+      '<div class="stat"><b>'+paid+'</b>paid & open</div>' +
+      '<div class="stat"><b>'+industries+'</b>industries</div>';
+  }
+
+  function init(rows){
+    allRows = rows;
+    fillSelect(document.getElementById("f-type"), uniqueSorted(rows.map(function(o){return o.type;})));
+    fillSelect(document.getElementById("f-industry"), uniqueSorted(rows.map(function(o){return o.industry;})));
+    fillSelect(document.getElementById("f-setup"), uniqueSorted(rows.map(function(o){return o.setup;})));
+    fillSelect(document.getElementById("f-source"), uniqueSorted(rows.map(function(o){return o.source;})));
+    buildBatchPills();
+    wireControls();
+    renderStats();
+    render();
+    els.loadingState.style.display = "none";
+    var now = new Date();
+    els.updatedLine.innerHTML = "Updated <strong>" + now.toLocaleString(undefined, {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"}) + "</strong>";
+  }
+
+  fetch(CSV_URL)
+    .then(function(res){
+      if (!res.ok) throw new Error("Sheet fetch failed (" + res.status + ")");
+      return res.text();
+    })
+    .then(function(text){
+      var rows = mapRows(parseCSV(text));
+      if (!rows.length) throw new Error("No opportunities found in the sheet.");
+      init(rows);
+    })
+    .catch(function(err){
+      els.loadingState.style.display = "none";
+      els.errorState.style.display = "block";
+      els.errorState.textContent = "Couldn't load live data: " + err.message + ". Make sure the Google Sheet is still shared as \"Anyone with the link can view.\"";
+      els.updatedLine.textContent = "Live data unavailable";
+    });
+
+})();
+</script>
+</body>
+</html>
