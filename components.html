@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Harbor &amp; Amber — Components</title>
+<meta name="description" content="Component showcase for the Harbor & Amber design system (see DESIGN.md)." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* ===== Tokens — mirrors DESIGN.md front matter 1:1 ===== */
+  :root{
+    --primary:#122130; --primary-strong:#0A141F; --primary-soft:#193757; --on-primary:#FFFFFF;
+    --secondary:#53616E; --secondary-tint:#EBF0F4;
+    --tertiary:#D3BC45; --tertiary-bright:#E3D06D; --tertiary-ink:#716009; --on-tertiary:var(--primary);
+    --neutral:#FAF9F5; --surface:#FFFFFF; --border:#E7E5DA;
+    --success:#2F7D5A; --success-bg:#E7F3EC;
+    --warning:#885011; --warning-bg:#F8ECD6;
+    --danger:#A3403A; --danger-bg:#F6E9E7;
+
+    --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px; --r-full:9999px;
+
+    --sp-xs:4px; --sp-sm:8px; --sp-md:16px; --sp-lg:24px; --sp-xl:32px; --sp-2xl:48px; --sp-3xl:64px;
+
+    --shadow-contact:0 1px 2px rgba(18,33,48,.08);
+    --shadow-ambient:0 12px 32px rgba(18,33,48,.10);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--neutral); color:var(--primary);
+    font-family:'Inter',system-ui,sans-serif; font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+
+  /* ===== Typography tokens ===== */
+  .t-display{font-family:'Fraunces',serif;font-weight:600;font-size:56px;line-height:1.08;letter-spacing:-0.02em;margin:0}
+  .t-h1{font-family:'Fraunces',serif;font-weight:600;font-size:40px;line-height:1.12;letter-spacing:-0.01em;margin:0}
+  .t-h2{font-family:'Fraunces',serif;font-weight:600;font-size:28px;line-height:1.2;letter-spacing:-0.005em;margin:0}
+  .t-h3{font-family:'Fraunces',serif;font-weight:600;font-size:20px;line-height:1.3;margin:0}
+  .t-body-lg{font-size:18px;line-height:1.6;font-weight:400;margin:0}
+  .t-body-md{font-size:16px;line-height:1.6;font-weight:400;margin:0}
+  .t-body-sm{font-size:14px;line-height:1.55;font-weight:400;margin:0}
+  .t-label-md{font-size:13px;line-height:1.3;font-weight:600;letter-spacing:0.01em;margin:0}
+  .t-label-caps{font-size:11px;line-height:1.2;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin:0}
+  .t-caption{font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0.01em;margin:0}
+  .t-data{font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:1.4;font-weight:500;font-variant-numeric:tabular-nums;margin:0}
+
+  /* ===== Page chrome ===== */
+  .page{max-width:840px;margin:0 auto;padding:0 24px 120px}
+  header.intro{padding:80px 0 56px;border-bottom:1px solid var(--border);margin-bottom:64px}
+  header.intro .kicker{color:var(--tertiary-ink);margin-bottom:14px;display:block}
+  header.intro p{color:var(--secondary);max-width:62ch;margin:18px 0 0}
+  header.intro .swatchline{display:flex;gap:6px;margin-top:28px}
+  header.intro .swatchline span{width:28px;height:28px;border-radius:var(--r-sm);display:block;border:1px solid var(--border)}
+
+  section.spec{margin-bottom:72px}
+  section.spec .kicker{display:block;color:var(--tertiary-ink);margin-bottom:10px}
+  section.spec .spec-title{margin-bottom:8px}
+  section.spec .spec-desc{color:var(--secondary);max-width:62ch;margin-bottom:32px}
+
+  .row{display:flex;flex-wrap:wrap;gap:var(--sp-md);align-items:flex-start}
+  .col{display:flex;flex-direction:column;gap:var(--sp-md)}
+
+  /* ===== Colors ===== */
+  .swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--sp-md)}
+  .swatch{border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--surface)}
+  .swatch .fill{height:74px}
+  .swatch .meta{padding:var(--sp-sm) var(--sp-md) var(--sp-md)}
+  .swatch .meta .name{display:block;margin-bottom:2px}
+  .swatch .meta .hex{color:var(--secondary)}
+
+  /* ===== Buttons — soft-structured radius, never a pill, never fullwidth by default ===== */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    border-radius:var(--r-md);padding:12px 22px;cursor:pointer;border:1px solid transparent;
+    font-family:inherit;transition:background .16s ease,border-color .16s ease,transform .16s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--primary);color:var(--on-primary)}
+  .btn-primary:hover{background:var(--primary-soft)}
+  .btn-secondary{background:var(--tertiary);color:var(--on-tertiary)}
+  .btn-secondary:hover{background:var(--tertiary-bright)}
+  .btn-ghost{background:transparent;color:var(--primary);border-color:var(--border)}
+  .btn-ghost:hover{border-color:var(--secondary)}
+
+  /* ===== Chips — rounded-rectangle filters, replaces pill filters ===== */
+  .chip{
+    display:inline-flex;align-items:center;border:1px solid var(--border);background:var(--surface);
+    color:var(--secondary);border-radius:var(--r-sm);padding:7px 13px;cursor:pointer;
+    font-family:inherit;transition:all .14s ease;
+  }
+  .chip:hover{border-color:var(--secondary)}
+  .chip.active{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+
+  /* ===== Inputs ===== */
+  .field{display:flex;flex-direction:column;gap:8px;max-width:320px}
+  .field label{color:var(--secondary)}
+  .field input, .field select{
+    background:var(--neutral);color:var(--primary);border:1px solid var(--border);
+    border-radius:var(--r-md);padding:12px 14px;font-family:inherit;font-size:16px;
+  }
+  .field input:focus, .field select:focus{outline:none;border-color:var(--tertiary);box-shadow:0 0 0 3px rgba(211,188,69,.22)}
+
+  /* ===== Badges ===== */
+  .badge{display:inline-flex;align-items:center;border-radius:var(--r-sm);padding:4px 10px}
+  .badge-success{background:var(--success-bg);color:var(--success)}
+  .badge-warning{background:var(--warning-bg);color:var(--warning)}
+  .badge-danger{background:var(--danger-bg);color:var(--danger)}
+
+  /* ===== Checkbox / Radio — square vs circular, deliberately distinct ===== */
+  .control-row{display:flex;align-items:center;gap:10px}
+  .control-row + .control-row{margin-top:12px}
+  .cb, .rd{
+    appearance:none;width:18px;height:18px;border:1.5px solid var(--border);background:var(--surface);
+    display:inline-block;position:relative;cursor:pointer;flex:none;
+  }
+  .cb{border-radius:var(--r-sm)}
+  .rd{border-radius:var(--r-full)}
+  .cb:checked, .rd:checked{background:var(--primary);border-color:var(--primary)}
+  .cb:checked::after{
+    content:"";position:absolute;left:5px;top:1px;width:5px;height:9px;
+    border:solid var(--on-primary);border-width:0 2px 2px 0;transform:rotate(40deg);
+  }
+  .rd:checked::after{
+    content:"";position:absolute;left:5px;top:5px;width:6px;height:6px;border-radius:50%;background:var(--on-primary);
+  }
+
+  /* ===== Tooltip ===== */
+  .tt-wrap{position:relative;display:inline-block}
+  .tt{
+    position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);
+    background:var(--primary);color:var(--on-primary);border-radius:var(--r-sm);padding:6px 10px;
+    white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease, transform .15s ease;
+  }
+  .tt-wrap:hover .tt, .tt-wrap:focus-within .tt{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ===== List ===== */
+  .list{border-top:1px solid var(--border)}
+  .list-item{
+    display:flex;justify-content:space-between;align-items:center;gap:var(--sp-md);
+    padding:var(--sp-md) 2px;border-bottom:1px solid var(--border);
+  }
+  .list-item .li-main{display:flex;flex-direction:column;gap:3px}
+  .list-item .li-main .name{color:var(--primary)}
+  .list-item .li-main .sub{color:var(--secondary)}
+
+  /* ===== Card (composed example) ===== */
+  .demo-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:var(--sp-lg);box-shadow:var(--shadow-contact),var(--shadow-ambient);max-width:360px;
+  }
+  .demo-card .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+  .demo-card h3{margin:0 0 2px}
+  .demo-card .company{color:var(--secondary);margin:0 0 14px}
+  .demo-card .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .demo-card .foot{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="intro">
+    <span class="t-label-caps kicker">Design system · alpha</span>
+    <h1 class="t-display">Harbor &amp; Amber</h1>
+    <p class="t-body-lg">Components built from <span class="mono">DESIGN.md</span> — a polished,
+      corporate system rooted in MEA's own blue-and-gold logo. Soft-structured
+      shapes, no pills, restraint with iconography.</p>
+    <div class="swatchline" aria-hidden="true">
+      <span style="background:var(--primary)"></span>
+      <span style="background:var(--secondary)"></span>
+      <span style="background:var(--tertiary)"></span>
+      <span style="background:var(--neutral);border-color:var(--border)"></span>
+      <span style="background:var(--success)"></span>
+      <span style="background:var(--warning)"></span>
+      <span style="background:var(--danger)"></span>
+    </div>
+  </header>
+
+  <section class="spec" id="colors">
+    <span class="t-label-caps kicker">01 — Colors</span>
+    <h2 class="t-h2 spec-title">Palette</h2>
+    <p class="t-body-md spec-desc">Rooted in the logo's blue (~210°) and gold (~50°) hues, extended
+      into ranges dark or light enough to work as real UI.</p>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="fill" style="background:var(--primary)"></div>
+        <div class="meta"><span class="t-label-md name">Primary · Harbor Ink</span><span class="t-caption mono hex">#122130</span></div></div>
+      <div class="swatch"><div class="fill" style="background:var(--primary-soft)"></div>
+        <div class="meta"><span class="t-label-md name">Primary Soft</span><span class="t-caption mono hex">#193757</span></div></div>
+      <div class="swatch"><div class="fill" style="background:var(--secondary)"></div>
+        <div class="meta"><span class="t-label-md name">Secondary · Slate</span><span class="t-caption mono hex">#53616E</span></div></div>
+      <div class="swatch"><div class="fill" style="background:var(--tertiary)"></div>
+        <div class="meta"><span class="t-label-md name">Tertiary · Amber</span><span class="t-caption mono hex">#D3BC45</span></div></div>
+      <div class="swatch"><div class="fill" style="background:var(--tertiary-ink)"></div>
+        <div class="meta"><span class="t-label-md name">Amber Ink</span><span class="t-caption mono hex">#716009</span></div></div>
+      <div class="swatch"><div class="fill" style="background:var(--neutral);border-bottom:1px solid var(--border)"></div>
+        <div class="meta"><span class="t-label-md name">Neutral · Paper</span><span class="t-caption mono hex">#FAF9F5</span></div></div>
+      <div class="swatch"><div class="fill" style="background:var(--success)"></div>
+        <div class="meta"><span class="t-label-md name">Success</span><span class="t-caption mono hex">#2F7D5A</span></div></div>
+      <div class="swatch"><div class="fill" style="background:var(--warning)"></div>
+        <div class="meta"><span class="t-label-md name">Warning</span><span class="t-caption mono hex">#885011</span></div></div>
+      <div class="swatch"><div class="fill" style="background:var(--danger)"></div>
+        <div class="meta"><span class="t-label-md name">Danger</span><span class="t-caption mono hex">#A3403A</span></div></div>
+    </div>
+  </section>
+
+  <section class="spec" id="type">
+    <span class="t-label-caps kicker">02 — Typography</span>
+    <h2 class="t-h2 spec-title">Type scale</h2>
+    <p class="t-body-md spec-desc">Fraunces for every headline, Inter for everything read at length,
+      IBM Plex Mono reserved for dates, counts, and deadlines.</p>
+    <div class="col">
+      <div class="t-display">Find your next opportunity</div>
+      <div class="t-h1">Heading one</div>
+      <div class="t-h2">Heading two</div>
+      <div class="t-h3">Heading three</div>
+      <div class="t-body-lg">Body large — used for intros and lead paragraphs.</div>
+      <div class="t-body-md">Body medium — the default paragraph size across the product.</div>
+      <div class="t-body-sm">Body small — secondary descriptions and fine print.</div>
+      <div class="t-label-md">Label medium — field labels, button text</div>
+      <div class="t-label-caps">Label caps — section kickers, filter groups</div>
+      <div class="t-caption">Caption — helper text, timestamps</div>
+      <div class="t-data">Data mono — Due April 20, 2026 · 163 open</div>
+    </div>
+  </section>
+
+  <section class="spec" id="buttons">
+    <span class="t-label-caps kicker">03 — Buttons</span>
+    <h2 class="t-h2 spec-title">Buttons</h2>
+    <p class="t-body-md spec-desc">Sized to their content, never stretched full-width by default.
+      Primary for the one most important action; Secondary for a supporting action; Ghost for
+      low emphasis.</p>
+    <div class="row">
+      <button class="btn btn-primary t-label-md">Browse opportunities</button>
+      <button class="btn btn-secondary t-label-md">Save filters</button>
+      <button class="btn btn-ghost t-label-md">Reset</button>
+    </div>
+  </section>
+
+  <section class="spec" id="chips">
+    <span class="t-label-caps kicker">04 — Chips</span>
+    <h2 class="t-h2 spec-title">Chips</h2>
+    <p class="t-body-md spec-desc">Rounded-rectangle, never a pill. Used for filters and
+      multi-select tags — Surface at rest, solid Harbor Ink when active.</p>
+    <div class="row">
+      <button class="chip t-body-sm active">Internship</button>
+      <button class="chip t-body-sm">Certification</button>
+      <button class="chip t-body-sm">Work</button>
+      <button class="chip t-body-sm">Case Competition</button>
+      <button class="chip t-body-sm">Hybrid</button>
+    </div>
+  </section>
+
+  <section class="spec" id="inputs">
+    <span class="t-label-caps kicker">05 — Inputs</span>
+    <h2 class="t-h2 spec-title">Input fields</h2>
+    <p class="t-body-md spec-desc">Paper background distinguishes an editable field from a static
+      Surface card. Amber border on focus.</p>
+    <div class="row">
+      <div class="field">
+        <label class="t-label-md" for="demo-text">Company or role</label>
+        <input id="demo-text" type="text" placeholder="Search company, role, or industry…" />
+      </div>
+      <div class="field">
+        <label class="t-label-md" for="demo-select">Work set-up</label>
+        <select id="demo-select">
+          <option>Any</option>
+          <option>Hybrid</option>
+          <option>Fully Onsite</option>
+          <option>Fully Online</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="spec" id="controls">
+    <span class="t-label-caps kicker">06 — Checkboxes &amp; Radios</span>
+    <h2 class="t-h2 spec-title">Selection controls</h2>
+    <p class="t-body-md spec-desc">Square for checkboxes, circular for radios — deliberately
+      distinct shapes so the two are never confused at a glance.</p>
+    <div class="row">
+      <div class="col">
+        <label class="control-row t-body-md"><input class="cb" type="checkbox" checked /> Show closed opportunities</label>
+        <label class="control-row t-body-md"><input class="cb" type="checkbox" /> Paid only</label>
+      </div>
+      <div class="col">
+        <label class="control-row t-body-md"><input class="rd" type="radio" name="demo-radio" checked /> Newest first</label>
+        <label class="control-row t-body-md"><input class="rd" type="radio" name="demo-radio" /> Deadline soonest</label>
+      </div>
+    </div>
+  </section>
+
+  <section class="spec" id="badges">
+    <span class="t-label-caps kicker">07 — Status badges</span>
+    <h2 class="t-h2 spec-title">Badges</h2>
+    <p class="t-body-md spec-desc">Saturated text on a pale tint — never a solid saturated fill —
+      so status stays legible without competing with Amber's role as the interactive accent.</p>
+    <div class="row">
+      <span class="badge badge-success t-label-caps">Open</span>
+      <span class="badge badge-warning t-label-caps">Closing soon</span>
+      <span class="badge badge-danger t-label-caps">Closed</span>
+    </div>
+  </section>
+
+  <section class="spec" id="tooltip">
+    <span class="t-label-caps kicker">08 — Tooltip</span>
+    <h2 class="t-h2 spec-title">Tooltip</h2>
+    <p class="t-body-md spec-desc">Appears on hover or keyboard focus only. Try it:</p>
+    <span class="tt-wrap">
+      <button class="btn btn-ghost t-label-md">Hover me</button>
+      <span class="tt t-caption" role="tooltip">Pulled live from the sheet</span>
+    </span>
+  </section>
+
+  <section class="spec" id="list">
+    <span class="t-label-caps kicker">09 — Lists</span>
+    <h2 class="t-h2 spec-title">List items</h2>
+    <p class="t-body-md spec-desc">A 1px rule and vertical rhythm separate rows — no
+      zebra-striping.</p>
+    <div class="list">
+      <div class="list-item">
+        <div class="li-main"><span class="t-body-md name">Venture Capital (VC) Analyst</span><span class="t-body-sm sub">Foxmont Capital Partners</span></div>
+        <span class="t-data">Oct 6, 2025</span>
+      </div>
+      <div class="list-item">
+        <div class="li-main"><span class="t-body-md name">Investment Banking Intern</span><span class="t-body-sm sub">Primeiro Partners / Deloitte</span></div>
+        <span class="t-data">Jan 2, 2026</span>
+      </div>
+      <div class="list-item">
+        <div class="li-main"><span class="t-body-md name">Marketing Intern</span><span class="t-body-sm sub">Booky</span></div>
+        <span class="t-data">TBA</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="spec" id="card">
+    <span class="t-label-caps kicker">10 — Composed example</span>
+    <h2 class="t-h2 spec-title">Card</h2>
+    <p class="t-body-md spec-desc">Buttons, chips, and badges together, the way they appear on an
+      actual opportunity card.</p>
+    <div class="demo-card">
+      <div class="card-top">
+        <span class="badge badge-success t-label-caps">Open</span>
+        <span class="badge badge-warning t-label-caps">Closing soon</span>
+      </div>
+      <h3 class="t-h3">Operations Intern</h3>
+      <p class="t-body-sm company">AIA Philippines</p>
+      <div class="chips">
+        <span class="chip t-body-sm">Internship</span>
+        <span class="chip t-body-sm">Insurance</span>
+        <span class="chip t-body-sm">Fully Onsite</span>
+      </div>
+      <div class="foot">
+        <span class="t-data">Due Oct 3, 2026</span>
+        <button class="btn btn-primary t-label-md">View details</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
