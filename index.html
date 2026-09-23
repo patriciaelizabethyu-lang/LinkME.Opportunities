@@ -212,6 +212,7 @@
   }
   .pill:hover{border-color:var(--gold);color:var(--navy)}
   .pill.active{background:var(--navy);border-color:var(--navy);color:#fff}
+  .pill-count{display:block;font-size:.66rem;font-weight:500;opacity:.65;margin-top:2px}
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]) .pill.active{background:var(--gold);border-color:var(--gold);color:#171308}
     :root:not([data-theme="light"]) .pill:hover{color:var(--gold-bright)}
@@ -268,9 +269,14 @@
   .badge.closed{background:var(--red-bg);color:var(--red)}
   .badge.soon{background:var(--amber-bg);color:var(--amber)}
   .card-index{font-size:.68rem;color:var(--ink-soft);opacity:.55;white-space:nowrap;flex:none}
+  .name-row{display:flex;align-items:center;gap:10px}
+  .avatar{
+    display:flex;align-items:center;justify-content:center;flex:none;
+    border-radius:var(--r-full,9999px);color:#fff;font-weight:700;font-family:'Fraunces',serif;
+  }
   .card h3{margin:0;font-size:1.05rem;color:var(--navy);line-height:1.3;font-weight:600}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .card h3{color:#fff} }
-  .card .position{font-size:.86rem;color:var(--ink-soft);font-weight:600;margin:-4px 0 0}
+  .card .position{font-size:.86rem;color:var(--ink-soft);font-weight:600;margin:-4px 0 0 44px}
   .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
   .tag{
     font-size:.72rem;background:var(--cream);border:1px solid var(--line);
@@ -282,7 +288,11 @@
   .card .deadline b{color:var(--ink)}
 
   .empty, .loading, .error{
-    max-width:1100px;margin:50px auto;padding:0 20px;text-align:center;color:var(--ink-soft);
+    max-width:1100px;margin:50px auto 24px;padding:0 20px;text-align:center;color:var(--ink-soft);
+  }
+  .similar-heading{
+    max-width:1100px;margin:0 auto 14px;padding:0 20px;
+    font-size:.72rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;text-align:center;
   }
   .error{color:var(--red)}
   .brand-pulse{
@@ -306,6 +316,10 @@
     transition:transform .2s ease, background .2s ease;
   }
   .show-more:hover{background:var(--navy-light);transform:translateY(-1px)}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .show-more{background:var(--gold);color:#171308}
+    :root:not([data-theme="light"]) .show-more:hover{background:var(--gold-bright)}
+  }
 
   /* ---------- Detail modal ---------- */
   .overlay{
@@ -329,9 +343,10 @@
     transition:all .18s ease;
   }
   .modal-close:hover{background:var(--gold-light);border-color:var(--gold);color:var(--navy)}
-  .modal h2{margin:0 0 2px;font-size:1.3rem;color:var(--navy);padding-right:36px;font-weight:600}
+  .modal h2{margin:0;font-size:1.3rem;color:var(--navy);font-weight:600}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .modal h2{color:#fff} }
-  .modal .position{color:var(--ink-soft);font-weight:600;font-size:.92rem;margin:0 0 12px}
+  .modal .name-row{padding-right:36px;margin-bottom:2px}
+  .modal .position{color:var(--ink-soft);font-weight:600;font-size:.92rem;margin:0 0 12px 56px}
   .modal-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
   .modal-grid{
     display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
@@ -349,11 +364,15 @@
   }
   .apply-btn:hover{transform:translateY(-1px)}
   .apply-btn.secondary{background:transparent;border:1px solid var(--line);color:var(--ink)}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .apply-btn:not(.secondary){background:var(--gold);color:#171308}
+  }
 
   footer{
     max-width:1100px;margin:0 auto;padding:20px 20px 50px;
     font-size:.78rem;color:var(--ink-soft);text-align:center;line-height:1.6;
   }
+  .footer-logo{height:36px;width:auto;display:block;margin:0 auto 14px;opacity:.8}
 
   @media (max-width:520px){
     .hero{padding:56px 0 40px}
@@ -473,16 +492,18 @@
 </div>
 <div id="errorState" class="error" style="display:none"></div>
 
-<div class="grid" id="grid" style="display:none"></div>
 <div class="empty" id="emptyState" style="display:none">
   <span class="empty-stamp">No matches</span>
-  <p>Nothing matches yet. Try widening your search or clearing a filter.</p>
+  <p id="emptyText">Nothing matches yet. Try widening your search or clearing a filter.</p>
 </div>
+<div class="similar-heading" id="similarHeading" style="display:none">Closest matches</div>
+<div class="grid" id="grid" style="display:none"></div>
 <div class="show-more-wrap" id="showMoreWrap" style="display:none">
   <button class="show-more" id="showMoreBtn">Show more</button>
 </div>
 
 <footer>
+  <img class="footer-logo" src="logo-full.png" alt="MEA Cares, Career Exploration Series" />
   Made for every batch, from Freshies to Super Seniors.
 </footer>
 
@@ -509,7 +530,7 @@
   var els = {};
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
    "batchRow","showClosed","resetBtn","resultsMeta","loadingState","errorState","grid",
-   "emptyState","showMoreWrap","showMoreBtn","updatedLine","overlay","modal","nav","scrollCue"]
+   "emptyState","emptyText","similarHeading","showMoreWrap","showMoreBtn","updatedLine","overlay","modal","nav","scrollCue"]
   .forEach(function(id){ els[id.replace(/-([a-z])/g, function(_,c){return c.toUpperCase();})] = document.getElementById(id); });
 
   var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false };
@@ -590,10 +611,14 @@
     var batches = ["29","28","27","26","25"];
     els.batchRow.innerHTML = "";
     batches.forEach(function(b){
+      var openCount = allRows.filter(function(o){
+        return o.status.toLowerCase() === "open" && o.batches[b];
+      }).length;
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "pill" + (state.batch === b ? " active" : "");
-      btn.textContent = BATCH_LABELS[b] || ("Batch " + b);
+      btn.innerHTML = esc(BATCH_LABELS[b] || ("Batch " + b)) +
+        '<span class="pill-count mono">' + openCount + ' open</span>';
       btn.title = "Batch " + b;
       btn.addEventListener("click", function(){
         state.batch = (state.batch === b) ? "" : b;
@@ -672,7 +697,7 @@
     var indexLabel = '<span class="card-index mono">No. ' + String(o._idx).padStart(3, '0') + '</span>';
     return (
       '<div class="card-top">' + badges + indexLabel + '</div>' +
-      '<h3>'+esc(o.company)+'</h3>' +
+      '<div class="name-row">' + avatarHTML(o.company, 34) + '<h3>'+esc(o.company)+'</h3></div>' +
       '<p class="position">'+esc(role)+'</p>' +
       '<div class="tag-row">'+tags.join("")+'</div>' +
       '<div class="deadline">Deadline: <b class="mono">'+esc(o.deadline)+'</b></div>'
@@ -685,6 +710,18 @@
     });
   }
 
+  // ---- a company monogram, colored deterministically so it's always the same for the same company ----
+  function monogramColor(name){
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) { hash = (hash * 31 + name.charCodeAt(i)) >>> 0; }
+    var hue = hash % 360;
+    return "hsl(" + hue + ", 40%, 36%)";
+  }
+  function avatarHTML(company, size){
+    var initial = (company.trim().charAt(0) || "?").toUpperCase();
+    return '<span class="avatar" style="background:' + monogramColor(company) + ';width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * 0.44) + 'px">' + esc(initial) + '</span>';
+  }
+
   // ---- scroll-reveal for cards ----
   var cardObserver = ("IntersectionObserver" in window) ? new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
@@ -695,24 +732,9 @@
     });
   }, { threshold: .1, rootMargin: "0px 0px -40px 0px" }) : null;
 
-  function render(){
-    var rows = applyFilters();
-
-    els.resultsMeta.innerHTML = '<span class="mono">' + rows.length + '</span> opportunit' + (rows.length===1?"y":"ies") + " found" +
-      (state.showClosed ? "" : " (open only)");
-
-    if (rows.length === 0) {
-      els.grid.style.display = "none";
-      els.emptyState.style.display = "block";
-      els.showMoreWrap.style.display = "none";
-      return;
-    }
-    els.emptyState.style.display = "none";
-    els.grid.style.display = "grid";
-
-    var visible = rows.slice(0, shown);
+  function renderGridRows(list){
     els.grid.innerHTML = "";
-    visible.forEach(function(o, i){
+    list.forEach(function(o, i){
       var card = document.createElement("button");
       card.type = "button";
       card.className = "card";
@@ -726,14 +748,72 @@
         cardObserver.observe(card);
       }
     });
+  }
 
+  // ---- when nothing matches exactly, rank every candidate by how many active filters/search terms it still satisfies ----
+  function findSimilar(limit){
+    var q = state.search.trim().toLowerCase();
+    var qWords = q ? q.split(/\s+/).filter(Boolean) : [];
+    var pool = allRows.filter(function(o){
+      return state.showClosed || o.status.toLowerCase() === "open";
+    });
+    var scored = pool.map(function(o){
+      var score = 0;
+      if (state.batch && o.batches[state.batch]) score++;
+      if (state.type && o.type === state.type) score++;
+      if (state.industry && o.industry === state.industry) score++;
+      if (state.paid === "yes" && o.paid) score++;
+      if (state.paid === "no" && !o.paid) score++;
+      if (state.required === "yes" && o.required) score++;
+      if (state.required === "no" && !o.required) score++;
+      if (state.setup && o.setup === state.setup) score++;
+      if (state.source && o.source === state.source) score++;
+      if (qWords.length) {
+        var hay = (o.company + " " + o.position + " " + o.industry + " " + o.fn + " " + o.name).toLowerCase();
+        score += qWords.filter(function(w){ return hay.indexOf(w) !== -1; }).length;
+      }
+      return { o: o, score: score };
+    });
+    scored.sort(function(a, b){ return b.score - a.score || b.o._idx - a.o._idx; });
+    return scored.filter(function(s){ return s.score > 0; }).slice(0, limit).map(function(s){ return s.o; });
+  }
+
+  function render(){
+    var rows = applyFilters();
+
+    els.resultsMeta.innerHTML = '<span class="mono">' + rows.length + '</span> opportunit' + (rows.length===1?"y":"ies") + " found" +
+      (state.showClosed ? "" : " (open only)");
+
+    if (rows.length === 0) {
+      els.emptyState.style.display = "block";
+      els.showMoreWrap.style.display = "none";
+      var similar = findSimilar(6);
+      if (similar.length) {
+        els.emptyText.textContent = "Nothing matches exactly. Here's what comes closest:";
+        els.similarHeading.style.display = "block";
+        els.grid.style.display = "grid";
+        renderGridRows(similar);
+      } else {
+        els.emptyText.textContent = "Nothing matches yet. Try widening your search or clearing a filter.";
+        els.similarHeading.style.display = "none";
+        els.grid.style.display = "none";
+        els.grid.innerHTML = "";
+      }
+      return;
+    }
+    els.emptyState.style.display = "none";
+    els.similarHeading.style.display = "none";
+    els.grid.style.display = "grid";
+
+    var visible = rows.slice(0, shown);
+    renderGridRows(visible);
     els.showMoreWrap.style.display = rows.length > shown ? "block" : "none";
   }
 
   function openModal(o){
     var role = o.position || o.name || "Opportunity";
     var html = '<button class="modal-close" id="modalClose" aria-label="Close">✕</button>';
-    html += '<h2>'+esc(o.company)+'</h2>';
+    html += '<div class="name-row">' + avatarHTML(o.company, 46) + '<h2>'+esc(o.company)+'</h2></div>';
     html += '<p class="position">'+esc(role)+'</p>';
     html += '<div class="modal-badges">' + badge(o);
     if (isClosingSoon(o)) html += '<span class="badge soon">Closing soon</span>';
@@ -863,6 +943,7 @@
           // background refresh: update the data in place, keep the visitor's filters, search, and scroll position untouched
           allRows = rows;
           refreshFilterOptions(rows);
+          buildBatchPills();
           render();
           markUpdated();
         }
