@@ -269,14 +269,9 @@
   .badge.closed{background:var(--red-bg);color:var(--red)}
   .badge.soon{background:var(--amber-bg);color:var(--amber)}
   .card-index{font-size:.68rem;color:var(--ink-soft);opacity:.55;white-space:nowrap;flex:none}
-  .name-row{display:flex;align-items:center;gap:10px}
-  .avatar{
-    display:flex;align-items:center;justify-content:center;flex:none;
-    border-radius:var(--r-full,9999px);color:#fff;font-weight:700;font-family:'Fraunces',serif;
-  }
   .card h3{margin:0;font-size:1.05rem;color:var(--navy);line-height:1.3;font-weight:600}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .card h3{color:#fff} }
-  .card .position{font-size:.86rem;color:var(--ink-soft);font-weight:600;margin:-4px 0 0 44px}
+  .card .position{font-size:.86rem;color:var(--ink-soft);font-weight:600;margin:-4px 0 0}
   .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
   .tag{
     font-size:.72rem;background:var(--cream);border:1px solid var(--line);
@@ -343,10 +338,9 @@
     transition:all .18s ease;
   }
   .modal-close:hover{background:var(--gold-light);border-color:var(--gold);color:var(--navy)}
-  .modal h2{margin:0;font-size:1.3rem;color:var(--navy);font-weight:600}
+  .modal h2{margin:0 0 2px;font-size:1.3rem;color:var(--navy);padding-right:36px;font-weight:600}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .modal h2{color:#fff} }
-  .modal .name-row{padding-right:36px;margin-bottom:2px}
-  .modal .position{color:var(--ink-soft);font-weight:600;font-size:.92rem;margin:0 0 12px 56px}
+  .modal .position{color:var(--ink-soft);font-weight:600;font-size:.92rem;margin:0 0 12px}
   .modal-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
   .modal-grid{
     display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
@@ -697,7 +691,7 @@
     var indexLabel = '<span class="card-index mono">No. ' + String(o._idx).padStart(3, '0') + '</span>';
     return (
       '<div class="card-top">' + badges + indexLabel + '</div>' +
-      '<div class="name-row">' + avatarHTML(o.company, 34) + '<h3>'+esc(o.company)+'</h3></div>' +
+      '<h3>'+esc(o.company)+'</h3>' +
       '<p class="position">'+esc(role)+'</p>' +
       '<div class="tag-row">'+tags.join("")+'</div>' +
       '<div class="deadline">Deadline: <b class="mono">'+esc(o.deadline)+'</b></div>'
@@ -708,18 +702,6 @@
     return String(s||"").replace(/[&<>"']/g, function(c){
       return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
     });
-  }
-
-  // ---- a company monogram, colored deterministically so it's always the same for the same company ----
-  function monogramColor(name){
-    var hash = 0;
-    for (var i = 0; i < name.length; i++) { hash = (hash * 31 + name.charCodeAt(i)) >>> 0; }
-    var hue = hash % 360;
-    return "hsl(" + hue + ", 40%, 36%)";
-  }
-  function avatarHTML(company, size){
-    var initial = (company.trim().charAt(0) || "?").toUpperCase();
-    return '<span class="avatar" style="background:' + monogramColor(company) + ';width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * 0.44) + 'px">' + esc(initial) + '</span>';
   }
 
   // ---- scroll-reveal for cards ----
@@ -813,7 +795,7 @@
   function openModal(o){
     var role = o.position || o.name || "Opportunity";
     var html = '<button class="modal-close" id="modalClose" aria-label="Close">✕</button>';
-    html += '<div class="name-row">' + avatarHTML(o.company, 46) + '<h2>'+esc(o.company)+'</h2></div>';
+    html += '<h2>'+esc(o.company)+'</h2>';
     html += '<p class="position">'+esc(role)+'</p>';
     html += '<div class="modal-badges">' + badge(o);
     if (isClosingSoon(o)) html += '<span class="badge soon">Closing soon</span>';
