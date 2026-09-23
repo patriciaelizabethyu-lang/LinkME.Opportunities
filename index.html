@@ -103,39 +103,14 @@
   .hero{
     position:relative;
     background:
-      radial-gradient(ellipse 60% 50% at 15% -10%, rgba(211,188,69,.16), transparent 60%),
-      radial-gradient(ellipse 50% 60% at 100% 10%, rgba(47,125,90,.14), transparent 55%),
+      repeating-linear-gradient(180deg, rgba(255,255,255,.05) 0, rgba(255,255,255,.05) 1px, transparent 1px, transparent 42px),
       linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
     color:#fff;
-    padding:76px 20px 108px;
+    padding:76px 0 0;
     overflow:hidden;
     isolation:isolate;
   }
-  .hero::before{
-    content:"";
-    position:absolute;inset:0;z-index:-1;
-    background-image:radial-gradient(rgba(255,255,255,.09) 1px, transparent 1px);
-    background-size:26px 26px;
-    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 20%, #000 40%, transparent 85%);
-    mask-image:radial-gradient(ellipse 70% 60% at 50% 20%, #000 40%, transparent 85%);
-    opacity:.6;
-  }
-  .hero-glow{
-    position:absolute;z-index:-1;border-radius:50%;filter:blur(60px);opacity:.35;
-    width:360px;height:360px;background:var(--gold);
-    top:-120px;right:-80px;
-    animation:float 14s ease-in-out infinite;
-  }
-  .hero-glow.two{
-    width:260px;height:260px;background:var(--green);
-    top:220px;left:-100px;opacity:.22;
-    animation:float 18s ease-in-out infinite reverse;
-  }
-  @keyframes float{
-    0%,100%{transform:translate(0,0)}
-    50%{transform:translate(-18px,26px)}
-  }
-  .hero-inner{max-width:720px;margin:0 auto;text-align:center;position:relative}
+  .hero-inner{max-width:720px;margin:0 auto;text-align:center;position:relative;padding:0 20px}
   .hero-eyebrow{
     display:inline-block;font-size:.76rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
     color:var(--gold-bright);background:rgba(211,188,69,.12);border:1px solid rgba(211,188,69,.3);
@@ -167,20 +142,34 @@
   .reveal.d2{animation-delay:.16s}
   .reveal.d3{animation-delay:.27s}
   .reveal.d4{animation-delay:.38s}
+  .reveal.d5{animation-delay:.5s}
   @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 
-  .stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:40px}
-  .stat{
-    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-lg);
-    padding:14px 22px;min-width:110px;backdrop-filter:blur(6px);
+  .hero-legend{margin-top:20px;font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.02em;color:#9aa4bb}
+  .hero-legend b{color:var(--gold-bright);font-weight:600}
+
+  /* Live deadline ticker — the signature element: real postings, not an abstract stat */
+  .ticker-wrap{
+    margin-top:44px;border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14);
+    padding:15px 0;overflow:hidden;position:relative;background:rgba(255,255,255,.03);
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
   }
-  .stat b{color:var(--gold-bright);font-size:1.5rem;display:block;font-family:'Fraunces',serif;font-weight:600;line-height:1.1}
-  .stat span{font-size:.76rem;color:#b9c1d6}
+  .ticker-track{display:flex;width:max-content;animation:ticker 42s linear infinite}
+  .ticker-wrap:hover .ticker-track{animation-play-state:paused}
+  @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .ticker-item{
+    display:flex;align-items:baseline;gap:9px;padding:0 30px;white-space:nowrap;
+    font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#9aa4bb;
+    border-right:1px solid rgba(255,255,255,.12);
+  }
+  .ticker-item .tk-co{color:#fff;font-weight:600}
+  .ticker-item .tk-due{color:var(--gold-bright)}
 
   .scroll-cue{
-    position:absolute;left:50%;bottom:22px;transform:translateX(-50%);
+    position:relative;display:block;margin:26px auto 0;
     background:none;border:none;color:rgba(255,255,255,.55);cursor:pointer;
-    animation:bounce 2.2s ease-in-out infinite;padding:6px;
+    animation:bounce 2.2s ease-in-out infinite;padding:6px 6px 30px;
   }
   @keyframes bounce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,7px)}}
 
@@ -351,7 +340,9 @@
   }
 
   @media (max-width:520px){
-    .hero{padding:56px 18px 96px}
+    .hero{padding:56px 0 0}
+    .hero-inner{padding:0 18px}
+    .ticker-item{padding:0 20px;font-size:.74rem}
     .filter-grid{grid-template-columns:repeat(2,1fr)}
     .modal{margin-top:0}
     .controls-wrap{margin-top:-48px}
@@ -371,8 +362,6 @@
 </nav>
 
 <section class="hero" id="top">
-  <div class="hero-glow" aria-hidden="true"></div>
-  <div class="hero-glow two" aria-hidden="true"></div>
   <div class="hero-inner">
     <span class="hero-eyebrow reveal d1">Live-synced opportunity board</span>
     <h1 class="reveal d2">Find your next <em>opportunity</em></h1>
@@ -380,7 +369,12 @@
     <div class="hero-cta-row reveal d4">
       <a href="#browse" class="cta-btn">Browse opportunities</a>
     </div>
-    <div class="stats" id="statsRow"></div>
+    <div class="hero-legend reveal d4" id="heroLegend">Syncing with the sheet…</div>
+  </div>
+  <div class="ticker-wrap reveal d5" aria-label="Upcoming deadlines, live from the sheet">
+    <div class="ticker-track" id="tickerTrack">
+      <span class="ticker-item">Loading upcoming deadlines…</span>
+    </div>
   </div>
   <button class="scroll-cue" id="scrollCue" aria-label="Scroll to listings">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -482,7 +476,7 @@
   var els = {};
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
    "batchRow","showClosed","resetBtn","resultsMeta","loadingState","errorState","grid",
-   "emptyState","showMoreWrap","showMoreBtn","statsRow","updatedLine","overlay","modal","nav","scrollCue"]
+   "emptyState","showMoreWrap","showMoreBtn","heroLegend","tickerTrack","updatedLine","overlay","modal","nav","scrollCue"]
   .forEach(function(id){ els[id.replace(/-([a-z])/g, function(_,c){return c.toUpperCase();})] = document.getElementById(id); });
 
   var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false };
@@ -786,31 +780,52 @@
     }, { passive: true });
   }
 
-  // ---- animated count-up for hero stats ----
-  function animateCount(el, target){
-    if (reduceMotion) { el.textContent = target; return; }
-    var start = 0, duration = 900, startTime = null;
-    function step(ts){
-      if (startTime === null) startTime = ts;
-      var progress = Math.min((ts - startTime) / duration, 1);
-      var eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.round(start + (target - start) * eased);
-      if (progress < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  function renderStats(){
+  function renderLegend(){
     var open = allRows.filter(function(o){ return o.status.toLowerCase()==="open"; }).length;
     var industries = uniqueSorted(allRows.map(function(o){return o.industry;})).length;
     var paid = allRows.filter(function(o){ return o.status.toLowerCase()==="open" && o.paid; }).length;
-    els.statsRow.innerHTML =
-      '<div class="stat"><b data-target="'+open+'">0</b><span>open now</span></div>' +
-      '<div class="stat"><b data-target="'+paid+'">0</b><span>paid &amp; open</span></div>' +
-      '<div class="stat"><b data-target="'+industries+'">0</b><span>industries</span></div>';
-    Array.prototype.forEach.call(els.statsRow.querySelectorAll("b"), function(el){
-      animateCount(el, parseInt(el.getAttribute("data-target"), 10) || 0);
-    });
+    els.heroLegend.innerHTML = '<b>' + open + '</b> open now · <b>' + paid + '</b> paid · <b>' + industries + '</b> industries';
+  }
+
+  // ---- signature element: a live ticker of real upcoming deadlines, not an abstract stat ----
+  function formatShortDate(t){
+    var d = new Date(t);
+    var thisYear = new Date().getFullYear();
+    var opts = d.getFullYear() === thisYear ? { month: "short", day: "numeric" } : { month: "short", day: "numeric", year: "numeric" };
+    return d.toLocaleDateString(undefined, opts);
+  }
+
+  function renderTicker(){
+    var now = Date.now();
+    var open = allRows.filter(function(o){ return o.status.toLowerCase() === "open"; });
+
+    // ideal case: real upcoming deadlines, soonest first
+    var upcoming = open.filter(function(o){
+      var t = parseDate(o.deadline);
+      return t !== null && t >= now;
+    }).sort(function(a,b){ return parseDate(a.deadline) - parseDate(b.deadline); });
+
+    // graceful fallback: pad with the newest-added open postings so the ticker
+    // never sits empty even if nothing currently has a future-dated deadline
+    var seen = {};
+    upcoming.forEach(function(o){ seen[o._idx] = true; });
+    var newest = open.slice().sort(function(a,b){ return b._idx - a._idx; })
+      .filter(function(o){ return !seen[o._idx]; });
+
+    var list = upcoming.concat(newest).slice(0, 10);
+    if (!list.length) {
+      els.tickerTrack.innerHTML = '<span class="ticker-item">New postings sync from the sheet as soon as they\'re added.</span>';
+      return;
+    }
+
+    var itemsHTML = list.map(function(o){
+      var t = parseDate(o.deadline);
+      var dueLabel = t !== null ? "Due " + formatShortDate(t) : "Deadline TBA";
+      return '<span class="ticker-item"><span class="tk-co">' + esc(o.company) + '</span>' + esc(o.position ? " — " + o.position : "") +
+        ' <span class="tk-due">' + dueLabel + '</span></span>';
+    }).join("");
+    // duplicated once for a seamless 0%→-50% loop
+    els.tickerTrack.innerHTML = itemsHTML + itemsHTML;
   }
 
   function init(rows){
@@ -821,7 +836,8 @@
     fillSelect(document.getElementById("f-source"), uniqueSorted(rows.map(function(o){return o.source;})));
     buildBatchPills();
     wireControls();
-    renderStats();
+    renderLegend();
+    renderTicker();
     render();
     els.loadingState.style.display = "none";
     var now = new Date();
