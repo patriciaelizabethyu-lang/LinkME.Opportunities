@@ -99,10 +99,9 @@
   .hero{
     position:relative;
     background:
-      repeating-linear-gradient(180deg, rgba(255,255,255,.05) 0, rgba(255,255,255,.05) 1px, transparent 1px, transparent 42px),
       linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
     color:#fff;
-    padding:76px 0 0;
+    padding:76px 0 56px;
     overflow:hidden;
     isolation:isolate;
   }
@@ -141,31 +140,18 @@
   .reveal.d5{animation-delay:.5s}
   @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 
-  .hero-legend{margin-top:20px;font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.02em;color:#9aa4bb}
+  .hero-legend{margin-top:22px;font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.02em;color:#9aa4bb}
   .hero-legend b{color:var(--gold-bright);font-weight:600}
 
-  /* Live deadline ticker — the signature element: real postings, not an abstract stat */
-  .ticker-wrap{
-    margin-top:44px;border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14);
-    padding:15px 0;overflow:hidden;position:relative;background:rgba(255,255,255,.03);
-    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
-    mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
-  }
-  .ticker-track{display:flex;width:max-content;animation:ticker 42s linear infinite}
-  .ticker-wrap:hover .ticker-track{animation-play-state:paused}
-  @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .ticker-item{
-    display:flex;align-items:baseline;gap:9px;padding:0 30px;white-space:nowrap;
-    font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#9aa4bb;
-    border-right:1px solid rgba(255,255,255,.12);
-  }
-  .ticker-item .tk-co{color:#fff;font-weight:600}
-  .ticker-item .tk-due{color:var(--gold-bright)}
+  /* Next deadline, real data instead of an abstract stat, said quietly and once */
+  .next-deadline{margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.02em;color:#7c8698}
+  .next-deadline .nd-co{color:#c7cee0}
+  .next-deadline .nd-due{color:var(--gold-bright)}
 
   .scroll-cue{
-    position:relative;display:block;margin:26px auto 0;
-    background:none;border:none;color:rgba(255,255,255,.55);cursor:pointer;
-    animation:bounce 2.2s ease-in-out infinite;padding:6px 6px 30px;
+    position:relative;display:block;margin:30px auto 0;
+    background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;
+    animation:bounce 2.2s ease-in-out infinite;padding:6px;
   }
   @keyframes bounce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,7px)}}
 
@@ -202,18 +188,20 @@
   }
   select:hover{border-color:var(--gold)}
 
-  .batch-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .batch-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
   .pill{
     border:1px solid var(--line);background:var(--cream);color:var(--ink-soft);
-    padding:7px 14px;border-radius:var(--r-sm);font-size:.82rem;font-weight:600;cursor:pointer;
-    font-family:inherit;transition:all .18s ease;
+    padding:8px 10px;border-radius:var(--r-sm);font-size:.82rem;font-weight:600;cursor:pointer;
+    font-family:inherit;transition:all .18s ease;text-align:center;
   }
   .pill:hover{border-color:var(--gold);color:var(--navy)}
-  .pill.active{background:var(--navy);border-color:var(--navy);color:#fff;transform:scale(1.04)}
+  .pill.active{background:var(--navy);border-color:var(--navy);color:#fff}
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]) .pill.active{background:var(--gold);border-color:var(--gold);color:#171308}
     :root:not([data-theme="light"]) .pill:hover{color:var(--gold-bright)}
   }
+  @media (max-width:640px){ .batch-row{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width:380px){ .batch-row{grid-template-columns:repeat(2,1fr)} }
 
   .toolbar-row{
     display:flex;align-items:center;justify-content:space-between;
@@ -267,7 +255,6 @@
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tag.paid{color:var(--gold)} }
   .card .deadline{font-size:.78rem;color:var(--ink-soft);margin-top:auto;padding-top:6px}
   .card .deadline b{color:var(--ink)}
-  .pill .pill-sub{display:block;font-size:.62rem;opacity:.65;font-weight:500;margin-top:1px}
 
   .empty, .loading, .error{
     max-width:1100px;margin:50px auto;padding:0 20px;text-align:center;color:var(--ink-soft);
@@ -336,9 +323,8 @@
   }
 
   @media (max-width:520px){
-    .hero{padding:56px 0 0}
+    .hero{padding:56px 0 40px}
     .hero-inner{padding:0 18px}
-    .ticker-item{padding:0 20px;font-size:.74rem}
     .filter-grid{grid-template-columns:repeat(2,1fr)}
     .modal{margin-top:0}
     .controls-wrap{margin-top:-48px}
@@ -366,11 +352,7 @@
       <a href="#browse" class="cta-btn">Browse opportunities</a>
     </div>
     <div class="hero-legend reveal d4" id="heroLegend">Syncing with the sheet…</div>
-  </div>
-  <div class="ticker-wrap reveal d5" aria-label="Upcoming deadlines, live from the sheet">
-    <div class="ticker-track" id="tickerTrack">
-      <span class="ticker-item">Loading upcoming deadlines…</span>
-    </div>
+    <div class="next-deadline reveal d4" id="nextDeadline"></div>
   </div>
   <button class="scroll-cue" id="scrollCue" aria-label="Scroll to listings">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -472,7 +454,7 @@
   var els = {};
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
    "batchRow","showClosed","resetBtn","resultsMeta","loadingState","errorState","grid",
-   "emptyState","showMoreWrap","showMoreBtn","heroLegend","tickerTrack","updatedLine","overlay","modal","nav","scrollCue"]
+   "emptyState","showMoreWrap","showMoreBtn","heroLegend","nextDeadline","updatedLine","overlay","modal","nav","scrollCue"]
   .forEach(function(id){ els[id.replace(/-([a-z])/g, function(_,c){return c.toUpperCase();})] = document.getElementById(id); });
 
   var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false };
@@ -555,7 +537,8 @@
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "pill" + (state.batch === b ? " active" : "");
-      btn.innerHTML = (BATCH_LABELS[b] || ("Batch " + b)) + '<span class="pill-sub mono">Batch ' + b + '</span>';
+      btn.textContent = BATCH_LABELS[b] || ("Batch " + b);
+      btn.title = "Batch " + b;
       btn.addEventListener("click", function(){
         state.batch = (state.batch === b) ? "" : b;
         shown = PAGE_SIZE;
@@ -783,7 +766,7 @@
     els.heroLegend.innerHTML = '<b>' + open + '</b> open now · <b>' + paid + '</b> paid · <b>' + industries + '</b> industries';
   }
 
-  // ---- signature element: a live ticker of real upcoming deadlines, not an abstract stat ----
+  // ---- one real, quiet fact instead of an abstract stat: the next deadline coming up ----
   function formatShortDate(t){
     var d = new Date(t);
     var thisYear = new Date().getFullYear();
@@ -791,37 +774,23 @@
     return d.toLocaleDateString(undefined, opts);
   }
 
-  function renderTicker(){
+  function renderNextDeadline(){
     var now = Date.now();
     var open = allRows.filter(function(o){ return o.status.toLowerCase() === "open"; });
 
-    // ideal case: real upcoming deadlines, soonest first
     var upcoming = open.filter(function(o){
       var t = parseDate(o.deadline);
       return t !== null && t >= now;
     }).sort(function(a,b){ return parseDate(a.deadline) - parseDate(b.deadline); });
 
-    // graceful fallback: pad with the newest-added open postings so the ticker
-    // never sits empty even if nothing currently has a future-dated deadline
-    var seen = {};
-    upcoming.forEach(function(o){ seen[o._idx] = true; });
-    var newest = open.slice().sort(function(a,b){ return b._idx - a._idx; })
-      .filter(function(o){ return !seen[o._idx]; });
+    // fall back to the newest-added open posting if nothing has a future-dated deadline yet
+    var pick = upcoming[0] || open.slice().sort(function(a,b){ return b._idx - a._idx; })[0];
+    if (!pick) { els.nextDeadline.textContent = ""; return; }
 
-    var list = upcoming.concat(newest).slice(0, 10);
-    if (!list.length) {
-      els.tickerTrack.innerHTML = '<span class="ticker-item">New postings sync from the sheet as soon as they\'re added.</span>';
-      return;
-    }
-
-    var itemsHTML = list.map(function(o){
-      var t = parseDate(o.deadline);
-      var dueLabel = t !== null ? "Due " + formatShortDate(t) : "Deadline TBA";
-      return '<span class="ticker-item"><span class="tk-co">' + esc(o.company) + '</span>' + esc(o.position ? " — " + o.position : "") +
-        ' <span class="tk-due">' + dueLabel + '</span></span>';
-    }).join("");
-    // duplicated once for a seamless 0%→-50% loop
-    els.tickerTrack.innerHTML = itemsHTML + itemsHTML;
+    var t = parseDate(pick.deadline);
+    var dueLabel = t !== null ? "due " + formatShortDate(t) : "deadline TBA";
+    els.nextDeadline.innerHTML = 'Next up: <span class="nd-co">' + esc(pick.company) +
+      (pick.position ? " — " + esc(pick.position) : "") + '</span>, <span class="nd-due">' + dueLabel + '</span>';
   }
 
   function init(rows){
@@ -833,7 +802,7 @@
     buildBatchPills();
     wireControls();
     renderLegend();
-    renderTicker();
+    renderNextDeadline();
     render();
     els.loadingState.style.display = "none";
     var now = new Date();
