@@ -126,18 +126,6 @@
   .hero p{
     margin:0 auto;color:#c7cee0;font-size:1.02rem;max-width:52ch;line-height:1.6;
   }
-  .hero-cta-row{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .cta-btn{
-    background:var(--gold-bright);color:var(--navy-deep);text-decoration:none;font-weight:700;
-    padding:13px 26px;border-radius:var(--r-md);font-size:.94rem;display:inline-block;
-    box-shadow:0 8px 20px rgba(211,188,69,.28);
-    transition:transform .2s ease, box-shadow .2s ease;
-  }
-  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(211,188,69,.4)}
-  .cta-btn.ghost{
-    background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);box-shadow:none;
-  }
-  .cta-btn.ghost:hover{border-color:rgba(255,255,255,.6);box-shadow:none}
 
   .reveal{opacity:0;transform:translateY(16px);animation:fadeUp .7s cubic-bezier(.16,.8,.3,1) forwards}
   .reveal.d1{animation-delay:.05s}
@@ -191,7 +179,7 @@
     transition:border-color .2s ease, box-shadow .2s ease;
   }
   .search-row input[type="search"]:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(211,188,69,.15)}
-  select:focus, button:focus-visible, .card:focus-visible, .cta-btn:focus-visible{
+  select:focus, button:focus-visible, .card:focus-visible{
     outline:2px solid var(--gold);outline-offset:2px;
   }
 
@@ -371,15 +359,15 @@
   .alumni-label.pros{color:var(--green)}
   .alumni-label.cons{color:var(--red)}
   @media (max-width:480px){ .alumni-cols{grid-template-columns:1fr} }
-  .apply-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .apply-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:18px}
   .apply-btn{
     background:var(--navy);color:#fff;text-decoration:none;padding:10px 18px;border-radius:var(--r-md);
     font-weight:600;font-size:.88rem;display:inline-block;transition:transform .2s ease;
   }
   .apply-btn:hover{transform:translateY(-1px)}
-  .apply-btn.secondary{background:transparent;border:1px solid var(--line);color:var(--ink)}
+  .apply-note{margin:0;font-size:.84rem;color:var(--ink-soft);line-height:1.5}
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]) .apply-btn:not(.secondary){background:var(--gold);color:#171308}
+    :root:not([data-theme="light"]) .apply-btn{background:var(--gold);color:#171308}
   }
 
   footer{
@@ -413,9 +401,6 @@
     <span class="hero-eyebrow reveal d1">The MEA Career Exploration Series presents:</span>
     <h1 class="reveal d2">Find your next <em>opportunity</em></h1>
     <p class="reveal d3">Search and filter internships, certifications, and jobs by batch and industry. Good luck!</p>
-    <div class="hero-cta-row reveal d4">
-      <a href="#browse" class="cta-btn">Browse opportunities</a>
-    </div>
   </div>
   <div class="how-it-works reveal d5">
     <div class="step">
@@ -821,7 +806,7 @@
       els.showMoreWrap.style.display = "none";
       var similar = findSimilar(6);
       if (similar.length) {
-        els.emptyText.textContent = "Nothing matches exactly. Here's what comes closest:";
+        els.emptyText.textContent = "Nothing matches that exactly, but here's what comes closest:";
         els.similarHeading.style.display = "block";
         els.grid.style.display = "grid";
         renderGridRows(similar);
@@ -887,8 +872,13 @@
     }
 
     html += '<div class="apply-row">';
-    if (o.email) html += '<a class="apply-btn" href="mailto:'+esc(o.email)+'">Apply via email</a>';
-    html += '<span class="apply-btn secondary">via '+esc(o.source || "the sheet")+'</span>';
+    if (o.email) {
+      html += '<a class="apply-btn" href="mailto:'+esc(o.email)+'">Apply via email</a>';
+      html += '<p class="apply-note">Posted via ' + esc(o.source || "the sheet") + '</p>';
+    } else {
+      html += '<p class="apply-note">No direct apply link here. This was posted via ' + esc(o.source || "the sheet") +
+        '. Search there, or reach out to ' + esc(o.company) + ' directly.</p>';
+    }
     html += '</div>';
 
     els.modal.innerHTML = html;
