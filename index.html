@@ -278,6 +278,7 @@
   .badge.open{background:var(--green-bg);color:var(--green)}
   .badge.closed{background:var(--red-bg);color:var(--red)}
   .badge.soon{background:var(--amber-bg);color:var(--amber)}
+  .badge.alumni{background:var(--line);color:var(--ink-soft)}
   .card h3{margin:0;font-size:1.05rem;color:var(--navy);line-height:1.3;font-weight:600}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .card h3{color:#fff} }
   .card .position{font-size:.86rem;color:var(--ink-soft);font-weight:600;margin:-4px 0 0}
@@ -360,6 +361,16 @@
   .modal section{margin-bottom:16px}
   .modal section h4{margin:0 0 6px;font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft)}
   .modal section p{margin:0;font-size:.92rem;line-height:1.55;white-space:pre-line}
+  .alumni-section{
+    padding-top:14px;border-top:1px solid var(--line);
+  }
+  .alumni-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .alumni-col ul{margin:0;padding-left:18px}
+  .alumni-col li{font-size:.86rem;line-height:1.5;margin-bottom:6px;color:var(--ink)}
+  .alumni-label{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px}
+  .alumni-label.pros{color:var(--green)}
+  .alumni-label.cons{color:var(--red)}
+  @media (max-width:480px){ .alumni-cols{grid-template-columns:1fr} }
   .apply-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
   .apply-btn{
     background:var(--navy);color:#fff;text-decoration:none;padding:10px 18px;border-radius:var(--r-md);
@@ -523,6 +534,9 @@
   var SHEET_NAME = "[FOR CORE] Input Here";
   var CSV_URL = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
     "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(SHEET_NAME);
+  var REVIEWS_SHEET_NAME = "Sheet24";
+  var REVIEWS_URL = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+    "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(REVIEWS_SHEET_NAME);
 
   var PAGE_SIZE = 24;
   var shown = PAGE_SIZE;
@@ -531,6 +545,7 @@
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var allRows = [];
+  var reviewsMap = {}; // "industry|function" -> { industry, role, pros:[...], cons:[...] }
   var els = {};
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
    "batchRow","showClosed","resetBtn","resultsMeta","loadingState","errorState","grid",
@@ -594,6 +609,31 @@
       });
     }
     return out;
+  }
+
+  function reviewKey(industry, role){
+    return (industry||"").trim().toLowerCase() + "|" + (role||"").trim().toLowerCase();
+  }
+
+  // Sheet24: col1 industry, col2 role/function, col3 pros, col4 cons (each "### "-joined), one row per combo
+  function mapReviews(rows){
+    var map = {};
+    for (var r = 2; r < rows.length; r++) {
+      var row = rows[r];
+      if (!row || row.length < 5) continue;
+      var industry = (row[1]||"").trim();
+      var role = (row[2]||"").trim();
+      if (!industry || !role) continue;
+      var pros = (row[3]||"").split("###").map(function(s){ return s.trim(); }).filter(Boolean);
+      var cons = (row[4]||"").split("###").map(function(s){ return s.trim(); }).filter(Boolean);
+      if (!pros.length && !cons.length) continue;
+      map[reviewKey(industry, role)] = { industry: industry, role: role, pros: pros, cons: cons };
+    }
+    return map;
+  }
+
+  function findReview(o){
+    return reviewsMap[reviewKey(o.industry, o.fn)] || null;
   }
 
   function uniqueSorted(arr){
@@ -698,6 +738,7 @@
     tags.push('<span class="tag paid">'+(o.paid ? "Paid" : "Unpaid")+'</span>');
     var badges = badge(o);
     if (isClosingSoon(o)) badges += '<span class="badge soon">Closing soon</span>';
+    if (findReview(o)) badges += '<span class="badge alumni">Alumni insight</span>';
     return (
       '<div class="card-top">' + badges + '</div>' +
       '<h3>'+esc(o.company)+'</h3>' +
@@ -830,6 +871,21 @@
       html += '<section><h4>Relevant skills</h4><p>'+esc(o.skills)+'</p></section>';
     }
 
+    var review = findReview(o);
+    if (review) {
+      html += '<section class="alumni-section"><h4>From MEA alumni in ' + esc(review.industry) + '</h4>';
+      html += '<div class="alumni-cols">';
+      if (review.pros.length) {
+        html += '<div class="alumni-col"><span class="alumni-label pros">What went well</span><ul>' +
+          review.pros.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join("") + '</ul></div>';
+      }
+      if (review.cons.length) {
+        html += '<div class="alumni-col"><span class="alumni-label cons">Watch out for</span><ul>' +
+          review.cons.map(function(c){ return '<li>' + esc(c) + '</li>'; }).join("") + '</ul></div>';
+      }
+      html += '</div></section>';
+    }
+
     html += '<div class="apply-row">';
     if (o.email) html += '<a class="apply-btn" href="mailto:'+esc(o.email)+'">Apply via email</a>';
     html += '<span class="apply-btn secondary">via '+esc(o.source || "the sheet")+'</span>';
@@ -950,7 +1006,16 @@
       });
   }
 
+  function loadReviews(){
+    // supplementary alumni data: fail silently, the site works fine without it
+    fetch(REVIEWS_URL)
+      .then(function(res){ return res.ok ? res.text() : Promise.reject(); })
+      .then(function(text){ reviewsMap = mapReviews(parseCSV(text)); })
+      .catch(function(){ /* no alumni insights this session, that's fine */ });
+  }
+
   loadData();
+  loadReviews();
   setInterval(loadData, POLL_INTERVAL_MS);
 
 })();
