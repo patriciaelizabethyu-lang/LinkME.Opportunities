@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>LinkME</title>
-<meta name="description" content="Live opportunity board — internships, certifications, and work, filterable by batch, industry, and more." />
+<meta name="description" content="Search and filter real internships, certifications, and jobs from MEA's live opportunity sheet." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -345,9 +345,9 @@
 
 <section class="hero" id="top">
   <div class="hero-inner">
-    <span class="hero-eyebrow reveal d1">Live-synced opportunity board</span>
+    <span class="hero-eyebrow reveal d1">MEA Career Exploration Series presents:</span>
     <h1 class="reveal d2">Find your next <em>opportunity</em></h1>
-    <p class="reveal d3">Search and filter internships, certifications, and work postings by batch, industry, and more — pulled straight from the MEA Opportunity Masterfile.</p>
+    <p class="reveal d3">Search and filter internships, certifications, and jobs by batch and industry.</p>
     <div class="hero-cta-row reveal d4">
       <a href="#browse" class="cta-btn">Browse opportunities</a>
     </div>
@@ -421,14 +421,14 @@
 <div id="errorState" class="error" style="display:none"></div>
 
 <div class="grid" id="grid" style="display:none"></div>
-<div class="empty" id="emptyState" style="display:none">No opportunities match your filters yet — try widening your search.</div>
+<div class="empty" id="emptyState" style="display:none">Nothing matches yet. Try widening your search or clearing a filter.</div>
 <div class="show-more-wrap" id="showMoreWrap" style="display:none">
   <button class="show-more" id="showMoreBtn">Show more</button>
 </div>
 
 <footer>
-  Data pulled live from the MEA Opportunity Masterfile Google Sheet. This board mirrors whatever's currently in the sheet —
-  reach out to your MEA core contact if a listing looks out of date.
+  This page reads straight from the MEA Opportunity Masterfile sheet, so it's always current.
+  If something here looks off, just reach out to your MEA core contact.
 </footer>
 
 <div class="overlay" id="overlay">
@@ -687,12 +687,12 @@
 
     html += '<div class="modal-grid">';
     html += '<div><span>Deadline</span><b class="mono">'+esc(o.deadline)+'</b></div>';
-    html += '<div><span>Work set-up</span><b>'+esc(o.setup || "—")+'</b></div>';
-    html += '<div><span>Function</span><b>'+esc(o.fn || "—")+'</b></div>';
+    html += '<div><span>Work set-up</span><b>'+esc(o.setup || "Not specified")+'</b></div>';
+    html += '<div><span>Function</span><b>'+esc(o.fn || "Not specified")+'</b></div>';
     html += '<div><span>Required?</span><b>'+(o.required ? "Yes" : "No")+'</b></div>';
-    html += '<div><span>Source</span><b>'+esc(o.source || "—")+'</b></div>';
+    html += '<div><span>Source</span><b>'+esc(o.source || "Not specified")+'</b></div>';
     var eligible = ["29","28","27","26","25"].filter(function(k){return o.batches[k];}).map(function(k){return BATCH_LABELS[k];});
-    html += '<div><span>Open to</span><b>'+(eligible.length ? eligible.join(", ") : "—")+'</b></div>';
+    html += '<div><span>Open to</span><b>'+(eligible.length ? eligible.join(", ") : "Not specified")+'</b></div>';
     html += '</div>';
 
     if (o.description) {
@@ -789,8 +789,8 @@
 
     var t = parseDate(pick.deadline);
     var dueLabel = t !== null ? "due " + formatShortDate(t) : "deadline TBA";
-    els.nextDeadline.innerHTML = 'Next up: <span class="nd-co">' + esc(pick.company) +
-      (pick.position ? " — " + esc(pick.position) : "") + '</span>, <span class="nd-due">' + dueLabel + '</span>';
+    var roleText = pick.position ? esc(pick.position) + " at " + esc(pick.company) : esc(pick.company);
+    els.nextDeadline.innerHTML = 'Next up: <span class="nd-co">' + roleText + '</span>, <span class="nd-due">' + dueLabel + '</span>';
   }
 
   function init(rows){
