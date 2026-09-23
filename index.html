@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>LinkME</title>
 <meta name="description" content="Search and filter real internships, certifications, and jobs from MEA's live opportunity sheet." />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -140,11 +143,8 @@
   .reveal.d5{animation-delay:.5s}
   @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 
-  .hero-legend{margin-top:22px;font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.02em;color:#9aa4bb}
-  .hero-legend b{color:var(--gold-bright);font-weight:600}
-
   /* Next deadline, real data instead of an abstract stat, said quietly and once */
-  .next-deadline{margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.02em;color:#7c8698}
+  .next-deadline{margin-top:28px;font-family:'IBM Plex Mono',monospace;font-size:.82rem;letter-spacing:.02em;color:#9aa4bb}
   .next-deadline .nd-co{color:#c7cee0}
   .next-deadline .nd-due{color:var(--gold-bright)}
 
@@ -243,6 +243,7 @@
   .badge.open{background:var(--green-bg);color:var(--green)}
   .badge.closed{background:var(--red-bg);color:var(--red)}
   .badge.soon{background:var(--amber-bg);color:var(--amber)}
+  .card-index{font-size:.68rem;color:var(--ink-soft);opacity:.55;white-space:nowrap;flex:none}
   .card h3{margin:0;font-size:1.05rem;color:var(--navy);line-height:1.3;font-weight:600}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .card h3{color:#fff} }
   .card .company{font-size:.86rem;color:var(--ink-soft);font-weight:600;margin:-4px 0 0}
@@ -260,11 +261,19 @@
     max-width:1100px;margin:50px auto;padding:0 20px;text-align:center;color:var(--ink-soft);
   }
   .error{color:var(--red)}
-  .spinner{
-    width:28px;height:28px;border-radius:50%;border:3px solid var(--line);
-    border-top-color:var(--gold);margin:0 auto 14px;animation:spin 1s linear infinite;
+  .brand-pulse{
+    width:40px;height:40px;margin:0 auto 14px;
+    background:url('logo-mark.png') center/contain no-repeat;
+    animation:pulse 1.6s ease-in-out infinite;
   }
-  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes pulse{0%,100%{opacity:.45;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
+
+  .empty-stamp{
+    display:inline-block;border:2px dashed var(--amber);color:var(--amber);
+    font-family:'IBM Plex Mono',monospace;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    font-size:.72rem;padding:8px 16px;border-radius:var(--r-sm);transform:rotate(-3deg);
+    margin-bottom:16px;
+  }
 
   .show-more-wrap{max-width:1100px;margin:0 auto;padding:0 20px 40px;text-align:center}
   .show-more{
@@ -351,8 +360,7 @@
     <div class="hero-cta-row reveal d4">
       <a href="#browse" class="cta-btn">Browse opportunities</a>
     </div>
-    <div class="hero-legend reveal d4" id="heroLegend">Syncing with the sheet…</div>
-    <div class="next-deadline reveal d4" id="nextDeadline"></div>
+    <div class="next-deadline reveal d4" id="nextDeadline">Syncing with the sheet…</div>
   </div>
   <button class="scroll-cue" id="scrollCue" aria-label="Scroll to listings">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -415,18 +423,23 @@
 <div class="results-meta" id="resultsMeta"></div>
 
 <div id="loadingState" class="loading">
-  <div class="spinner"></div>
+  <div class="brand-pulse" aria-hidden="true"></div>
   Pulling the latest opportunities from the sheet…
 </div>
 <div id="errorState" class="error" style="display:none"></div>
 
 <div class="grid" id="grid" style="display:none"></div>
-<div class="empty" id="emptyState" style="display:none">Nothing matches yet. Try widening your search or clearing a filter.</div>
+<div class="empty" id="emptyState" style="display:none">
+  <span class="empty-stamp">No matches</span>
+  <p>Nothing matches yet. Try widening your search or clearing a filter.</p>
+</div>
 <div class="show-more-wrap" id="showMoreWrap" style="display:none">
   <button class="show-more" id="showMoreBtn">Show more</button>
 </div>
 
 <footer>
+  Made for every batch, from Freshies to Super Seniors.
+  <br>
   This page reads straight from the MEA Opportunity Masterfile sheet, so it's always current.
   If something here looks off, just reach out to your MEA core contact.
 </footer>
@@ -454,7 +467,7 @@
   var els = {};
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
    "batchRow","showClosed","resetBtn","resultsMeta","loadingState","errorState","grid",
-   "emptyState","showMoreWrap","showMoreBtn","heroLegend","nextDeadline","updatedLine","overlay","modal","nav","scrollCue"]
+   "emptyState","showMoreWrap","showMoreBtn","nextDeadline","updatedLine","overlay","modal","nav","scrollCue"]
   .forEach(function(id){ els[id.replace(/-([a-z])/g, function(_,c){return c.toUpperCase();})] = document.getElementById(id); });
 
   var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false };
@@ -613,8 +626,9 @@
     tags.push('<span class="tag paid">'+(o.paid ? "Paid" : "Unpaid")+'</span>');
     var badges = badge(o);
     if (isClosingSoon(o)) badges += '<span class="badge soon">Closing soon</span>';
+    var indexLabel = '<span class="card-index mono">No. ' + String(o._idx).padStart(3, '0') + '</span>';
     return (
-      '<div class="card-top">' + badges + '</div>' +
+      '<div class="card-top">' + badges + indexLabel + '</div>' +
       '<h3>'+esc(title)+'</h3>' +
       '<p class="company">'+esc(o.company)+'</p>' +
       '<div class="tag-row">'+tags.join("")+'</div>' +
@@ -759,13 +773,6 @@
     }, { passive: true });
   }
 
-  function renderLegend(){
-    var open = allRows.filter(function(o){ return o.status.toLowerCase()==="open"; }).length;
-    var industries = uniqueSorted(allRows.map(function(o){return o.industry;})).length;
-    var paid = allRows.filter(function(o){ return o.status.toLowerCase()==="open" && o.paid; }).length;
-    els.heroLegend.innerHTML = '<b>' + open + '</b> open now · <b>' + paid + '</b> paid · <b>' + industries + '</b> industries';
-  }
-
   // ---- one real, quiet fact instead of an abstract stat: the next deadline coming up ----
   function formatShortDate(t){
     var d = new Date(t);
@@ -801,7 +808,6 @@
     fillSelect(document.getElementById("f-source"), uniqueSorted(rows.map(function(o){return o.source;})));
     buildBatchPills();
     wireControls();
-    renderLegend();
     renderNextDeadline();
     render();
     els.loadingState.style.display = "none";
