@@ -137,10 +137,6 @@
   .reveal.d5{animation-delay:.5s}
   @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 
-  /* Next deadline, real data instead of an abstract stat, said quietly and once */
-  .next-deadline{margin-top:28px;font-family:'IBM Plex Mono',monospace;font-size:.82rem;letter-spacing:.02em;color:#9aa4bb}
-  .next-deadline .nd-co{color:#c7cee0}
-  .next-deadline .nd-due{color:var(--gold-bright)}
 
   /* How it works: the original three steps from MEA's own sheet, translated to this tool */
   .how-it-works{
@@ -169,10 +165,19 @@
     background:var(--paper);border:1px solid var(--line);border-radius:var(--r-xl);
     padding:20px;box-shadow:var(--shadow-lg);
   }
-  .search-row{display:flex;gap:10px;margin-bottom:14px}
+  .search-row{margin-bottom:18px}
+  .search-label{
+    display:block;font-size:.72rem;font-weight:700;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;
+  }
+  .search-field{position:relative}
+  .search-field svg{
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    color:var(--ink-soft);pointer-events:none;
+  }
   .search-row input[type="search"]{
-    flex:1;padding:13px 16px;border-radius:var(--r-md);border:1px solid var(--line);
-    background:var(--cream);color:var(--ink);font-size:.96rem;font-family:inherit;
+    width:100%;padding:13px 16px 13px 42px;border-radius:var(--r-md);border:1.5px solid var(--line);
+    background:var(--cream);color:var(--ink);font-size:.98rem;font-family:inherit;
     transition:border-color .2s ease, box-shadow .2s ease;
   }
   .search-row input[type="search"]:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(211,188,69,.15)}
@@ -377,7 +382,6 @@
     <div class="hero-cta-row reveal d4">
       <a href="#browse" class="cta-btn">Browse opportunities</a>
     </div>
-    <div class="next-deadline reveal d4" id="nextDeadline">Syncing with the sheet…</div>
   </div>
   <div class="how-it-works reveal d5">
     <div class="step">
@@ -407,7 +411,11 @@
     <div class="batch-row" id="batchRow" aria-label="Filter by batch"></div>
 
     <div class="search-row">
-      <input type="search" id="searchInput" placeholder="Search company, role, or industry…" aria-label="Search opportunities" />
+      <label class="search-label" for="searchInput">Search</label>
+      <div class="search-field">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" id="searchInput" placeholder="Try a company, role, or industry…" aria-label="Search opportunities" />
+      </div>
     </div>
 
     <div class="filter-grid" id="filterGrid">
@@ -501,7 +509,7 @@
   var els = {};
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
    "batchRow","showClosed","resetBtn","resultsMeta","loadingState","errorState","grid",
-   "emptyState","showMoreWrap","showMoreBtn","nextDeadline","updatedLine","overlay","modal","nav","scrollCue"]
+   "emptyState","showMoreWrap","showMoreBtn","updatedLine","overlay","modal","nav","scrollCue"]
   .forEach(function(id){ els[id.replace(/-([a-z])/g, function(_,c){return c.toUpperCase();})] = document.getElementById(id); });
 
   var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false };
@@ -808,33 +816,6 @@
     }, { passive: true });
   }
 
-  // ---- one real, quiet fact instead of an abstract stat: the next deadline coming up ----
-  function formatShortDate(t){
-    var d = new Date(t);
-    var thisYear = new Date().getFullYear();
-    var opts = d.getFullYear() === thisYear ? { month: "short", day: "numeric" } : { month: "short", day: "numeric", year: "numeric" };
-    return d.toLocaleDateString(undefined, opts);
-  }
-
-  function renderNextDeadline(){
-    var now = Date.now();
-    var open = allRows.filter(function(o){ return o.status.toLowerCase() === "open"; });
-
-    var upcoming = open.filter(function(o){
-      var t = parseDate(o.deadline);
-      return t !== null && t >= now;
-    }).sort(function(a,b){ return parseDate(a.deadline) - parseDate(b.deadline); });
-
-    // fall back to the newest-added open posting if nothing has a future-dated deadline yet
-    var pick = upcoming[0] || open.slice().sort(function(a,b){ return b._idx - a._idx; })[0];
-    if (!pick) { els.nextDeadline.textContent = ""; return; }
-
-    var t = parseDate(pick.deadline);
-    var dueLabel = t !== null ? "due " + formatShortDate(t) : "deadline TBA";
-    var roleText = pick.position ? esc(pick.position) + " at " + esc(pick.company) : esc(pick.company);
-    els.nextDeadline.innerHTML = 'Next up: <span class="nd-co">' + roleText + '</span>, <span class="nd-due">' + dueLabel + '</span>';
-  }
-
   var POLL_INTERVAL_MS = 60000; // re-sync with the sheet every minute, no reload needed
   var firstLoadDone = false;
 
@@ -861,7 +842,6 @@
     refreshFilterOptions(rows);
     buildBatchPills();
     wireControls();
-    renderNextDeadline();
     render();
     els.loadingState.style.display = "none";
     markUpdated();
@@ -883,7 +863,6 @@
           // background refresh: update the data in place, keep the visitor's filters, search, and scroll position untouched
           allRows = rows;
           refreshFilterOptions(rows);
-          renderNextDeadline();
           render();
           markUpdated();
         }
