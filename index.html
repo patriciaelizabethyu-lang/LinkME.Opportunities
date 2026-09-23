@@ -202,7 +202,8 @@
   }
   select:hover{border-color:var(--gold)}
 
-  .batch-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
+  .batch-label{font-size:.72rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+  .batch-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
   .pill{
     border:1px solid var(--line);background:var(--cream);color:var(--ink-soft);
     padding:8px 10px;border-radius:var(--r-sm);font-size:.82rem;font-weight:600;cursor:pointer;
@@ -400,6 +401,9 @@
 
 <div class="controls-wrap" id="browse">
   <div class="controls">
+    <div class="batch-label">Your batch</div>
+    <div class="batch-row" id="batchRow" aria-label="Filter by batch"></div>
+
     <div class="search-row">
       <input type="search" id="searchInput" placeholder="Search company, role, or industry…" aria-label="Search opportunities" />
     </div>
@@ -438,8 +442,6 @@
         </select>
       </div>
     </div>
-
-    <div class="batch-row" id="batchRow" aria-label="Filter by batch"></div>
 
     <div class="toolbar-row">
       <label class="toggle-line">
