@@ -148,6 +148,20 @@
   .next-deadline .nd-co{color:#c7cee0}
   .next-deadline .nd-due{color:var(--gold-bright)}
 
+  /* How it works: the original three steps from MEA's own sheet, translated to this tool */
+  .how-it-works{
+    max-width:880px;margin:56px auto 0;padding:32px 20px 0;border-top:1px solid rgba(255,255,255,.1);
+    display:grid;grid-template-columns:repeat(3,1fr);gap:32px;text-align:left;
+  }
+  .step{display:flex;flex-direction:column;gap:6px}
+  .step-num{font-family:'Fraunces',serif;font-weight:600;font-size:2.4rem;line-height:1;color:var(--gold-bright);opacity:.85}
+  .step h3{margin:2px 0 0;font-size:1.1rem;font-weight:600;color:#fff}
+  .step p{margin:0;font-size:.86rem;line-height:1.5;color:#9aa4bb}
+  @media (max-width:640px){
+    .how-it-works{grid-template-columns:1fr;gap:22px;text-align:center}
+    .step{align-items:center}
+  }
+
   .scroll-cue{
     position:relative;display:block;margin:30px auto 0;
     background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;
@@ -361,6 +375,23 @@
       <a href="#browse" class="cta-btn">Browse opportunities</a>
     </div>
     <div class="next-deadline reveal d4" id="nextDeadline">Syncing with the sheet…</div>
+  </div>
+  <div class="how-it-works reveal d5">
+    <div class="step">
+      <span class="step-num">1</span>
+      <h3>Pick your batch</h3>
+      <p>Tap Freshies through Super Seniors to see what's actually open to you.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">2</span>
+      <h3>Search and filter</h3>
+      <p>Narrow by industry, type, pay, work set-up, whatever matters most to you.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">3</span>
+      <h3>Open a listing</h3>
+      <p>Tap any card for the full description, skills, deadline, and how to apply.</p>
+    </div>
   </div>
   <button class="scroll-cue" id="scrollCue" aria-label="Scroll to listings">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
