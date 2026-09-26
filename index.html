@@ -459,7 +459,7 @@
         <select id="f-paid"><option value="">Any</option><option value="yes">Paid</option><option value="no">Unpaid</option></select>
       </div>
       <div class="filter-field">
-        <label for="f-required" title="Counts toward a required OJT or practicum, not whether the listing itself is mandatory">OJT credit</label>
+        <label for="f-required">Required?</label>
         <select id="f-required"><option value="">Any</option><option value="yes">Yes</option><option value="no">No</option></select>
       </div>
       <div class="filter-field">
@@ -908,7 +908,7 @@
     html += '<div><span>Deadline</span><b class="mono">'+esc(o.deadline)+'</b></div>';
     html += '<div><span>Work set-up</span><b>'+esc(o.setup || "Not specified")+'</b></div>';
     html += '<div><span>Function</span><b>'+esc(o.fn || "Not specified")+'</b></div>';
-    html += '<div><span>OJT credit</span><b>'+(o.required ? "Yes" : "No")+'</b></div>';
+    html += '<div><span>Required?</span><b>'+(o.required ? "Yes" : "No")+'</b></div>';
     html += '<div><span>Source</span><b>'+esc(o.source || "Not specified")+'</b></div>';
     var eligible = ["29","28","27","26","25"].filter(function(k){return o.batches[k];}).map(function(k){return BATCH_LABELS[k];});
     html += '<div><span>Open to</span><b>'+(eligible.length ? eligible.join(", ") : "Not specified")+'</b></div>';
