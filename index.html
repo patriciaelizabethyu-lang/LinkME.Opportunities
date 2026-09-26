@@ -113,11 +113,6 @@
     isolation:isolate;
   }
   .hero-inner{max-width:720px;margin:0 auto;text-align:center;position:relative;padding:0 20px}
-  .hero-eyebrow{
-    display:inline-block;font-size:.76rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--gold-bright);background:rgba(211,188,69,.12);border:1px solid rgba(211,188,69,.3);
-    padding:6px 14px;border-radius:var(--r-sm);margin-bottom:20px;
-  }
   .hero h1{
     font-size:clamp(2rem, 5.5vw, 3.5rem);line-height:1.08;margin:0 0 16px;font-weight:600;
     letter-spacing:-.02em;
@@ -403,7 +398,7 @@
 <nav class="nav" id="nav">
   <div class="nav-inner">
     <div class="brand"><img class="brand-badge" src="logo-mark.png" alt="LinkME logo" /> Link<span class="brand-accent">ME</span></div>
-    <div class="nav-right">
+    <div class="nav-right" title="This list re-syncs with the sheet automatically, about once a minute">
       <span class="live-dot" aria-hidden="true"></span>
       <span class="updated" id="updatedLine">Loading live data…</span>
     </div>
@@ -412,9 +407,8 @@
 
 <section class="hero" id="top">
   <div class="hero-inner">
-    <span class="hero-eyebrow reveal d1">The MEA Career Exploration Series presents:</span>
-    <h1 class="reveal d2">Find your next <em>opportunity</em></h1>
-    <p class="reveal d3">Search and filter internships, certifications, and jobs by batch and industry. Good luck!</p>
+    <h1 class="reveal d1">Find your next <em>opportunity</em></h1>
+    <p class="reveal d2">Search and filter internships, certifications, and jobs by batch and industry. Good luck!</p>
   </div>
   <div class="how-it-works reveal d5">
     <div class="step">
@@ -465,7 +459,7 @@
         <select id="f-paid"><option value="">Any</option><option value="yes">Paid</option><option value="no">Unpaid</option></select>
       </div>
       <div class="filter-field">
-        <label for="f-required">Required?</label>
+        <label for="f-required" title="Counts toward a required OJT or practicum, not whether the listing itself is mandatory">OJT credit</label>
         <select id="f-required"><option value="">Any</option><option value="yes">Yes</option><option value="no">No</option></select>
       </div>
       <div class="filter-field">
@@ -914,7 +908,7 @@
     html += '<div><span>Deadline</span><b class="mono">'+esc(o.deadline)+'</b></div>';
     html += '<div><span>Work set-up</span><b>'+esc(o.setup || "Not specified")+'</b></div>';
     html += '<div><span>Function</span><b>'+esc(o.fn || "Not specified")+'</b></div>';
-    html += '<div><span>Required?</span><b>'+(o.required ? "Yes" : "No")+'</b></div>';
+    html += '<div><span>OJT credit</span><b>'+(o.required ? "Yes" : "No")+'</b></div>';
     html += '<div><span>Source</span><b>'+esc(o.source || "Not specified")+'</b></div>';
     var eligible = ["29","28","27","26","25"].filter(function(k){return o.batches[k];}).map(function(k){return BATCH_LABELS[k];});
     html += '<div><span>Open to</span><b>'+(eligible.length ? eligible.join(", ") : "Not specified")+'</b></div>';
