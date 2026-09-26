@@ -13,35 +13,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* Harbor & Amber — see DESIGN.md */
-    --navy:#122130;
-    --navy-deep:#0A141F;
-    --navy-light:#193757;
-    --gold:#D3BC45;
-    --gold-bright:#E3D06D;
-    --gold-light:#F6ECD1;
-    --cream:#FAF9F5;
+    /* MEA CARES official palette, LinkME (staircase) expression — see DESIGN.md */
+    --navy:#1C2945;
+    --navy-deep:#10182B;
+    --navy-light:#1E5BBD;
+    --gold:#FFE445;
+    --gold-bright:#FFE445;
+    --gold-light:#FFF4B4;
+    --cream:#F2EFE8;
     --paper:#FFFFFF;
-    --ink:#122130;
-    --ink-soft:#53616E;
-    --line:#E7E5DA;
+    --ink:#1C2945;
+    --ink-soft:#57647E;
+    --line:#E4E0D3;
     --green:#2F7D5A;
     --green-bg:#E7F3EC;
     --red:#A3403A;
     --red-bg:#F6E9E7;
-    --amber:#885011;
-    --amber-bg:#F8ECD6;
+    --amber:#3C1F04;
+    --amber-bg:#F2E7D8;
     --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px;
     --radius:16px;
-    --shadow: 0 1px 2px rgba(18,33,48,.06), 0 8px 24px rgba(18,33,48,.06);
-    --shadow-lg: 0 12px 32px rgba(18,33,48,.16), 0 2px 8px rgba(18,33,48,.08);
+    --shadow: 0 1px 2px rgba(28,41,69,.06), 0 8px 24px rgba(28,41,69,.06);
+    --shadow-lg: 0 12px 32px rgba(28,41,69,.16), 0 2px 8px rgba(28,41,69,.08);
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --navy:#0F141A; --navy-deep:#070A0E; --navy-light:#171E27; --gold:#DECD73; --gold-bright:#EADB90; --gold-light:#423D24;
-      --cream:#0F141A; --paper:#171E27; --ink:#E1EAF4; --ink-soft:#9FADBC;
+      --navy:#0E1524; --navy-deep:#080B14; --navy-light:#4C87DD; --gold:#FFE445; --gold-bright:#FFE445; --gold-light:#3A331C;
+      --cream:#14181F; --paper:#1B2230; --ink:#ECEEF5; --ink-soft:#9FADBC;
       --line:#2A333C; --green:#5fbd8e; --green-bg:#12291f; --red:#e08a83; --red-bg:#2c1917;
-      --amber:#E7B174; --amber-bg:#392A18;
+      --amber:#D9A066; --amber-bg:#2E2013;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
       --shadow-lg: 0 16px 40px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.3);
     }
@@ -73,7 +73,7 @@
     color:#fff;
     padding:14px 20px;
     transition:box-shadow .3s ease, padding .3s ease, background .3s ease;
-    border-bottom:1px solid rgba(227,208,109,.16);
+    border-bottom:1px solid rgba(255,228,69,.16);
   }
   .nav.scrolled{
     background:rgba(10,20,31,.92);
@@ -92,12 +92,12 @@
   .nav-right{display:flex;align-items:center;gap:10px}
   .live-dot{
     width:7px;height:7px;border-radius:50%;background:var(--gold-bright);flex:none;
-    box-shadow:0 0 0 0 rgba(227,208,109,.6);animation:live-pulse 2.4s ease-in-out infinite;
+    box-shadow:0 0 0 0 rgba(255,228,69,.6);animation:live-pulse 2.4s ease-in-out infinite;
   }
   @keyframes live-pulse{
-    0%{box-shadow:0 0 0 0 rgba(227,208,109,.55)}
-    70%{box-shadow:0 0 0 6px rgba(227,208,109,0)}
-    100%{box-shadow:0 0 0 0 rgba(227,208,109,0)}
+    0%{box-shadow:0 0 0 0 rgba(255,228,69,.55)}
+    70%{box-shadow:0 0 0 6px rgba(255,228,69,0)}
+    100%{box-shadow:0 0 0 0 rgba(255,228,69,0)}
   }
   .updated{font-size:.76rem;color:#b9c1d6}
   .updated strong{color:#fff}
@@ -112,7 +112,17 @@
     overflow:hidden;
     isolation:isolate;
   }
-  .hero-inner{max-width:720px;margin:0 auto;text-align:center;position:relative;padding:0 20px}
+  /* Signature motif: LinkME's brand-guide staircase, climbing left to right behind the hero copy */
+  .hero::after{
+    content:"";
+    position:absolute;right:-4%;bottom:-6%;
+    width:min(56vw, 640px);aspect-ratio:806/788;
+    background:url('stairs-motif.png') center/contain no-repeat;
+    opacity:.16;mix-blend-mode:screen;
+    pointer-events:none;z-index:0;
+  }
+  @media (max-width:640px){ .hero::after{width:78vw;right:-8%;bottom:-4%;opacity:.12} }
+  .hero-inner{max-width:720px;margin:0 auto;text-align:center;position:relative;padding:0 20px;z-index:1}
   .hero h1{
     font-size:clamp(2rem, 5.5vw, 3.5rem);line-height:1.08;margin:0 0 16px;font-weight:600;
     letter-spacing:-.02em;
@@ -133,6 +143,7 @@
 
   /* How it works: the original three steps from MEA's own sheet, translated to this tool */
   .how-it-works{
+    position:relative;z-index:1;
     max-width:880px;margin:56px auto 0;padding:32px 20px 0;border-top:1px solid rgba(255,255,255,.1);
     display:grid;grid-template-columns:repeat(3,1fr);gap:32px;text-align:left;
   }
@@ -146,7 +157,7 @@
   }
 
   .scroll-cue{
-    position:relative;display:block;margin:30px auto 0;
+    position:relative;z-index:1;display:block;margin:30px auto 0;
     background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;
     animation:bounce 2.2s ease-in-out infinite;padding:6px;
   }
@@ -173,7 +184,7 @@
     background:var(--cream);color:var(--ink);font-size:.98rem;font-family:inherit;
     transition:border-color .2s ease, box-shadow .2s ease;
   }
-  .search-row input[type="search"]:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(211,188,69,.15)}
+  .search-row input[type="search"]:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,228,69,.15)}
   select:focus, button:focus-visible, .card:focus-visible{
     outline:2px solid var(--gold);outline-offset:2px;
   }
@@ -197,11 +208,12 @@
   select:hover{border-color:var(--gold)}
 
   .batch-label{font-size:.72rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
-  .batch-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .batch-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px;padding:22px 0 18px;border-bottom:1px solid var(--line)}
   .pill{
     border:1px solid var(--line);background:var(--cream);color:var(--ink-soft);
     padding:8px 10px;border-radius:var(--r-sm);font-size:.82rem;font-weight:600;cursor:pointer;
-    font-family:inherit;transition:all .18s ease;text-align:center;
+    font-family:inherit;transition:transform .18s ease, border-color .18s ease, color .18s ease, background .18s ease;
+    text-align:center;
   }
   .pill:hover{border-color:var(--gold);color:var(--navy)}
   .pill.active{background:var(--navy);border-color:var(--navy);color:#fff}
@@ -210,7 +222,15 @@
     :root:not([data-theme="light"]) .pill.active{background:var(--gold);border-color:var(--gold);color:#171308}
     :root:not([data-theme="light"]) .pill:hover{color:var(--gold-bright)}
   }
-  @media (max-width:640px){ .batch-row{grid-template-columns:repeat(3,1fr)} }
+  /* Signature motif: batches read left to right as a staircase — Freshies on the bottom step, Super Seniors on top */
+  @media (min-width:641px){
+    .batch-row .pill:nth-child(1){transform:translateY(12px)}
+    .batch-row .pill:nth-child(2){transform:translateY(6px)}
+    .batch-row .pill:nth-child(3){transform:translateY(0)}
+    .batch-row .pill:nth-child(4){transform:translateY(-6px)}
+    .batch-row .pill:nth-child(5){transform:translateY(-12px)}
+  }
+  @media (max-width:640px){ .batch-row{grid-template-columns:repeat(3,1fr);padding-top:18px} }
   @media (max-width:380px){ .batch-row{grid-template-columns:repeat(2,1fr)} }
 
   .toolbar-row{

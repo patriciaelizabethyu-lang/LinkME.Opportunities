@@ -1,28 +1,32 @@
 ---
-version: alpha
-name: Harbor & Amber
+version: beta
+name: Ascent
 description: >
-  A polished, corporate design system for MEA's Opportunity Masterfile,
-  rooted in the actual blue/gold hues of the MEA Cares logo rather than a
-  generic navy-and-gold default.
+  LinkME's design system, built from MEA CARES' own 2026 branding guide
+  rather than an invented palette. MEA CARES frames itself as "MC
+  Corporation," a building where every initiative is a different floor,
+  linked by an elevator. LinkME is the floor whose job is literally
+  "connecting from one place to another" — so its signature motif is the
+  staircase: batches climb it left to right, and one watermarked flight
+  rises behind the hero.
 colors:
-  primary: "#122130"
-  primary-strong: "#0A141F"
-  primary-soft: "#193757"
+  primary: "#1C2945"
+  primary-strong: "#10182B"
+  primary-soft: "#1E5BBD"
   on-primary: "#FFFFFF"
-  secondary: "#53616E"
+  secondary: "#57647E"
   secondary-tint: "#EBF0F4"
-  tertiary: "#D3BC45"
-  tertiary-bright: "#E3D06D"
+  tertiary: "#FFE445"
+  tertiary-bright: "#FFE445"
   tertiary-ink: "#716009"
   on-tertiary: "{colors.primary}"
-  neutral: "#FAF9F5"
+  neutral: "#F2EFE8"
   surface: "#FFFFFF"
-  border: "#E7E5DA"
+  border: "#E4E0D3"
   success: "#2F7D5A"
   success-bg: "#E7F3EC"
-  warning: "#885011"
-  warning-bg: "#F8ECD6"
+  warning: "#3C1F04"
+  warning-bg: "#F2E7D8"
   danger: "#A3403A"
   danger-bg: "#F6E9E7"
 typography:
@@ -138,6 +142,11 @@ components:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.on-primary}"
     borderColor: "{colors.primary}"
+  chip-step:
+    description: >
+      The batch selector only — each chip sits at a different height than
+      its neighbor, ascending left to right, so the row itself reads as a
+      staircase. See Components → Batch stairs.
   input:
     backgroundColor: "{colors.neutral}"
     textColor: "{colors.primary}"
@@ -199,156 +208,151 @@ components:
 
 ## Overview
 
-Harbor & Amber is the design system for MEA's Opportunity Masterfile — a
-live-synced board where students search internships, certifications, and
-work postings pulled straight from a Google Sheet.
+MEA CARES' 2026 branding guide frames the whole organization as "MC
+Corporation" — a building where every initiative (FutureME, Blueprint,
+MentorME, NExpo, LinkME…) is a different floor, and the elevator is what
+ties them together. Each floor gets its own motif inside that shared
+building: FutureME is a suitcase opening onto new worlds, Blueprint is
+origami and paper-folding, MentorME is a coffee-shop chat. **LinkME's own
+page in the guide names its motif directly: staircases — "connecting from
+one place to another," "movement/going upstairs."** This system, Ascent,
+is that motif built out as an actual product UI rather than left as mood-
+board illustration.
 
-The personality is **polished and corporate**: this is a tool that handles
-real deadlines and real applications, so it should read as dependable and
-considered, never playful or gimmicky. But it isn't a faceless SaaS product
-either — the palette is deliberately rooted in MEA's own Cares logo (the
-blue-and-gold "MC" mark), so the system feels like it belongs to MEA
-specifically, not a generic dashboard template.
+The palette below is not derived or estimated — it's copied verbatim from
+the guide's own "Color Scheme" page, so LinkME reads as unmistakably part
+of MEA CARES rather than a lookalike invented from the logo alone.
 
-Two house rules run through every component: **no pill shapes** (buttons,
-tags, and filters use a soft rounded-rectangle instead of a fully-rounded
-capsule), and **restraint with iconography** — hierarchy and state are
-communicated through color, weight, and type first, illustrative SVGs
-second.
+Two house rules still run through every component, unchanged from before:
+**no pill shapes** (buttons, tags, and filters use a soft rounded-rectangle
+instead of a fully-rounded capsule), and **restraint with iconography** —
+the staircase is the one signature move, and it appears in exactly two
+places (see Components). It does not decorate the cards, the filters, or
+the footer.
 
 ## Colors
 
-The palette starts from the two hues in the MEA Cares logo — a confident
-blue (~210°) and a warm gold (~50°) — then extends each into a range dark
-or light enough to actually work as UI: body text, borders, backgrounds,
-and status color, none of which the logo itself needs to solve.
+Every hex below is quoted directly from the "MEA CARES 2026 MarkStrat
+Branding Guide," page 3 ("Color Scheme → Main").
 
-- **Primary — Harbor Ink (#122130):** A near-black navy, deep enough to
-  serve as the default text color and the fill for primary actions. Same
-  hue as the logo's blue, pushed far darker for legibility and gravity.
-- **Secondary — Slate (#53616E):** A desaturated blue-gray for supporting
-  text, captions, and metadata — present without competing with primary
-  content.
-- **Tertiary — Amber (#D3BC45):** The accent, pulled directly from the
-  logo's gold. Used for secondary actions, highlights, and active states.
-  Reserve **Amber Ink (#716009)** — a much darker value in the same hue —
-  for any case where gold needs to work as small text; the bright accent
-  itself doesn't have enough contrast on light backgrounds to read as body
-  copy.
-- **Neutral — Paper (#FAF9F5):** A warm, faintly gold-tinted off-white for
-  page backgrounds. Warmer than pure white so large fields of it feel
-  considered rather than clinical.
+- **Primary — Ink Navy (#1C2945):** The guide's deep navy. Default text
+  color and the fill for primary actions/nav — same role Harbor Ink played
+  before, now on the brand's own hex rather than a derived approximation.
+- **Primary (soft) — Royal Blue (#1E5BBD):** The guide's second blue.
+  Used where Ink Navy needs a lighter, more energetic step — hover states
+  on navy buttons, and the dark-mode "live" accent.
+- **Secondary — Slate (#57647E):** Desaturated navy-gray for supporting
+  text and captions, tuned to sit quietly against the new Ink Navy.
+- **Tertiary — Gold (#FFE445):** The guide's own bright gold, used exactly
+  as printed — active states, focus rings, hover borders, the live-data
+  dot. Reserve **Tertiary Ink (#716009)**, a much darker value in the same
+  hue, for any case where gold needs to work as small text.
+- **Neutral — Cream (#F2EFE8):** The guide's cream, for page background.
+  Warmer than pure white so large fields of it feel considered.
 - **Surface (#FFFFFF):** Pure white, reserved for cards and elevated
-  content sitting on top of Paper.
-- **Status colors** (success/warning/danger) are independent hues — green,
-  burnt amber, and brick red — chosen so "Open," "Closing soon," and
-  "Closed" stay visually distinct from each other and from the brand gold.
+  content sitting on top of Cream.
+- **Warning — Deep Brown (#3C1F04):** The guide's seventh main color had
+  no home in the previous palette; it now carries "Closing soon" badges
+  and the empty-state stamp, reading like ink on a rubber stamp rather
+  than a generic amber warning.
+- **Success/Danger** (green/brick red) are independent, non-brand hues —
+  they exist so "Open" and "Closed" stay legible and distinct from Gold,
+  which is reserved for interactive accent.
 
 Every text/background pairing above has been checked against WCAG AA
-(4.5:1 for normal text); Amber (#D3BC45) is the one color in the system
-that is accent-only and must not carry small text on its own.
+(4.5:1 for normal text); Gold (#FFE445) is accent-only and must not carry
+small text on its own — pair it with Tertiary Ink instead.
 
 ## Typography
 
-Fraunces carries every headline; Inter carries everything meant to be read
-at length. The pairing is the same logic as the palette: one voice with
-editorial confidence, one voice built for clarity.
-
-- **Display / H1–H3 (Fraunces, 600):** Warm, slightly literary serif
-  headlines. Fraunces' softness keeps a navy-and-gold system from tipping
-  into cold corporate territory.
-- **Body (Inter, 400):** Body copy, descriptions, form values — chosen for
-  screen legibility at small sizes.
-- **Labels & captions (Inter, 600–700):** Uppercase, letter-spaced labels
-  for filters, badges, and field labels — small but confident.
-- **Data (IBM Plex Mono, 500):** Reserved specifically for dates, counts,
-  and deadlines — the numbers a student is scanning for. Monospace here
-  isn't decorative; tabular figures make a list of deadlines easier to
-  scan than proportional numerals would.
+Unchanged from the previous system: the branding guide's own typography
+page was an unfilled template with no typeface specified, so there was no
+brand mandate to follow or break. Fraunces still carries every headline;
+Inter still carries everything meant to be read at length; IBM Plex Mono
+is still reserved for dates, counts, and deadlines.
 
 ## Layout
 
-The product is a single scrolling page, not a multi-page app, so layout
-tokens optimize for **content width and rhythm** rather than a grid system.
+Still a single scrolling page, not a multi-page app — layout tokens
+optimize for **content width and rhythm**, not a grid system.
 
 - Content max-width: 1100px, centered, with 20px side gutters on mobile.
 - An 8px base spacing scale (4/8/16/24/32/48/64) governs internal padding
-  and the vertical rhythm between sections — every gap in the interface
-  should land on one of these values, not an arbitrary number.
+  and the vertical rhythm between sections.
 - Cards and form fields use generous internal padding (`spacing.lg`, 24px)
-  so the interface reads as considered rather than dense, even though the
-  underlying data (984 rows) is large.
+  so the interface reads as considered rather than dense.
 
 ## Elevation & Depth
 
 Depth is mostly conveyed through **borders and background contrast**, not
-heavy shadow — Surface cards on a Paper background with a 1px Border line
-do most of the work. A soft, low-opacity shadow is reserved for two cases
-where something needs to feel like it's floating above the page: the
-sticky search/filter panel, and the detail modal. Both use the same
-two-layer shadow (a tight 2px contact shadow plus a diffuse 24px ambient
-shadow) so elevation reads consistently across the product.
+heavy shadow — Surface cards on a Cream background with a 1px Border line
+do most of the work. A soft, low-opacity shadow is reserved for the sticky
+search/filter panel and the detail modal, both using the same two-layer
+shadow (a tight 2px contact shadow plus a diffuse 24px ambient shadow).
 
 ## Shapes
 
 **Soft but structured.** Corners are rounded enough to feel approachable —
 never sharp, never clinical — but never fully rounded into a pill or
-capsule. A button, a chip, and a card all share the same family of radii
-(`rounded.sm`–`rounded.lg`), just scaled to the size of the element, which
-is what keeps the system feeling like one coherent shape language instead
-of a grab-bag of button styles.
-
-`rounded.full` exists only for genuinely circular things — an avatar, an
-icon-only close button, a radio control — never for anything with text
-inside it running wider than it is tall.
+capsule. `rounded.full` exists only for genuinely circular things — an
+avatar, an icon-only close button — never for anything with text inside it
+running wider than it is tall.
 
 ## Components
 
-- **Buttons:** Primary (Harbor Ink fill, white text) for the one most
-  important action on screen. Secondary (Amber fill, ink text) for a
-  supporting action taken about as often as primary. Ghost (transparent,
-  bordered) for tertiary/low-emphasis actions. All three share
-  `rounded.md` and the same label typography — only fill and border
-  change between them.
-- **Chips:** Used for filters and multi-select tags. Rounded-rectangle
-  (`rounded.sm`), bordered, Surface background at rest; solid Harbor Ink
-  fill with white text when active. This replaces the pill-shaped filter
-  buttons from the previous iteration of this product.
+- **Buttons:** Primary (Ink Navy fill, white text), Secondary (Gold fill,
+  ink text), Ghost (transparent, bordered). All three share `rounded.md`
+  and the same label typography.
+- **Chips:** Filters and multi-select tags. Rounded-rectangle
+  (`rounded.sm`), bordered, Surface background at rest; solid Ink Navy
+  fill with white text when active.
+- **Batch stairs (signature):** The one place the staircase motif actually
+  becomes structure rather than decoration. The five batch chips
+  (Freshies → Sophs → Juns → Seniors → Super Seniors) sit at five
+  different heights, ascending left to right in even steps, so picking a
+  batch reads as picking a stair to stand on — appropriate specifically
+  because batch order is a real sequence, not a decorative excuse for
+  staggering. Desktop/tablet only (`min-width:641px`); at narrower widths
+  the row wraps to 2–3 columns and the stagger is switched off rather than
+  left to collide.
+- **Hero watermark (signature):** A single staircase illustration from
+  LinkME's own asset page in the branding guide sits behind the hero copy,
+  bottom-right, at ~15% opacity with `mix-blend-mode: screen` so it reads
+  as a faint rising flight rather than clip-art. This and the batch stairs
+  are the system's only two uses of the motif — everywhere else (cards,
+  filters, footer) stays quiet by design.
 - **Lists:** Each row gets a 1px Border bottom rule and `spacing.md`
-  vertical padding; no zebra-striping — rely on the rule and whitespace,
-  not background color, to separate rows.
-- **Tooltips:** Harbor Ink background, white caption-sized text,
-  `rounded.sm`. Appear on hover/focus only, never trap keyboard focus.
-- **Checkboxes:** Square (`rounded.sm`), Border outline at rest, solid
-  Harbor Ink fill with a white check mark when checked — deliberately
-  distinct from Radios so the two are never confused at a glance.
+  vertical padding; no zebra-striping.
+- **Tooltips:** Ink Navy background, white caption-sized text,
+  `rounded.sm`.
+- **Checkboxes:** Square (`rounded.sm`), Border outline at rest, solid Ink
+  Navy fill with a white check mark when checked.
 - **Radio buttons:** Circular (`rounded.full`), Border outline at rest,
-  Harbor Ink fill with a white dot when selected.
-- **Input fields:** Paper background (not Surface — this is what visually
+  Ink Navy fill with a white dot when selected.
+- **Input fields:** Cream background (not Surface — this is what visually
   distinguishes an editable field from a static card), Border outline,
-  Amber border on focus. Labels sit above the field in `label-caps`.
+  Gold border on focus.
 - **Status badges:** Success/Warning/Danger each pair a saturated text
-  color with its own pale tint background (never the solid saturated
-  color as a fill) — this keeps status color legible as text while
-  staying quiet enough not to compete with Amber, which is the one color
-  in the system reserved for interactive accent.
+  color with its own pale tint background — never the solid saturated
+  color as a fill — keeping status legible while staying quiet next to
+  Gold, the system's one interactive accent.
 
 ## Do's and Don'ts
 
-- Do use Amber (tertiary) only for accents, secondary actions, and active
+- Do use Gold (tertiary) only for accents, secondary actions, and active
   states — never as a body text color at full saturation.
-- Do use `rounded.sm`–`rounded.lg` for every button, chip, card, and input
-  in the system, scaled to the element's size.
+- Do keep the staircase motif to its two named places (batch stairs, hero
+  watermark). Don't add a third — a per-card stair icon, a stair-shaped
+  divider between every section — the moment it shows up twice more it
+  stops reading as a signature and starts reading as wallpaper.
+- Do use `rounded.sm`–`rounded.lg` for every button, chip, card, and input,
+  scaled to the element's size.
 - Don't use `rounded.full` (pill/capsule) on anything with text running
-  wider than it is tall — buttons, tags, and filters included.
-- Don't stretch buttons or inputs to the full width of their container
-  by default; size them to their content and let layout, not the
-  component, decide when something should span wide.
+  wider than it is tall.
+- Don't stretch buttons or inputs to the full width of their container by
+  default; size them to their content.
 - Don't reach for an SVG icon before checking whether color, weight, or a
-  text label already solves the problem — icons should earn their place,
-  not decorate by default.
-- Do keep Fraunces exclusively for headlines (H3 and above); never set
-  body copy, labels, or data in the serif.
+  text label already solves the problem.
+- Do keep Fraunces exclusively for headlines (H3 and above).
 - Do use `typography.data-md` (mono) for any deadline, date, or count a
-  student is expected to scan — never set those in the serif or in
-  regular body type.
+  student is expected to scan.

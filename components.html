@@ -3,28 +3,28 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Harbor &amp; Amber — Components</title>
-<meta name="description" content="Component showcase for the Harbor & Amber design system (see DESIGN.md)." />
+<title>Ascent — Components</title>
+<meta name="description" content="Component showcase for the Ascent design system (see DESIGN.md)." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   /* ===== Tokens — mirrors DESIGN.md front matter 1:1 ===== */
   :root{
-    --primary:#122130; --primary-strong:#0A141F; --primary-soft:#193757; --on-primary:#FFFFFF;
-    --secondary:#53616E; --secondary-tint:#EBF0F4;
-    --tertiary:#D3BC45; --tertiary-bright:#E3D06D; --tertiary-ink:#716009; --on-tertiary:var(--primary);
-    --neutral:#FAF9F5; --surface:#FFFFFF; --border:#E7E5DA;
+    --primary:#1C2945; --primary-strong:#10182B; --primary-soft:#1E5BBD; --on-primary:#FFFFFF;
+    --secondary:#57647E; --secondary-tint:#EBF0F4;
+    --tertiary:#FFE445; --tertiary-bright:#FFE445; --tertiary-ink:#716009; --on-tertiary:var(--primary);
+    --neutral:#F2EFE8; --surface:#FFFFFF; --border:#E4E0D3;
     --success:#2F7D5A; --success-bg:#E7F3EC;
-    --warning:#885011; --warning-bg:#F8ECD6;
+    --warning:#3C1F04; --warning-bg:#F2E7D8;
     --danger:#A3403A; --danger-bg:#F6E9E7;
 
     --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px; --r-full:9999px;
 
     --sp-xs:4px; --sp-sm:8px; --sp-md:16px; --sp-lg:24px; --sp-xl:32px; --sp-2xl:48px; --sp-3xl:64px;
 
-    --shadow-contact:0 1px 2px rgba(18,33,48,.08);
-    --shadow-ambient:0 12px 32px rgba(18,33,48,.10);
+    --shadow-contact:0 1px 2px rgba(28,41,69,.08);
+    --shadow-ambient:0 12px 32px rgba(28,41,69,.10);
   }
 
   *{box-sizing:border-box}
@@ -96,6 +96,15 @@
   .chip:hover{border-color:var(--secondary)}
   .chip.active{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
 
+  /* ===== Batch stairs — the signature motif as structure, not decoration ===== */
+  .stairs-row{display:flex;gap:8px;align-items:flex-end;padding:20px 0 6px}
+  .stairs-row .chip{text-align:center;padding:8px 14px}
+  .stairs-row .chip:nth-child(1){transform:translateY(12px)}
+  .stairs-row .chip:nth-child(2){transform:translateY(6px)}
+  .stairs-row .chip:nth-child(3){transform:translateY(0)}
+  .stairs-row .chip:nth-child(4){transform:translateY(-6px)}
+  .stairs-row .chip:nth-child(5){transform:translateY(-12px)}
+
   /* ===== Inputs ===== */
   .field{display:flex;flex-direction:column;gap:8px;max-width:320px}
   .field label{color:var(--secondary)}
@@ -103,7 +112,7 @@
     background:var(--neutral);color:var(--primary);border:1px solid var(--border);
     border-radius:var(--r-md);padding:12px 14px;font-family:inherit;font-size:16px;
   }
-  .field input:focus, .field select:focus{outline:none;border-color:var(--tertiary);box-shadow:0 0 0 3px rgba(211,188,69,.22)}
+  .field input:focus, .field select:focus{outline:none;border-color:var(--tertiary);box-shadow:0 0 0 3px rgba(255,228,69,.22)}
 
   /* ===== Badges ===== */
   .badge{display:inline-flex;align-items:center;border-radius:var(--r-sm);padding:4px 10px}
@@ -164,11 +173,12 @@
 <div class="page">
 
   <header class="intro">
-    <span class="t-label-caps kicker">Design system · alpha</span>
-    <h1 class="t-display">Harbor &amp; Amber</h1>
-    <p class="t-body-lg">Components built from <span class="mono">DESIGN.md</span> — a polished,
-      corporate system rooted in MEA's own blue-and-gold logo. Soft-structured
-      shapes, no pills, restraint with iconography.</p>
+    <span class="t-label-caps kicker">Design system · beta</span>
+    <h1 class="t-display">Ascent</h1>
+    <p class="t-body-lg">Components built from <span class="mono">DESIGN.md</span> — LinkME's own
+      page in the MEA CARES 2026 branding guide, palette quoted verbatim, motif a staircase
+      ("connecting from one place to another"). Soft-structured shapes, no pills, restraint with
+      iconography.</p>
     <div class="swatchline" aria-hidden="true">
       <span style="background:var(--primary)"></span>
       <span style="background:var(--secondary)"></span>
@@ -183,25 +193,25 @@
   <section class="spec" id="colors">
     <span class="t-label-caps kicker">01 — Colors</span>
     <h2 class="t-h2 spec-title">Palette</h2>
-    <p class="t-body-md spec-desc">Rooted in the logo's blue (~210°) and gold (~50°) hues, extended
-      into ranges dark or light enough to work as real UI.</p>
+    <p class="t-body-md spec-desc">Quoted directly from the branding guide's "Color Scheme" page —
+      not derived or estimated.</p>
     <div class="swatch-grid">
       <div class="swatch"><div class="fill" style="background:var(--primary)"></div>
-        <div class="meta"><span class="t-label-md name">Primary · Harbor Ink</span><span class="t-caption mono hex">#122130</span></div></div>
+        <div class="meta"><span class="t-label-md name">Primary · Ink Navy</span><span class="t-caption mono hex">#1C2945</span></div></div>
       <div class="swatch"><div class="fill" style="background:var(--primary-soft)"></div>
-        <div class="meta"><span class="t-label-md name">Primary Soft</span><span class="t-caption mono hex">#193757</span></div></div>
+        <div class="meta"><span class="t-label-md name">Primary Soft · Royal Blue</span><span class="t-caption mono hex">#1E5BBD</span></div></div>
       <div class="swatch"><div class="fill" style="background:var(--secondary)"></div>
-        <div class="meta"><span class="t-label-md name">Secondary · Slate</span><span class="t-caption mono hex">#53616E</span></div></div>
+        <div class="meta"><span class="t-label-md name">Secondary · Slate</span><span class="t-caption mono hex">#57647E</span></div></div>
       <div class="swatch"><div class="fill" style="background:var(--tertiary)"></div>
-        <div class="meta"><span class="t-label-md name">Tertiary · Amber</span><span class="t-caption mono hex">#D3BC45</span></div></div>
+        <div class="meta"><span class="t-label-md name">Tertiary · Gold</span><span class="t-caption mono hex">#FFE445</span></div></div>
       <div class="swatch"><div class="fill" style="background:var(--tertiary-ink)"></div>
-        <div class="meta"><span class="t-label-md name">Amber Ink</span><span class="t-caption mono hex">#716009</span></div></div>
+        <div class="meta"><span class="t-label-md name">Gold Ink</span><span class="t-caption mono hex">#716009</span></div></div>
       <div class="swatch"><div class="fill" style="background:var(--neutral);border-bottom:1px solid var(--border)"></div>
-        <div class="meta"><span class="t-label-md name">Neutral · Paper</span><span class="t-caption mono hex">#FAF9F5</span></div></div>
+        <div class="meta"><span class="t-label-md name">Neutral · Cream</span><span class="t-caption mono hex">#F2EFE8</span></div></div>
       <div class="swatch"><div class="fill" style="background:var(--success)"></div>
         <div class="meta"><span class="t-label-md name">Success</span><span class="t-caption mono hex">#2F7D5A</span></div></div>
       <div class="swatch"><div class="fill" style="background:var(--warning)"></div>
-        <div class="meta"><span class="t-label-md name">Warning</span><span class="t-caption mono hex">#885011</span></div></div>
+        <div class="meta"><span class="t-label-md name">Warning · Deep Brown</span><span class="t-caption mono hex">#3C1F04</span></div></div>
       <div class="swatch"><div class="fill" style="background:var(--danger)"></div>
         <div class="meta"><span class="t-label-md name">Danger</span><span class="t-caption mono hex">#A3403A</span></div></div>
     </div>
@@ -244,7 +254,7 @@
     <span class="t-label-caps kicker">04 — Chips</span>
     <h2 class="t-h2 spec-title">Chips</h2>
     <p class="t-body-md spec-desc">Rounded-rectangle, never a pill. Used for filters and
-      multi-select tags — Surface at rest, solid Harbor Ink when active.</p>
+      multi-select tags — Surface at rest, solid Ink Navy when active.</p>
     <div class="row">
       <button class="chip t-body-sm active">Internship</button>
       <button class="chip t-body-sm">Certification</button>
@@ -254,11 +264,27 @@
     </div>
   </section>
 
+  <section class="spec" id="stairs">
+    <span class="t-label-caps kicker">05 — Batch stairs (signature)</span>
+    <h2 class="t-h2 spec-title">Staircase as structure</h2>
+    <p class="t-body-md spec-desc">The one place the branding guide's staircase motif becomes real
+      structure instead of illustration: batch order is a genuine sequence, so the chips sit at
+      five different heights, ascending left to right. Desktop/tablet only — narrower widths wrap
+      the row and drop the stagger rather than let steps collide.</p>
+    <div class="stairs-row">
+      <button class="chip t-body-sm">Freshies</button>
+      <button class="chip t-body-sm">Sophs</button>
+      <button class="chip t-body-sm active">Juns</button>
+      <button class="chip t-body-sm">Seniors</button>
+      <button class="chip t-body-sm">Super Seniors</button>
+    </div>
+  </section>
+
   <section class="spec" id="inputs">
-    <span class="t-label-caps kicker">05 — Inputs</span>
+    <span class="t-label-caps kicker">06 — Inputs</span>
     <h2 class="t-h2 spec-title">Input fields</h2>
-    <p class="t-body-md spec-desc">Paper background distinguishes an editable field from a static
-      Surface card. Amber border on focus.</p>
+    <p class="t-body-md spec-desc">Cream background distinguishes an editable field from a static
+      Surface card. Gold border on focus.</p>
     <div class="row">
       <div class="field">
         <label class="t-label-md" for="demo-text">Company or role</label>
@@ -277,7 +303,7 @@
   </section>
 
   <section class="spec" id="controls">
-    <span class="t-label-caps kicker">06 — Checkboxes &amp; Radios</span>
+    <span class="t-label-caps kicker">07 — Checkboxes &amp; Radios</span>
     <h2 class="t-h2 spec-title">Selection controls</h2>
     <p class="t-body-md spec-desc">Square for checkboxes, circular for radios — deliberately
       distinct shapes so the two are never confused at a glance.</p>
@@ -294,10 +320,10 @@
   </section>
 
   <section class="spec" id="badges">
-    <span class="t-label-caps kicker">07 — Status badges</span>
+    <span class="t-label-caps kicker">08 — Status badges</span>
     <h2 class="t-h2 spec-title">Badges</h2>
     <p class="t-body-md spec-desc">Saturated text on a pale tint — never a solid saturated fill —
-      so status stays legible without competing with Amber's role as the interactive accent.</p>
+      so status stays legible without competing with Gold's role as the interactive accent.</p>
     <div class="row">
       <span class="badge badge-success t-label-caps">Open</span>
       <span class="badge badge-warning t-label-caps">Closing soon</span>
@@ -306,7 +332,7 @@
   </section>
 
   <section class="spec" id="tooltip">
-    <span class="t-label-caps kicker">08 — Tooltip</span>
+    <span class="t-label-caps kicker">09 — Tooltip</span>
     <h2 class="t-h2 spec-title">Tooltip</h2>
     <p class="t-body-md spec-desc">Appears on hover or keyboard focus only. Try it:</p>
     <span class="tt-wrap">
@@ -316,7 +342,7 @@
   </section>
 
   <section class="spec" id="list">
-    <span class="t-label-caps kicker">09 — Lists</span>
+    <span class="t-label-caps kicker">10 — Lists</span>
     <h2 class="t-h2 spec-title">List items</h2>
     <p class="t-body-md spec-desc">A 1px rule and vertical rhythm separate rows — no
       zebra-striping.</p>
@@ -337,7 +363,7 @@
   </section>
 
   <section class="spec" id="card">
-    <span class="t-label-caps kicker">10 — Composed example</span>
+    <span class="t-label-caps kicker">11 — Composed example</span>
     <h2 class="t-h2 spec-title">Card</h2>
     <p class="t-body-md spec-desc">Buttons, chips, and badges together, the way they appear on an
       actual opportunity card.</p>
