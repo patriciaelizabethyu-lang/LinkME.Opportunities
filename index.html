@@ -222,6 +222,7 @@
     display:flex;align-items:center;justify-content:space-between;
     margin-top:14px;flex-wrap:wrap;gap:10px;
   }
+  .toggle-group{display:flex;flex-direction:column;gap:8px}
   .toggle-line{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--ink-soft)}
   .toggle-line input{width:16px;height:16px;accent-color:var(--gold)}
   .reset-btn{
@@ -249,6 +250,7 @@
     display:grid;grid-template-columns:repeat(auto-fill, minmax(280px,1fr));gap:14px;
   }
   .card{
+    position:relative;
     background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
     padding:16px;box-shadow:var(--shadow);cursor:pointer;text-align:left;
     font-family:inherit;color:inherit;display:flex;flex-direction:column;gap:8px;
@@ -258,7 +260,18 @@
   .card.in-view{opacity:1;transform:translateY(0)}
   .card:hover{border-color:var(--gold);box-shadow:var(--shadow-lg);transform:translateY(-3px)}
   .card.in-view:hover{transform:translateY(-3px)}
-  .card-top{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px}
+  .card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .card-top{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px;padding-right:38px}
+  .save-btn{
+    position:absolute;top:12px;right:12px;z-index:2;
+    width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);
+    color:var(--ink-soft);cursor:pointer;padding:0;transition:all .18s ease;
+  }
+  .save-btn:hover{border-color:var(--gold);color:var(--navy)}
+  .save-btn.saved{background:var(--gold-light);border-color:transparent;color:#716009}
+  .save-btn.saved svg{fill:currentColor}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .save-btn.saved{color:var(--gold)} }
   .badge{
     font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:var(--r-sm);
     text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;flex:none;
@@ -336,7 +349,8 @@
     transition:all .18s ease;
   }
   .modal-close:hover{background:var(--gold-light);border-color:var(--gold);color:var(--navy)}
-  .modal h2{margin:0 0 2px;font-size:1.3rem;color:var(--navy);padding-right:36px;font-weight:600}
+  .modal-save{position:absolute;top:14px;right:54px;width:32px;height:32px}
+  .modal h2{margin:0 0 2px;font-size:1.3rem;color:var(--navy);padding-right:90px;font-weight:600}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .modal h2{color:#fff} }
   .modal .position{color:var(--ink-soft);font-weight:600;font-size:.92rem;margin:0 0 12px}
   .modal-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
@@ -465,10 +479,16 @@
     </div>
 
     <div class="toolbar-row">
-      <label class="toggle-line">
-        <input type="checkbox" id="showClosed" />
-        Show closed opportunities too
-      </label>
+      <div class="toggle-group">
+        <label class="toggle-line">
+          <input type="checkbox" id="showClosed" />
+          Show closed opportunities too
+        </label>
+        <label class="toggle-line" title="Saved listings live in this browser only, on this device">
+          <input type="checkbox" id="showSaved" />
+          Show only saved
+        </label>
+      </div>
       <button class="reset-btn" id="resetBtn">Reset filters</button>
     </div>
   </div>
@@ -527,17 +547,41 @@
   var shown = PAGE_SIZE;
   var BATCH_LABELS = { "29": "Freshies", "28": "Sophs", "27": "Juns", "26": "Seniors", "25": "Super Seniors" };
   var CLOSING_SOON_DAYS = 14;
+  var BOOKMARK_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>';
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var allRows = [];
   var reviewsMap = {}; // "industry|function" -> { industry, role, pros:[...], cons:[...] }
   var els = {};
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
-   "batchRow","showClosed","resetBtn","resultsMeta","loadingState","errorState","grid",
+   "batchRow","showClosed","showSaved","resetBtn","resultsMeta","loadingState","errorState","grid",
    "emptyState","emptyText","similarHeading","showMoreWrap","showMoreBtn","updatedLine","overlay","modal","nav","scrollCue"]
   .forEach(function(id){ els[id.replace(/-([a-z])/g, function(_,c){return c.toUpperCase();})] = document.getElementById(id); });
 
-  var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false };
+  // ---- saved listings: local to this browser only, no account, keyed by company+role since the sheet has no stable id ----
+  var SAVED_STORAGE_KEY = "linkme_saved_v1";
+  var savedSet = loadSaved();
+
+  function loadSaved(){
+    try {
+      var raw = localStorage.getItem(SAVED_STORAGE_KEY);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch (e) { return new Set(); }
+  }
+  function persistSaved(){
+    try { localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(Array.from(savedSet))); } catch (e) { /* private mode etc, saves just won't persist */ }
+  }
+  function savedKey(o){
+    return (o.company || "").trim().toLowerCase() + "|" + (o.position || o.name || "").trim().toLowerCase();
+  }
+  function isSaved(o){ return savedSet.has(savedKey(o)); }
+  function toggleSaved(o){
+    var key = savedKey(o);
+    if (savedSet.has(key)) savedSet.delete(key); else savedSet.add(key);
+    persistSaved();
+  }
+
+  var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false, savedOnly:false };
 
   // ---- minimal RFC4180 CSV parser (handles quoted fields, embedded commas/newlines/quotes) ----
   function parseCSV(text){
@@ -675,7 +719,8 @@
   function applyFilters(){
     var q = state.search.trim().toLowerCase();
     var rows = allRows.filter(function(o){
-      if (!state.showClosed && o.status.toLowerCase() !== "open") return false;
+      if (state.savedOnly && !isSaved(o)) return false;
+      if (!state.savedOnly && !state.showClosed && o.status.toLowerCase() !== "open") return false;
       if (state.batch && !o.batches[state.batch]) return false;
       if (state.type && o.type !== state.type) return false;
       if (state.industry && o.industry !== state.industry) return false;
@@ -724,7 +769,11 @@
     var badges = badge(o);
     if (isClosingSoon(o)) badges += '<span class="badge soon">Closing soon</span>';
     if (findReview(o)) badges += '<span class="badge alumni">Alumni insight</span>';
+    var saved = isSaved(o);
+    var saveBtn = '<button type="button" class="save-btn' + (saved ? ' saved' : '') + '" aria-pressed="' + saved + '" aria-label="' +
+      (saved ? "Remove from saved" : "Save for later") + '" title="' + (saved ? "Saved" : "Save for later") + '">' + BOOKMARK_SVG + '</button>';
     return (
+      saveBtn +
       '<div class="card-top">' + badges + '</div>' +
       '<h3>'+esc(o.company)+'</h3>' +
       '<p class="position">'+esc(role)+'</p>' +
@@ -752,11 +801,30 @@
   function renderGridRows(list){
     els.grid.innerHTML = "";
     list.forEach(function(o, i){
-      var card = document.createElement("button");
-      card.type = "button";
+      var card = document.createElement("div");
       card.className = "card";
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
       card.innerHTML = cardHTML(o);
-      card.addEventListener("click", function(){ openModal(o); });
+      card.addEventListener("click", function(e){
+        if (e.target.closest(".save-btn")) return;
+        openModal(o);
+      });
+      card.addEventListener("keydown", function(e){
+        if (e.target !== card) return;
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(o); }
+      });
+      var saveBtn = card.querySelector(".save-btn");
+      saveBtn.addEventListener("click", function(e){
+        e.stopPropagation();
+        toggleSaved(o);
+        var nowSaved = isSaved(o);
+        saveBtn.classList.toggle("saved", nowSaved);
+        saveBtn.setAttribute("aria-pressed", nowSaved);
+        saveBtn.setAttribute("aria-label", nowSaved ? "Remove from saved" : "Save for later");
+        saveBtn.title = nowSaved ? "Saved" : "Save for later";
+        if (state.savedOnly && !nowSaved) render();
+      });
       els.grid.appendChild(card);
       if (reduceMotion || !cardObserver) {
         card.classList.add("in-view");
@@ -799,7 +867,7 @@
     var rows = applyFilters();
 
     els.resultsMeta.innerHTML = '<span class="mono">' + rows.length + '</span> opportunit' + (rows.length===1?"y":"ies") + " found" +
-      (state.showClosed ? "" : " (open only)");
+      (state.savedOnly ? " (saved)" : (state.showClosed ? "" : " (open only)"));
 
     if (rows.length === 0) {
       els.emptyState.style.display = "block";
@@ -829,7 +897,10 @@
 
   function openModal(o){
     var role = o.position || o.name || "Opportunity";
+    var saved = isSaved(o);
     var html = '<button class="modal-close" id="modalClose" aria-label="Close">✕</button>';
+    html += '<button type="button" class="save-btn modal-save' + (saved ? ' saved' : '') + '" id="modalSaveBtn" aria-pressed="' + saved + '" aria-label="' +
+      (saved ? "Remove from saved" : "Save for later") + '" title="' + (saved ? "Saved" : "Save for later") + '">' + BOOKMARK_SVG + '</button>';
     html += '<h2>'+esc(o.company)+'</h2>';
     html += '<p class="position">'+esc(role)+'</p>';
     html += '<div class="modal-badges">' + badge(o);
@@ -885,6 +956,16 @@
     els.overlay.classList.add("open");
     requestAnimationFrame(function(){ els.overlay.classList.add("in"); });
     document.getElementById("modalClose").addEventListener("click", closeModal);
+    var modalSaveBtn = document.getElementById("modalSaveBtn");
+    modalSaveBtn.addEventListener("click", function(){
+      toggleSaved(o);
+      var nowSaved = isSaved(o);
+      modalSaveBtn.classList.toggle("saved", nowSaved);
+      modalSaveBtn.setAttribute("aria-pressed", nowSaved);
+      modalSaveBtn.setAttribute("aria-label", nowSaved ? "Remove from saved" : "Save for later");
+      modalSaveBtn.title = nowSaved ? "Saved" : "Save for later";
+      render(); // keep the grid (and any saved-only view) in sync while the modal is open
+    });
   }
 
   function closeModal(){
@@ -914,14 +995,16 @@
     document.getElementById("f-source").addEventListener("change", function(e){ state.source = e.target.value; shown = PAGE_SIZE; render(); });
     document.getElementById("f-sort").addEventListener("change", function(e){ state.sort = e.target.value; render(); });
     els.showClosed.addEventListener("change", function(e){ state.showClosed = e.target.checked; shown = PAGE_SIZE; render(); });
+    els.showSaved.addEventListener("change", function(e){ state.savedOnly = e.target.checked; shown = PAGE_SIZE; render(); });
     els.showMoreBtn.addEventListener("click", function(){ shown += PAGE_SIZE; render(); });
     els.resetBtn.addEventListener("click", function(){
-      state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false };
+      state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false, savedOnly:false };
       shown = PAGE_SIZE;
       els.searchInput.value = "";
       ["f-type","f-industry","f-paid","f-required","f-setup","f-source"].forEach(function(id){ document.getElementById(id).value = ""; });
       document.getElementById("f-sort").value = "new";
       els.showClosed.checked = false;
+      els.showSaved.checked = false;
       buildBatchPills();
       render();
     });
