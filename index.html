@@ -245,7 +245,7 @@
     padding:7px 12px;border-radius:var(--r-md);font-size:.82rem;cursor:pointer;font-family:inherit;
     transition:all .18s ease;
   }
-  .reset-btn:hover{border-color:var(--gold);color:var(--navy);background:var(--gold-light)}
+  .reset-btn:hover{border-color:var(--gold);color:var(--ink);background:var(--gold-light)}
 
   .results-meta{
     max-width:1100px;margin:26px auto 8px;padding:0 20px;
@@ -269,12 +269,9 @@
     background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
     padding:16px;box-shadow:var(--shadow);cursor:pointer;text-align:left;
     font-family:inherit;color:inherit;display:flex;flex-direction:column;gap:8px;
-    opacity:0;transform:translateY(18px);
-    transition:transform .35s cubic-bezier(.16,.8,.3,1), box-shadow .25s ease, border-color .25s ease, opacity .5s ease;
+    transition:transform .2s cubic-bezier(.16,.8,.3,1), box-shadow .25s ease, border-color .25s ease;
   }
-  .card.in-view{opacity:1;transform:translateY(0)}
   .card:hover{border-color:var(--gold);box-shadow:var(--shadow-lg);transform:translateY(-3px)}
-  .card.in-view:hover{transform:translateY(-3px)}
   .card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   .card-top{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px;padding-right:38px}
   .save-btn{
@@ -283,7 +280,7 @@
     background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);
     color:var(--ink-soft);cursor:pointer;padding:0;transition:all .18s ease;
   }
-  .save-btn:hover{border-color:var(--gold);color:var(--navy)}
+  .save-btn:hover{border-color:var(--gold);color:var(--ink)}
   .save-btn.saved{background:var(--gold-light);border-color:transparent;color:#716009}
   .save-btn.saved svg{fill:currentColor}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .save-btn.saved{color:var(--gold)} }
@@ -363,7 +360,7 @@
     width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;color:var(--ink-soft);
     transition:all .18s ease;
   }
-  .modal-close:hover{background:var(--gold-light);border-color:var(--gold);color:var(--navy)}
+  .modal-close:hover{background:var(--gold-light);border-color:var(--gold);color:var(--ink)}
   .modal-save{position:absolute;top:14px;right:54px;width:32px;height:32px}
   .modal h2{margin:0 0 2px;font-size:1.3rem;color:var(--navy);padding-right:90px;font-weight:600}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .modal h2{color:#fff} }
@@ -802,19 +799,9 @@
     });
   }
 
-  // ---- scroll-reveal for cards ----
-  var cardObserver = ("IntersectionObserver" in window) ? new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (entry.isIntersecting) {
-        entry.target.classList.add("in-view");
-        cardObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: .1, rootMargin: "0px 0px -40px 0px" }) : null;
-
   function renderGridRows(list){
     els.grid.innerHTML = "";
-    list.forEach(function(o, i){
+    list.forEach(function(o){
       var card = document.createElement("div");
       card.className = "card";
       card.setAttribute("role", "button");
@@ -840,12 +827,6 @@
         if (state.savedOnly && !nowSaved) render();
       });
       els.grid.appendChild(card);
-      if (reduceMotion || !cardObserver) {
-        card.classList.add("in-view");
-      } else {
-        card.style.transitionDelay = Math.min(i % PAGE_SIZE, 8) * 40 + "ms";
-        cardObserver.observe(card);
-      }
     });
   }
 
