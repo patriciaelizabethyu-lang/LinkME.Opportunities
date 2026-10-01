@@ -858,7 +858,7 @@
     if (findReview(o)) badges += '<span class="badge alumni">Alumni insight</span>';
     var saved = isSaved(o);
     var saveBtn = '<button type="button" class="save-btn' + (saved ? ' saved' : '') + '" aria-pressed="' + saved + '" aria-label="' +
-      (saved ? "Remove from saved" : "Save for later") + '" title="' + (saved ? "Saved" : "Save for later") + '">' + BOOKMARK_SVG + '</button>';
+      (saved ? "Remove from saved" : "Save for later") + '" title="' + (saved ? "Saved. Tap to remove." : "Tap to save this listing for later") + '">' + BOOKMARK_SVG + '</button>';
     return (
       saveBtn +
       '<div class="card-top">' + badges + '</div>' +
@@ -899,7 +899,7 @@
         saveBtn.classList.toggle("saved", nowSaved);
         saveBtn.setAttribute("aria-pressed", nowSaved);
         saveBtn.setAttribute("aria-label", nowSaved ? "Remove from saved" : "Save for later");
-        saveBtn.title = nowSaved ? "Saved" : "Save for later";
+        saveBtn.title = nowSaved ? "Saved. Tap to remove." : "Tap to save this listing for later";
         if (state.savedOnly && !nowSaved) render();
       });
       els.grid.appendChild(card);
@@ -971,7 +971,7 @@
     var saved = isSaved(o);
     var html = '<button class="modal-close" id="modalClose" aria-label="Close">✕</button>';
     html += '<button type="button" class="save-btn modal-save' + (saved ? ' saved' : '') + '" id="modalSaveBtn" aria-pressed="' + saved + '" aria-label="' +
-      (saved ? "Remove from saved" : "Save for later") + '" title="' + (saved ? "Saved" : "Save for later") + '">' + BOOKMARK_SVG + '</button>';
+      (saved ? "Remove from saved" : "Save for later") + '" title="' + (saved ? "Saved. Tap to remove." : "Tap to save this listing for later") + '">' + BOOKMARK_SVG + '</button>';
     html += '<h2>'+esc(o.company)+'</h2>';
     html += '<p class="position">'+esc(role)+'</p>';
     html += '<div class="modal-badges">' + badge(o);
@@ -1034,7 +1034,7 @@
       modalSaveBtn.classList.toggle("saved", nowSaved);
       modalSaveBtn.setAttribute("aria-pressed", nowSaved);
       modalSaveBtn.setAttribute("aria-label", nowSaved ? "Remove from saved" : "Save for later");
-      modalSaveBtn.title = nowSaved ? "Saved" : "Save for later";
+      modalSaveBtn.title = nowSaved ? "Saved. Tap to remove." : "Tap to save this listing for later";
       render(); // keep the grid (and any saved-only view) in sync while the modal is open
     });
   }
