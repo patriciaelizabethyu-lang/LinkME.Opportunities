@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Event Timeline · LinkME</title>
+<meta name="description" content="Upcoming MEA CARES events, synced live from the masterfile." />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* MEA CARES official palette, LinkME (staircase) expression — see DESIGN.md */
+    --navy:#1C2945;
+    --navy-deep:#10182B;
+    --navy-light:#1E5BBD;
+    --gold:#FFE445;
+    --gold-bright:#FFE445;
+    --gold-light:#FFF4B4;
+    --cream:#F2EFE8;
+    --paper:#FFFFFF;
+    --ink:#1C2945;
+    --ink-soft:#57647E;
+    --line:#E4E0D3;
+    --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px;
+    --radius:16px;
+    --shadow: 0 1px 2px rgba(28,41,69,.06), 0 8px 24px rgba(28,41,69,.06);
+    --shadow-lg: 0 12px 32px rgba(28,41,69,.16), 0 2px 8px rgba(28,41,69,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#0E1524; --navy-deep:#080B14; --navy-light:#4C87DD; --gold:#FFE445; --gold-bright:#FFE445; --gold-light:#3A331C;
+      --cream:#14181F; --paper:#1B2230; --ink:#ECEEF5; --ink-soft:#9FADBC;
+      --line:#2A333C;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+      --shadow-lg: 0 16px 40px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--cream);color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  a{color:inherit}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  }
+
+  /* ---------- Nav (mirrors index.html) ---------- */
+  .nav{
+    position:sticky;top:0;z-index:40;
+    background:rgba(18,33,48,.72);
+    backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+    color:#fff;padding:14px 20px;
+    transition:box-shadow .3s ease, padding .3s ease, background .3s ease;
+    border-bottom:1px solid rgba(255,228,69,.16);
+  }
+  .nav.scrolled{background:rgba(10,20,31,.92);box-shadow:0 8px 24px rgba(0,0,0,.18);padding:10px 20px}
+  .nav-inner{
+    position:relative;max-width:1100px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  }
+  .brand{font-weight:700;font-size:1.08rem;letter-spacing:.2px;display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;text-decoration:none}
+  .brand-accent{color:var(--gold-bright)}
+  .brand-badge{height:30px;width:auto;flex:none;display:block}
+  .nav-right{display:flex;align-items:center;gap:18px}
+  .nav-link{font-size:.86rem;font-weight:600;color:#cdd6e8;text-decoration:none;transition:color .18s ease}
+  .nav-link:hover{color:var(--gold-bright)}
+  .nav-link.current{color:#fff}
+  .nav-menu-btn{
+    display:none;background:none;border:1px solid rgba(255,228,69,.3);color:#fff;
+    width:34px;height:34px;border-radius:var(--r-sm);align-items:center;justify-content:center;
+    cursor:pointer;flex:none;padding:0;transition:border-color .18s ease;
+  }
+  .nav-menu-btn:hover, .nav-menu-btn[aria-expanded="true"]{border-color:var(--gold)}
+  .nav-popup{
+    position:absolute;right:0;top:100%;margin-top:10px;
+    background:var(--navy-deep);border:1px solid rgba(255,228,69,.18);border-radius:var(--r-lg);
+    box-shadow:var(--shadow-lg);padding:10px;min-width:210px;
+    display:none;flex-direction:column;gap:2px;z-index:45;
+  }
+  .nav-popup.open{display:flex}
+  .nav-popup-link{
+    background:none;border:none;color:#fff;text-align:left;font-family:inherit;
+    font-size:.88rem;font-weight:600;padding:9px 10px;cursor:pointer;border-radius:var(--r-sm);
+    text-decoration:none;display:block;
+  }
+  .nav-popup-link:hover{background:rgba(255,228,69,.1);color:var(--gold-bright)}
+  @media (max-width:640px){
+    .nav-right{display:none}
+    .nav-menu-btn{display:flex}
+  }
+
+  /* ---------- Header ---------- */
+  .page-header{
+    background:linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:#fff;padding:48px 20px 40px;text-align:center;
+  }
+  .page-header h1{font-size:clamp(1.8rem,4.5vw,2.6rem);margin:0 0 10px;font-weight:600;letter-spacing:-.01em}
+  .page-header p{margin:0 auto;color:#c7cee0;max-width:52ch;line-height:1.6;font-size:.98rem}
+  .page-header .updated{display:block;margin-top:16px;font-size:.78rem;color:#9aa4bb}
+  .page-header .updated strong{color:var(--gold-bright)}
+
+  /* ---------- Timeline ---------- */
+  .timeline-wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px}
+  .month-group{margin-bottom:38px}
+  .month-heading{
+    font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;margin:0 0 16px;
+    padding-bottom:10px;border-bottom:1px solid var(--line);color:var(--navy);
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .month-heading{color:#fff} }
+  .event-row{
+    display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);
+  }
+  .event-row:last-child{border-bottom:none}
+  .event-date{
+    flex:none;width:64px;font-family:'IBM Plex Mono',monospace;font-size:.82rem;
+    font-weight:600;color:var(--ink-soft);padding-top:2px;
+  }
+  .event-body{flex:1;min-width:0}
+  .event-title{font-weight:600;font-size:.96rem;margin:0 0 4px}
+  .event-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .event-tag{
+    font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:var(--r-sm);
+    text-transform:uppercase;letter-spacing:.06em;background:var(--gold-light);color:#716009;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .event-tag{color:var(--gold)} }
+  .event-venue{font-size:.8rem;color:var(--ink-soft)}
+
+  .empty, .loading, .error{
+    max-width:760px;margin:60px auto;padding:0 20px;text-align:center;color:var(--ink-soft);
+  }
+  .error{color:#A3403A}
+  .brand-pulse{
+    width:40px;height:40px;margin:0 auto 14px;
+    background:url('logo-mark.png') center/contain no-repeat;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.45;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
+
+  footer{
+    max-width:1100px;margin:0 auto;padding:20px 20px 50px;
+    font-size:.78rem;color:var(--ink-soft);text-align:center;line-height:1.6;
+  }
+  .footer-logo{height:36px;width:auto;display:block;margin:0 auto 14px;opacity:.8}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><img class="brand-badge" src="logo-mark.png" alt="LinkME logo" /> Link<span class="brand-accent">ME</span></a>
+    <div class="nav-right">
+      <a class="nav-link" href="index.html">Opportunities</a>
+      <a class="nav-link current" href="events.html">Event Timeline</a>
+    </div>
+    <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-expanded="false" aria-controls="navPopup" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <div class="nav-popup" id="navPopup">
+      <a class="nav-popup-link" href="index.html">Opportunities</a>
+      <a class="nav-popup-link" href="events.html">Event Timeline</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-header">
+  <h1>Event Timeline</h1>
+  <p>What's coming up across MEA CARES this year — synced live from the masterfile, about once a minute.</p>
+  <span class="updated" id="updatedLine">Loading live data…</span>
+</header>
+
+<div id="loadingState" class="loading">
+  <div class="brand-pulse" aria-hidden="true"></div>
+  Pulling the latest timeline from the sheet…
+</div>
+<div id="errorState" class="error" style="display:none"></div>
+<div id="emptyState" class="empty" style="display:none">No upcoming events on the timeline right now — check back soon.</div>
+<div class="timeline-wrap" id="timelineWrap" style="display:none"></div>
+
+<footer>
+  <img class="footer-logo" src="logo-full.png" alt="MEA Cares, Career Exploration Series" />
+  Made for every batch, from Freshies to Super Seniors.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var SHEET_ID = "1wHf6J1uOP3a9qCdv-YSJqLkdrbXMDOmbJHmmvCiUGvg";
+  var EVENTS_SHEET_NAME = "🗓️ Event Timeline";
+  var EVENTS_URL = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+    "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(EVENTS_SHEET_NAME);
+  var POLL_INTERVAL_MS = 60000;
+
+  var els = {};
+  ["loadingState","errorState","emptyState","timelineWrap","updatedLine","nav","navMenuBtn","navPopup"]
+    .forEach(function(id){ els[id] = document.getElementById(id); });
+
+  // ---- minimal RFC4180 CSV parser (same as index.html) ----
+  function parseCSV(text){
+    var rows = [], row = [], field = "", i = 0, inQuotes = false, len = text.length;
+    while (i < len) {
+      var ch = text[i];
+      if (inQuotes) {
+        if (ch === '"') {
+          if (text[i+1] === '"') { field += '"'; i += 2; continue; }
+          inQuotes = false; i++; continue;
+        }
+        field += ch; i++; continue;
+      } else {
+        if (ch === '"') { inQuotes = true; i++; continue; }
+        if (ch === ',') { row.push(field); field = ""; i++; continue; }
+        if (ch === '\r') { i++; continue; }
+        if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ""; i++; continue; }
+        field += ch; i++; continue;
+      }
+    }
+    row.push(field); rows.push(row);
+    return rows;
+  }
+
+  // row[1] Month (set only on a block's first row, forward-filled) | row[2] Date | row[3] Initiative
+  // row[4] Event title | row[5] Venue | row[6] Documentation — external columns only, internal (7+) ignored
+  function mapEvents(rows){
+    var out = [], month = "";
+    for (var r = 1; r < rows.length; r++) {
+      var row = rows[r];
+      if (!row) continue;
+      if ((row[1] || "").trim()) month = row[1].trim();
+      var initiative = (row[3] || "").trim();
+      var title = (row[4] || "").trim();
+      if (!initiative && !title) continue;
+      out.push({
+        month: month,
+        date: (row[2] || "").trim(),
+        initiative: initiative,
+        title: title || "Untitled event",
+        venue: (row[5] || "").trim(),
+        _idx: r
+      });
+    }
+    return out;
+  }
+
+  function esc(s){
+    return String(s||"").replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function eventHTML(ev){
+    return (
+      '<div class="event-row">' +
+      '<div class="event-date mono">' + esc(ev.date || "TBA") + '</div>' +
+      '<div class="event-body">' +
+      '<p class="event-title">' + esc(ev.title) + '</p>' +
+      '<div class="event-meta">' +
+      (ev.initiative ? '<span class="event-tag">' + esc(ev.initiative) + '</span>' : '') +
+      (ev.venue ? '<span class="event-venue">' + esc(ev.venue) + '</span>' : '') +
+      '</div></div></div>'
+    );
+  }
+
+  function render(events){
+    if (!events.length) {
+      els.emptyState.style.display = "block";
+      els.timelineWrap.style.display = "none";
+      return;
+    }
+    els.emptyState.style.display = "none";
+    els.timelineWrap.style.display = "block";
+
+    var html = "", lastMonth = null;
+    events.forEach(function(ev){
+      if (ev.month !== lastMonth) {
+        if (lastMonth !== null) html += "</div>";
+        html += '<div class="month-group"><h2 class="month-heading">' + esc(ev.month || "TBA") + '</h2>';
+        lastMonth = ev.month;
+      }
+      html += eventHTML(ev);
+    });
+    html += "</div>";
+    els.timelineWrap.innerHTML = html;
+  }
+
+  function markUpdated(){
+    var now = new Date();
+    els.updatedLine.innerHTML = "Updated <strong>" + now.toLocaleString(undefined, {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"}) + "</strong>";
+  }
+
+  var firstLoadDone = false;
+  function loadData(){
+    return fetch(EVENTS_URL)
+      .then(function(res){
+        if (!res.ok) throw new Error("Sheet fetch failed (" + res.status + ")");
+        return res.text();
+      })
+      .then(function(text){
+        var events = mapEvents(parseCSV(text));
+        els.loadingState.style.display = "none";
+        render(events);
+        markUpdated();
+        firstLoadDone = true;
+      })
+      .catch(function(err){
+        if (!firstLoadDone) {
+          els.loadingState.style.display = "none";
+          els.errorState.style.display = "block";
+          els.errorState.textContent = "Couldn't load the live timeline: " + err.message + ". Make sure the sheet is still shared as \"Anyone with the link can view.\"";
+          els.updatedLine.textContent = "Live data unavailable";
+        }
+      });
+  }
+
+  function closeNavPopup(){
+    els.navPopup.classList.remove("open");
+    els.navMenuBtn.setAttribute("aria-expanded", "false");
+  }
+  els.navMenuBtn.addEventListener("click", function(){
+    var open = els.navPopup.classList.toggle("open");
+    els.navMenuBtn.setAttribute("aria-expanded", open);
+  });
+  document.addEventListener("click", function(e){
+    if (!els.navPopup.classList.contains("open")) return;
+    if (e.target === els.navMenuBtn || els.navMenuBtn.contains(e.target)) return;
+    if (els.navPopup.contains(e.target)) return;
+    closeNavPopup();
+  });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeNavPopup(); });
+  window.addEventListener("scroll", function(){
+    els.nav.classList.toggle("scrolled", window.scrollY > 12);
+  }, { passive: true });
+
+  loadData();
+  setInterval(loadData, POLL_INTERVAL_MS);
+
+})();
+</script>
+</body>
+</html>

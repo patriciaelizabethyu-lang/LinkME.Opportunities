@@ -90,7 +90,10 @@
   .brand-badge{
     height:30px;width:auto;flex:none;display:block;
   }
-  .nav-right{display:flex;align-items:center;gap:10px}
+  .nav-right{display:flex;align-items:center;gap:18px}
+  .nav-status{display:flex;align-items:center;gap:10px}
+  .nav-link{font-size:.86rem;font-weight:600;color:#cdd6e8;text-decoration:none;transition:color .18s ease}
+  .nav-link:hover{color:var(--gold-bright)}
   .nav-menu-btn{
     display:none;background:none;border:1px solid rgba(255,228,69,.3);color:#fff;
     width:34px;height:34px;border-radius:var(--r-sm);align-items:center;justify-content:center;
@@ -442,9 +445,12 @@
 <nav class="nav" id="nav">
   <div class="nav-inner">
     <div class="brand"><img class="brand-badge" src="logo-mark.png" alt="LinkME logo" /> Link<span class="brand-accent">ME</span></div>
-    <div class="nav-right" title="This list re-syncs with the sheet automatically, about once a minute">
-      <span class="live-dot" aria-hidden="true"></span>
-      <span class="updated" id="updatedLine">Loading live data…</span>
+    <div class="nav-right">
+      <a class="nav-link" href="events.html">Event Timeline</a>
+      <div class="nav-status" title="This list re-syncs with the sheet automatically, about once a minute">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span class="updated" id="updatedLine">Loading live data…</span>
+      </div>
     </div>
     <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-expanded="false" aria-controls="navPopup" aria-label="Menu">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
@@ -452,6 +458,7 @@
     <div class="nav-popup" id="navPopup">
       <a class="nav-popup-link" href="#browse" id="navPopupBrowse">Browse opportunities</a>
       <button type="button" class="nav-popup-link" id="navPopupSaved">Saved listings</button>
+      <a class="nav-popup-link" href="events.html">Event Timeline</a>
       <span class="updated mono" id="updatedLinePopup">Loading live data…</span>
     </div>
   </div>
