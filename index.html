@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,600;0,700;1,500;1,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     /* MEA CARES official palette, LinkME (staircase) expression — see DESIGN.md */
@@ -52,11 +52,11 @@
   body{
     background:var(--cream);
     color:var(--ink);
-    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
   }
-  h1,h2,h3{font-family:'Fraunces',Georgia,serif}
+  h1,h2,h3{font-family:'Besley',Georgia,serif}
   .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
   a{color:inherit}
   @media (prefers-reduced-motion: reduce){
@@ -85,15 +85,19 @@
     max-width:1100px;margin:0 auto;
     display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
   }
-  .brand{font-weight:700;font-size:1.08rem;letter-spacing:.2px;display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif}
+  .brand{font-weight:700;font-size:1.08rem;letter-spacing:.2px;display:flex;align-items:center;gap:10px;font-family:'Besley',serif}
   .brand-accent{color:var(--gold-bright)}
   .brand-badge{
     height:30px;width:auto;flex:none;display:block;
   }
   .nav-right{display:flex;align-items:center;gap:18px}
   .nav-status{display:flex;align-items:center;gap:10px}
-  .nav-link{font-size:.86rem;font-weight:600;color:#cdd6e8;text-decoration:none;transition:color .18s ease}
+  .nav-link{
+    font-size:.86rem;font-weight:600;color:#cdd6e8;text-decoration:none;transition:color .18s ease;
+    background:none;border:none;padding:0;font-family:inherit;cursor:pointer;
+  }
   .nav-link:hover{color:var(--gold-bright)}
+  .nav-link.current{color:#fff}
   .nav-menu-btn{
     display:none;background:none;border:1px solid rgba(255,228,69,.3);color:#fff;
     width:34px;height:34px;border-radius:var(--r-sm);align-items:center;justify-content:center;
@@ -110,9 +114,16 @@
   .nav-popup-link{
     background:none;border:none;color:#fff;text-align:left;font-family:inherit;
     font-size:.88rem;font-weight:600;padding:9px 10px;cursor:pointer;border-radius:var(--r-sm);
-    text-decoration:none;display:block;
+    text-decoration:none;display:flex;align-items:center;gap:8px;width:100%;
   }
   .nav-popup-link:hover{background:rgba(255,228,69,.1);color:var(--gold-bright)}
+  .nav-popup-link svg{flex:none;opacity:.8}
+  .nav-popup-link .nav-saved-count{margin-left:auto}
+  .nav-saved-count{
+    flex:none;font-size:.68rem;font-weight:700;color:var(--navy);background:var(--gold);
+    padding:1px 7px;border-radius:999px;line-height:1.5;
+  }
+  .nav-link .nav-saved-count{margin-left:5px}
   .nav-popup .updated{
     padding:10px 10px 2px;margin-top:4px;border-top:1px solid rgba(255,255,255,.12);
   }
@@ -178,7 +189,7 @@
     display:grid;grid-template-columns:repeat(3,1fr);gap:32px;text-align:left;
   }
   .step{display:flex;flex-direction:column;gap:6px}
-  .step-num{font-family:'Fraunces',serif;font-weight:600;font-size:2.4rem;line-height:1;color:var(--gold-bright);opacity:.85}
+  .step-num{font-family:'Besley',serif;font-weight:600;font-size:2.4rem;line-height:1;color:var(--gold-bright);opacity:.85}
   .step h3{margin:2px 0 0;font-size:1.1rem;font-weight:600;color:#fff}
   .step p{margin:0;font-size:.86rem;line-height:1.5;color:#9aa4bb}
   @media (max-width:640px){
@@ -451,6 +462,8 @@
   <div class="nav-inner">
     <div class="brand"><img class="brand-badge" src="logo-mark.png" alt="LinkME logo" /> Link<span class="brand-accent">ME</span></div>
     <div class="nav-right">
+      <a class="nav-link current" href="#browse">Opportunities</a>
+      <button type="button" class="nav-link" id="navLinkSaved">Saved<span class="nav-saved-count mono" id="navSavedCount">0</span></button>
       <a class="nav-link" href="events.html">Event Timeline</a>
       <div class="nav-status" title="This list re-syncs with the sheet automatically, about once a minute">
         <span class="live-dot" aria-hidden="true"></span>
@@ -462,7 +475,11 @@
     </button>
     <div class="nav-popup" id="navPopup">
       <a class="nav-popup-link" href="#browse" id="navPopupBrowse">Browse LinkME's opportunities</a>
-      <button type="button" class="nav-popup-link" id="navPopupSaved">Your saved listings</button>
+      <button type="button" class="nav-popup-link" id="navPopupSaved">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>
+        <span>Your saved listings</span>
+        <span class="nav-saved-count mono" id="navPopupSavedCount">0</span>
+      </button>
       <a class="nav-popup-link" href="events.html">See our MEACARES event timeline</a>
       <span class="updated mono" id="updatedLinePopup">Loading live data…</span>
     </div>
@@ -478,12 +495,12 @@
     <div class="step">
       <span class="step-num">1</span>
       <h3>Pick your batch</h3>
-      <p>Tap Freshies through Super Seniors to see what's actually open to you.</p>
+      <p>Tap your batch to see what's open to you.</p>
     </div>
     <div class="step">
       <span class="step-num">2</span>
       <h3>Search and filter</h3>
-      <p>Narrow by industry, type, pay, work set-up, whatever matters most to you.</p>
+      <p>Narrow by industry, type, pay, work set-up, or whatever else matters most to you!</p>
     </div>
     <div class="step">
       <span class="step-num">3</span>
@@ -566,7 +583,7 @@
 
 <p class="save-hint">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>
-  Tap the bookmark on any listing to save it — check "Show only saved" above anytime to see your list.
+  Each listing has a bookmark icon in its top corner. Tap it to save that listing. Check "Show only saved" above anytime to see your saved list.
 </p>
 
 <div id="loadingState" class="loading">
@@ -619,7 +636,8 @@
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
    "batchRow","showClosed","showSaved","resetBtn","resultsMeta","loadingState","errorState","grid",
    "emptyState","emptyText","similarHeading","showMoreWrap","showMoreBtn","updatedLine","overlay","modal","nav","scrollCue",
-   "navMenuBtn","navPopup","navPopupBrowse","navPopupSaved","updatedLinePopup"]
+   "navMenuBtn","navPopup","navPopupBrowse","navPopupSaved","updatedLinePopup","navLinkSaved",
+   "navSavedCount","navPopupSavedCount"]
   .forEach(function(id){ els[id.replace(/-([a-z])/g, function(_,c){return c.toUpperCase();})] = document.getElementById(id); });
 
   // ---- saved listings: local to this browser only, no account, keyed by company+role since the sheet has no stable id ----
@@ -643,6 +661,11 @@
     var key = savedKey(o);
     if (savedSet.has(key)) savedSet.delete(key); else savedSet.add(key);
     persistSaved();
+    updateSavedCountBadges();
+  }
+  function updateSavedCountBadges(){
+    els.navSavedCount.textContent = savedSet.size;
+    els.navPopupSavedCount.textContent = savedSet.size;
   }
 
   var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false, savedOnly:false };
@@ -1076,14 +1099,18 @@
       closeNavPopup();
       document.getElementById("browse").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
     });
-    els.navPopupSaved.addEventListener("click", function(){
-      closeNavPopup();
+    function activateSavedOnly(){
       els.showSaved.checked = true;
       state.savedOnly = true;
       shown = PAGE_SIZE;
       render();
       document.getElementById("browse").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    }
+    els.navPopupSaved.addEventListener("click", function(){
+      closeNavPopup();
+      activateSavedOnly();
     });
+    els.navLinkSaved.addEventListener("click", activateSavedOnly);
     document.addEventListener("click", function(e){
       if (!els.navPopup.classList.contains("open")) return;
       if (e.target === els.navMenuBtn || els.navMenuBtn.contains(e.target)) return;
@@ -1123,10 +1150,18 @@
     refreshFilterOptions(rows);
     buildBatchPills();
     wireControls();
+    updateSavedCountBadges();
+    if (new URLSearchParams(location.search).get("saved") === "1") {
+      state.savedOnly = true;
+      els.showSaved.checked = true;
+    }
     render();
     els.loadingState.style.display = "none";
     markUpdated();
     firstLoadDone = true;
+    if (state.savedOnly) {
+      document.getElementById("browse").scrollIntoView({ behavior: "auto" });
+    }
   }
 
   function loadData(){

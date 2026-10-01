@@ -31,57 +31,57 @@ colors:
   danger-bg: "#F6E9E7"
 typography:
   display:
-    fontFamily: Fraunces
+    fontFamily: Besley
     fontSize: 56px
     fontWeight: 600
     lineHeight: 1.08
     letterSpacing: -0.02em
   h1:
-    fontFamily: Fraunces
+    fontFamily: Besley
     fontSize: 40px
     fontWeight: 600
     lineHeight: 1.12
     letterSpacing: -0.01em
   h2:
-    fontFamily: Fraunces
+    fontFamily: Besley
     fontSize: 28px
     fontWeight: 600
     lineHeight: 1.2
     letterSpacing: -0.005em
   h3:
-    fontFamily: Fraunces
+    fontFamily: Besley
     fontSize: 20px
     fontWeight: 600
     lineHeight: 1.3
   body-lg:
-    fontFamily: Inter
+    fontFamily: IBM Plex Sans
     fontSize: 18px
     fontWeight: 400
     lineHeight: 1.6
   body-md:
-    fontFamily: Inter
+    fontFamily: IBM Plex Sans
     fontSize: 16px
     fontWeight: 400
     lineHeight: 1.6
   body-sm:
-    fontFamily: Inter
+    fontFamily: IBM Plex Sans
     fontSize: 14px
     fontWeight: 400
     lineHeight: 1.55
   label-md:
-    fontFamily: Inter
+    fontFamily: IBM Plex Sans
     fontSize: 13px
     fontWeight: 600
     lineHeight: 1.3
     letterSpacing: 0.01em
   label-caps:
-    fontFamily: Inter
+    fontFamily: IBM Plex Sans
     fontSize: 11px
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: 0.08em
   caption:
-    fontFamily: Inter
+    fontFamily: IBM Plex Sans
     fontSize: 12px
     fontWeight: 500
     lineHeight: 1.4
@@ -265,11 +265,27 @@ small text on its own — pair it with Tertiary Ink instead.
 
 ## Typography
 
-Unchanged from the previous system: the branding guide's own typography
-page was an unfilled template with no typeface specified, so there was no
-brand mandate to follow or break. Fraunces still carries every headline;
-Inter still carries everything meant to be read at length; IBM Plex Mono
-is still reserved for dates, counts, and deadlines.
+The branding guide's own typography page was an unfilled template with no
+typeface specified, so there was no brand mandate to follow or break —
+which left the system's original pairing (Fraunces + Inter) free to be
+reconsidered. It was replaced: Fraunces read as soft, editorial, slightly
+twee for a tool handling real deadlines and real applications, and the
+cream-background-plus-serif-display combination is one of the most common
+defaults in AI-generated design, not a choice made for this brief.
+
+**Besley (slab serif, 600/700, italic 500/600) now carries every
+headline, the step numerals, and month headings.** A slab serif's
+defining trait is its serifs — flat, rectangular feet bracketing each
+stem — which is a literal, legible echo of the staircase motif at the
+level of individual letterforms. It reads sturdier and more confident
+than Fraunces' old-style warmth, without tipping into cold or generic.
+
+**IBM Plex Sans (400/500/600) now carries body copy, labels, and UI
+text**, replacing Inter. It pairs with IBM Plex Mono — already in use for
+dates and counts — as one deliberate "Plex" voice handling two roles
+(reading and data) instead of three unrelated families doing one role
+each. This is also why the system dropped from three type families to
+two: tighter, and every choice now has a stated reason.
 
 ## Layout
 
@@ -353,6 +369,6 @@ running wider than it is tall.
   default; size them to their content.
 - Don't reach for an SVG icon before checking whether color, weight, or a
   text label already solves the problem.
-- Do keep Fraunces exclusively for headlines (H3 and above).
+- Do keep Besley exclusively for headlines (H3 and above).
 - Do use `typography.data-md` (mono) for any deadline, date, or count a
   student is expected to scan.
