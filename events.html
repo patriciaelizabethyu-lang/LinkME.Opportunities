@@ -112,6 +112,7 @@
   .page-header .updated strong{color:var(--gold-bright)}
 
   /* ---------- Timeline ---------- */
+  /* Signature: a vertical spine, the brand's staircase turned on its side — each event is a step, "today" is where you're standing */
   .timeline-wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px}
   .month-group{margin-bottom:38px}
   .month-heading{
@@ -119,12 +120,22 @@
     padding-bottom:10px;border-bottom:1px solid var(--line);color:var(--navy);
   }
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .month-heading{color:#fff} }
+  .month-events{position:relative}
+  .month-events::before{
+    content:"";position:absolute;left:68px;top:6px;bottom:6px;width:2px;background:var(--line);
+  }
   .event-row{
-    display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);
+    position:relative;display:flex;gap:24px;padding:14px 0;border-bottom:1px solid var(--line);
   }
   .event-row:last-child{border-bottom:none}
+  .event-row::before{
+    content:"";position:absolute;left:64px;top:19px;width:9px;height:9px;border-radius:50%;
+    background:var(--gold);border:2px solid var(--gold);box-shadow:0 0 0 3px var(--paper);
+  }
+  .event-row.is-past::before{background:var(--line);border-color:var(--line)}
+  .event-row.is-past{opacity:.56}
   .event-date{
-    flex:none;width:64px;font-family:'IBM Plex Mono',monospace;font-size:.82rem;
+    flex:none;width:56px;font-family:'IBM Plex Mono',monospace;font-size:.82rem;
     font-weight:600;color:var(--ink-soft);padding-top:2px;
   }
   .event-body{flex:1;min-width:0}
@@ -136,6 +147,18 @@
   }
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .event-tag{color:var(--gold)} }
   .event-venue{font-size:.8rem;color:var(--ink-soft)}
+
+  .today-marker{
+    scroll-margin-top:90px;position:relative;z-index:1;
+    display:flex;align-items:center;gap:12px;margin:18px 0;
+  }
+  .today-marker::before, .today-marker::after{content:"";flex:1;height:2px;background:var(--gold)}
+  .today-marker span{
+    flex:none;font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--navy);background:var(--gold);
+    padding:4px 10px;border-radius:var(--r-sm);
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .today-marker span{color:#171308} }
 
   .empty, .loading, .error{
     max-width:760px;margin:60px auto;padding:0 20px;text-align:center;color:var(--ink-soft);
@@ -190,7 +213,7 @@
 
 <footer>
   <img class="footer-logo" src="logo-full.png" alt="MEA Cares, Career Exploration Series" />
-  Made for every batch, from Freshies to Super Seniors.
+  Take the next step towards your future career paths!
 </footer>
 
 <script>
@@ -206,6 +229,7 @@
   var els = {};
   ["loadingState","errorState","emptyState","timelineWrap","updatedLine","nav","navMenuBtn","navPopup"]
     .forEach(function(id){ els[id] = document.getElementById(id); });
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---- minimal RFC4180 CSV parser (same as index.html) ----
   function parseCSV(text){
@@ -232,6 +256,21 @@
 
   // row[1] Month (set only on a block's first row, forward-filled) | row[2] Date | row[3] Initiative
   // row[4] Event title | row[5] Venue | row[6] Documentation — external columns only, internal (7+) ignored
+  var MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  // best-effort only, for ordering/relative-position — the raw date string is always what's displayed
+  function parseEventDate(monthStr, dateStr){
+    var m = /([A-Za-z]+)\s+(\d{4})/.exec(monthStr || "");
+    if (!m) return null;
+    var monthIdx = MONTH_NAMES.indexOf(m[1]);
+    var year = parseInt(m[2], 10);
+    if (monthIdx === -1 || isNaN(year)) return null;
+    var d = /\d+/.exec(dateStr || "");
+    var day = d ? parseInt(d[0], 10) : 1;
+    if (!(day >= 1 && day <= 31)) day = 1;
+    return new Date(year, monthIdx, day);
+  }
+
   function mapEvents(rows){
     var out = [], month = "";
     for (var r = 1; r < rows.length; r++) {
@@ -241,13 +280,15 @@
       var initiative = (row[3] || "").trim();
       var title = (row[4] || "").trim();
       if (!initiative && !title) continue;
+      var date = (row[2] || "").trim();
       out.push({
         month: month,
-        date: (row[2] || "").trim(),
+        date: date,
         initiative: initiative,
         title: title || "Untitled event",
         venue: (row[5] || "").trim(),
-        _idx: r
+        _idx: r,
+        _date: parseEventDate(month, date)
       });
     }
     return out;
@@ -259,9 +300,9 @@
     });
   }
 
-  function eventHTML(ev){
+  function eventHTML(ev, isPast){
     return (
-      '<div class="event-row">' +
+      '<div class="event-row' + (isPast ? ' is-past' : '') + '">' +
       '<div class="event-date mono">' + esc(ev.date || "TBA") + '</div>' +
       '<div class="event-body">' +
       '<p class="event-title">' + esc(ev.title) + '</p>' +
@@ -270,6 +311,16 @@
       (ev.venue ? '<span class="event-venue">' + esc(ev.venue) + '</span>' : '') +
       '</div></div></div>'
     );
+  }
+
+  // the first event whose parsed date is today-or-later — unparseable dates are treated as upcoming
+  // (so a "TBA" entry never gets hidden among faded past events)
+  function findTodayIndex(events){
+    var today = new Date(); today.setHours(0,0,0,0);
+    for (var i = 0; i < events.length; i++) {
+      if (!events[i]._date || events[i]._date >= today) return i;
+    }
+    return -1; // everything's in the past
   }
 
   function render(events){
@@ -281,16 +332,19 @@
     els.emptyState.style.display = "none";
     els.timelineWrap.style.display = "block";
 
+    var todayIdx = findTodayIndex(events);
     var html = "", lastMonth = null;
-    events.forEach(function(ev){
+    events.forEach(function(ev, i){
       if (ev.month !== lastMonth) {
-        if (lastMonth !== null) html += "</div>";
-        html += '<div class="month-group"><h2 class="month-heading">' + esc(ev.month || "TBA") + '</h2>';
+        if (lastMonth !== null) html += "</div></div>";
+        html += '<div class="month-group"><h2 class="month-heading">' + esc(ev.month || "TBA") + '</h2><div class="month-events">';
         lastMonth = ev.month;
       }
-      html += eventHTML(ev);
+      if (i === todayIdx) html += '<div class="today-marker" id="todayMarker"><span>Today</span></div>';
+      html += eventHTML(ev, todayIdx !== -1 && i < todayIdx);
     });
-    html += "</div>";
+    html += "</div></div>";
+    if (todayIdx === -1 && events.length) html += '<div class="today-marker" id="todayMarker" style="margin-top:0"><span>Today</span></div>';
     els.timelineWrap.innerHTML = html;
   }
 
@@ -308,10 +362,15 @@
       })
       .then(function(text){
         var events = mapEvents(parseCSV(text));
+        var isFirstLoad = !firstLoadDone;
         els.loadingState.style.display = "none";
         render(events);
         markUpdated();
         firstLoadDone = true;
+        if (isFirstLoad) {
+          var marker = document.getElementById("todayMarker");
+          if (marker) marker.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        }
       })
       .catch(function(err){
         if (!firstLoadDone) {
