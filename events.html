@@ -287,8 +287,8 @@
     var monthIdx = MONTH_NAMES.indexOf(m[1]);
     var year = parseInt(m[2], 10);
     if (monthIdx === -1 || isNaN(year)) return null;
-    var d = /\d+/.exec(dateStr || "");
-    var day = d ? parseInt(d[0], 10) : 1;
+    var nums = (dateStr || "").match(/\d+/g);
+    var day = nums ? parseInt(nums[nums.length - 1], 10) : 1; // a range counts as upcoming until its last day
     if (!(day >= 1 && day <= 31)) day = 1;
     return new Date(year, monthIdx, day);
   }
@@ -303,6 +303,8 @@
       var title = (row[4] || "").trim();
       if (!initiative && !title) continue;
       var date = (row[2] || "").trim();
+      // the sheet has "-16" for this one, which should read 2-16; this stops applying once the cell is fixed
+      if (date === "-16" && title === "Externals Talent Pool Wave 1 Application Period") date = "2-16";
       out.push({
         month: month,
         date: date,
