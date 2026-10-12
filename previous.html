@@ -202,7 +202,7 @@
   <div class="nav-inner">
     <div class="nav-top">
       <a class="brand" href="index.html"><img class="brand-badge" src="logo-mark.png" alt="LinkME logo" /> Link<span class="brand-accent">ME</span></a>
-      <div class="nav-status" title="This page re-syncs with the sheet automatically, about once a minute">
+      <div class="nav-status" title="This page refreshes by itself about once a minute">
         <span class="live-dot" aria-hidden="true"></span>
         <span class="updated" id="updatedLine">Loading live data…</span>
       </div>
@@ -223,7 +223,7 @@
 
 <div id="loadingState" class="loading">
   <div class="brand-pulse" aria-hidden="true"></div>
-  Pulling alumni responses from the sheet…
+  Loading alumni responses…
 </div>
 <div id="errorState" class="error" style="display:none"></div>
 
@@ -411,7 +411,7 @@
         if (!firstLoadDone) {
           els.loadingState.style.display = "none";
           els.errorState.style.display = "block";
-          els.errorState.textContent = "Couldn't load the alumni responses: " + err.message + ". Make sure the sheet is still shared as \"Anyone with the link can view.\"";
+          els.errorState.textContent = "We couldn't load the alumni responses. Check your connection and refresh the page. If it keeps happening, let the MEA CARES team know.";
           els.updatedLine.textContent = "Live data unavailable";
         }
       });

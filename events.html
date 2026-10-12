@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Event Timeline · LinkME</title>
-<meta name="description" content="Upcoming MEA CARES events, synced live from the masterfile." />
+<meta name="description" content="Upcoming MEA CARES events, always up to date." />
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -203,7 +203,7 @@
   <div class="nav-inner">
     <div class="nav-top">
       <a class="brand" href="index.html"><img class="brand-badge" src="logo-mark.png" alt="LinkME logo" /> Link<span class="brand-accent">ME</span></a>
-      <div class="nav-status" title="This page re-syncs with the sheet automatically, about once a minute">
+      <div class="nav-status" title="This page refreshes by itself about once a minute">
         <span class="live-dot" aria-hidden="true"></span>
         <span class="updated" id="updatedLine">Loading live data…</span>
       </div>
@@ -224,10 +224,10 @@
 
 <div id="loadingState" class="loading">
   <div class="brand-pulse" aria-hidden="true"></div>
-  Pulling the latest timeline from the sheet…
+  Loading the event timeline…
 </div>
 <div id="errorState" class="error" style="display:none"></div>
-<div id="emptyState" class="empty" style="display:none">No upcoming events on the timeline right now — check back soon.</div>
+<div id="emptyState" class="empty" style="display:none">No events on the timeline yet. Check back soon.</div>
 <div class="timeline-wrap" id="timelineWrap" style="display:none"></div>
 
 <footer>
@@ -408,7 +408,7 @@
         if (!firstLoadDone) {
           els.loadingState.style.display = "none";
           els.errorState.style.display = "block";
-          els.errorState.textContent = "Couldn't load the live timeline: " + err.message + ". Make sure the sheet is still shared as \"Anyone with the link can view.\"";
+          els.errorState.textContent = "We couldn't load the event timeline. Check your connection and refresh the page. If it keeps happening, let the MEA CARES team know.";
           els.updatedLine.textContent = "Live data unavailable";
         }
       });

@@ -353,6 +353,34 @@ running wider than it is tall.
   color as a fill — keeping status legible while staying quiet next to
   Gold, the system's one interactive accent.
 
+- **Page tabs:** The same four tabs sit under the logo on every page
+  (Opportunities, Event Timeline, Previous Internships, Saved), always
+  visible, never behind a menu. Each has an icon. The current page is
+  solid Gold with dark text; the others are muted tabs that brighten on
+  hover. Saved goes last because it is a personal view, not a page. On
+  phones the four become equal columns with the icon above the label so
+  none is ever cut off. A tab bar replaced a hamburger menu because a
+  hamburger hides where the pages are.
+- **Timeline:** A vertical spine, the staircase motif turned on its side.
+  Each event is a Gold dot on the spine; past events fade; a "Today"
+  marker splits past from upcoming and the page scrolls to it on load.
+  A date range counts as upcoming until its last day.
+- **Hover tips:** A custom tip (not the browser's slow native tooltip)
+  explains the Saved tab and every bookmark icon. It also shows on
+  keyboard focus. Touch screens have no hover, so the same explanation
+  is also written out in the hint above the listings and in the note at
+  the top of the Saved view.
+- **Deadline states:** A listing marked Open whose deadline has already
+  passed shows a "Deadline passed" badge instead of "Open". "Deadline
+  soonest" sorts upcoming dates first, then listings with no date, then
+  passed ones.
+- **Phone filters:** Batch and search stay visible; the other six
+  filters sit behind a "More filters" button that shows how many are
+  active, so the first listing is not three screens down.
+- **Copy:** Plain words, sentence case, no em dashes. Say where a control
+  is and what it does. Never expose internals like "the sheet" or
+  sharing settings to visitors.
+
 ## Do's and Don'ts
 
 - Do use Gold (tertiary) only for accents, secondary actions, and active
