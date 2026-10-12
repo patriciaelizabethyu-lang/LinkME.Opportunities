@@ -424,6 +424,12 @@
   .alumni-section{
     padding-top:14px;border-top:1px solid var(--line);
   }
+  .alumni-pager{display:flex;align-items:center;gap:10px;margin-top:6px;font-size:.78rem;color:var(--ink-soft)}
+  .pager-btn{
+    width:28px;height:28px;border:1px solid var(--line);background:var(--cream);color:var(--ink);
+    border-radius:var(--r-sm);font-size:1.1rem;line-height:1;cursor:pointer;padding:0;transition:border-color .18s ease;
+  }
+  .pager-btn:hover{border-color:var(--gold)}
   .alumni-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
   .alumni-col ul{margin:0;padding-left:18px}
   .alumni-col li{font-size:.86rem;line-height:1.5;margin-bottom:6px;color:var(--ink)}
@@ -631,7 +637,7 @@
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var allRows = [];
-  var reviewsMap = {}; // "industry|function" -> { industry, role, pros:[...], cons:[...] }
+  var reviewsMap = {}; // "industry|function" -> { industry, role, responses:[{ pros:[...], cons:[...] }, ...] }
   var els = {};
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
    "batchRow","showClosed","showSaved","resetBtn","resultsMeta","loadingState","errorState","grid",
@@ -731,7 +737,7 @@
     return (industry||"").trim().toLowerCase() + "|" + (role||"").trim().toLowerCase();
   }
 
-  // Sheet24: col1 industry, col2 role/function, col3 pros, col4 cons (each "### "-joined), one row per combo
+  // Sheet24: col1 industry, col2 role/function, col3 pros, col4 cons (each "### "-joined). A combo can span several rows, one per responder.
   function mapReviews(rows){
     var map = {};
     for (var r = 2; r < rows.length; r++) {
@@ -743,7 +749,9 @@
       var pros = (row[3]||"").split("###").map(function(s){ return s.trim(); }).filter(Boolean);
       var cons = (row[4]||"").split("###").map(function(s){ return s.trim(); }).filter(Boolean);
       if (!pros.length && !cons.length) continue;
-      map[reviewKey(industry, role)] = { industry: industry, role: role, pros: pros, cons: cons };
+      var key = reviewKey(industry, role);
+      if (!map[key]) map[key] = { industry: industry, role: role, responses: [] };
+      map[key].responses.push({ pros: pros, cons: cons });
     }
     return map;
   }
@@ -1001,16 +1009,12 @@
     var review = findReview(o);
     if (review) {
       html += '<section class="alumni-section"><h4>From MEA alumni in ' + esc(review.industry) + '</h4>';
-      html += '<div class="alumni-cols">';
-      if (review.pros.length) {
-        html += '<div class="alumni-col"><span class="alumni-label pros">What went well</span><ul>' +
-          review.pros.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join("") + '</ul></div>';
+      if (review.responses.length > 1) {
+        html += '<div class="alumni-pager"><button type="button" class="pager-btn" id="alumniPrev" aria-label="Previous response">&#8249;</button>' +
+          '<span class="mono" id="alumniCount" aria-live="polite"></span>' +
+          '<button type="button" class="pager-btn" id="alumniNext" aria-label="Next response">&#8250;</button></div>';
       }
-      if (review.cons.length) {
-        html += '<div class="alumni-col"><span class="alumni-label cons">Watch out for</span><ul>' +
-          review.cons.map(function(c){ return '<li>' + esc(c) + '</li>'; }).join("") + '</ul></div>';
-      }
-      html += '</div></section>';
+      html += '<div class="alumni-cols" id="alumniCols"></div></section>';
     }
 
     html += '<div class="apply-row">';
@@ -1024,6 +1028,27 @@
     html += '</div>';
 
     els.modal.innerHTML = html;
+    if (review) {
+      var respIdx = 0;
+      var colsEl = document.getElementById("alumniCols");
+      var showResponse = function(){
+        var resp = review.responses[respIdx], out = "";
+        if (resp.pros.length) out += '<div class="alumni-col"><span class="alumni-label pros">What went well</span><ul>' +
+          resp.pros.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join("") + '</ul></div>';
+        if (resp.cons.length) out += '<div class="alumni-col"><span class="alumni-label cons">Watch out for</span><ul>' +
+          resp.cons.map(function(c){ return '<li>' + esc(c) + '</li>'; }).join("") + '</ul></div>';
+        colsEl.innerHTML = out;
+        var countEl = document.getElementById("alumniCount");
+        if (countEl) countEl.textContent = "Response " + (respIdx + 1) + " of " + review.responses.length;
+      };
+      showResponse();
+      var prevBtn = document.getElementById("alumniPrev"), nextBtn = document.getElementById("alumniNext");
+      if (prevBtn) {
+        var n = review.responses.length;
+        prevBtn.addEventListener("click", function(){ respIdx = (respIdx - 1 + n) % n; showResponse(); });
+        nextBtn.addEventListener("click", function(){ respIdx = (respIdx + 1) % n; showResponse(); });
+      }
+    }
     els.overlay.classList.add("open");
     requestAnimationFrame(function(){ els.overlay.classList.add("in"); });
     document.getElementById("modalClose").addEventListener("click", closeModal);
