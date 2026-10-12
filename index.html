@@ -570,7 +570,7 @@
 <div id="errorState" class="error" style="display:none"></div>
 
 <div class="empty" id="emptyState" style="display:none">
-  <span class="empty-stamp">No matches</span>
+  <span class="empty-stamp" id="emptyStamp">No matches</span>
   <p id="emptyText">Nothing matches yet. Try widening your search or clearing a filter.</p>
 </div>
 <div class="similar-heading" id="similarHeading" style="display:none">Closest matches</div>
@@ -612,7 +612,7 @@
   var els = {};
   ["searchInput","f-type","f-industry","f-paid","f-required","f-setup","f-source","f-sort",
    "batchRow","showClosed","showSaved","resetBtn","resultsMeta","loadingState","errorState","grid",
-   "emptyState","emptyText","similarHeading","showMoreWrap","showMoreBtn","updatedLine","overlay","modal","nav","scrollCue",
+   "emptyState","emptyText","emptyStamp","similarHeading","showMoreWrap","showMoreBtn","updatedLine","overlay","modal","nav","scrollCue",
    "navTabOpp","navTabSaved","navSavedCount"]
   .forEach(function(id){ els[id.replace(/-([a-z])/g, function(_,c){return c.toUpperCase();})] = document.getElementById(id); });
 
@@ -924,6 +924,21 @@
     if (rows.length === 0) {
       els.emptyState.style.display = "block";
       els.showMoreWrap.style.display = "none";
+      if (state.savedOnly) {
+        els.similarHeading.style.display = "none";
+        els.grid.style.display = "none";
+        els.grid.innerHTML = "";
+        if (savedSet.size === 0) {
+          els.emptyStamp.textContent = "Nothing saved yet";
+          els.emptyText.textContent = "Tap the bookmark icon in the top corner of any listing to save it. Your saved listings will show up here.";
+        } else {
+          els.emptyStamp.textContent = "No saved matches";
+          els.emptyText.textContent = (savedSet.size === 1 ? "Your saved listing doesn't match" : "None of your " + savedSet.size + " saved listings match") +
+            " the filters you picked. Tap Reset filters to see " + (savedSet.size === 1 ? "it." : "them all.");
+        }
+        return;
+      }
+      els.emptyStamp.textContent = "No matches";
       var similar = findSimilar(6);
       if (similar.length) {
         els.emptyText.textContent = "Nothing matches that exactly, but here's what comes closest:";
