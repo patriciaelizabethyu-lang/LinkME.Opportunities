@@ -562,7 +562,7 @@
       <div class="toggle-group">
         <label class="toggle-line">
           <input type="checkbox" id="showClosed" />
-          Show closed opportunities too
+          Show closed and expired opportunities too
         </label>
         <label class="toggle-line" title="Saved listings live in this browser only, on this device">
           <input type="checkbox" id="showSaved" />
@@ -636,6 +636,7 @@
   var shown = PAGE_SIZE;
   var BATCH_LABELS = { "29": "Freshies", "28": "Sophs", "27": "Juns", "26": "Seniors", "25": "Super Seniors" };
   var CLOSING_SOON_DAYS = 14;
+  var STALE_NO_DEADLINE_DAYS = 365; // a listing with no deadline is hidden this long after it was added
   var BOOKMARK_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>';
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -785,7 +786,7 @@
     els.batchRow.innerHTML = "";
     batches.forEach(function(b){
       var openCount = allRows.filter(function(o){
-        return o.status.toLowerCase() === "open" && o.batches[b];
+        return isOpenNow(o) && o.batches[b];
       }).length;
       var btn = document.createElement("button");
       btn.type = "button";
@@ -816,6 +817,18 @@
     return t !== null && t < startOfToday();
   }
 
+  // open in the sheet but added over a year ago with no deadline to say otherwise
+  function isStale(o){
+    if (o.status.toLowerCase() !== "open" || parseDate(o.deadline) !== null) return false;
+    var added = parseDate(o.inputDate);
+    return added !== null && added < startOfToday() - STALE_NO_DEADLINE_DAYS * 86400000;
+  }
+
+  // what visitors treat as open: marked Open, deadline not passed, not stale
+  function isOpenNow(o){
+    return o.status.toLowerCase() === "open" && !isDeadlinePassed(o) && !isStale(o);
+  }
+
   function isClosingSoon(o){
     if (o.status.toLowerCase() !== "open") return false;
     var t = parseDate(o.deadline);
@@ -828,7 +841,7 @@
     var q = state.search.trim().toLowerCase();
     var rows = allRows.filter(function(o){
       if (state.savedOnly && !isSaved(o)) return false;
-      if (!state.savedOnly && !state.showClosed && o.status.toLowerCase() !== "open") return false;
+      if (!state.savedOnly && !state.showClosed && !isOpenNow(o)) return false;
       if (state.batch && !o.batches[state.batch]) return false;
       if (state.type && o.type !== state.type) return false;
       if (state.industry && o.industry !== state.industry) return false;
@@ -865,6 +878,7 @@
   function badge(o){
     if (o.status.toLowerCase() !== "open") return '<span class="badge closed">Closed</span>';
     if (isDeadlinePassed(o)) return '<span class="badge passed">Deadline passed</span>';
+    if (isStale(o)) return '<span class="badge passed">Added over a year ago</span>';
     return '<span class="badge open">Open</span>';
   }
 
@@ -934,7 +948,7 @@
     var q = state.search.trim().toLowerCase();
     var qWords = q ? q.split(/\s+/).filter(Boolean) : [];
     var pool = allRows.filter(function(o){
-      return state.showClosed || o.status.toLowerCase() === "open";
+      return state.showClosed || isOpenNow(o);
     });
     var scored = pool.map(function(o){
       var score = 0;
