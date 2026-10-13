@@ -24,6 +24,7 @@
     --gold:#FFE445;
     --gold-bright:#FFE445;
     --gold-light:#FFF4B4;
+    --select:#E3CA55; /* calmer than brand gold, for selected states */
     --cream:#F2EFE8;
     --paper:#FFFFFF;
     --ink:#1C2945;
@@ -89,13 +90,13 @@
   .nav-tab svg{flex:none;opacity:.85}
   .nav-tab:hover{background:rgba(255,228,69,.14);color:#fff;border-color:rgba(255,228,69,.45)}
   .nav-tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
-  .nav-tab.current{background:var(--gold);border-color:var(--gold);color:#171308;cursor:default}
+  .nav-tab.current{background:var(--select);border-color:var(--select);color:#171308;cursor:default}
   .nav-tab.current svg{opacity:1}
   .nav-saved-count{
-    flex:none;font-size:.68rem;font-weight:700;color:var(--navy);background:var(--gold);
+    flex:none;font-size:.68rem;font-weight:700;color:var(--navy);background:var(--select);
     padding:1px 7px;border-radius:999px;line-height:1.5;
   }
-  .nav-tab.current .nav-saved-count{background:#171308;color:var(--gold)}
+  .nav-tab.current .nav-saved-count{background:#171308;color:var(--select)}
   @media (max-width:520px){
     .nav{padding:10px 12px 0}
     .nav-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;overflow:visible}
@@ -231,7 +232,7 @@
 
 <footer>
   <img class="footer-logo" src="logo-full.png" alt="MEA Cares, Career Exploration Series" />
-  Take the next step towards your future career paths!
+  Come as you are
 </footer>
 
 <script>

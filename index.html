@@ -24,6 +24,7 @@
     --gold:#FFE445;
     --gold-bright:#FFE445;
     --gold-light:#FFF4B4;
+    --select:#E3CA55; /* calmer than brand gold, for selected states */
     --cream:#F2EFE8;
     --paper:#FFFFFF;
     --ink:#1C2945;
@@ -99,13 +100,13 @@
   .nav-tab svg{flex:none;opacity:.85}
   .nav-tab:hover{background:rgba(255,228,69,.14);color:#fff;border-color:rgba(255,228,69,.45)}
   .nav-tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
-  .nav-tab.current{background:var(--gold);border-color:var(--gold);color:#171308;cursor:default}
+  .nav-tab.current{background:var(--select);border-color:var(--select);color:#171308;cursor:default}
   .nav-tab.current svg{opacity:1}
   .nav-saved-count{
-    flex:none;font-size:.68rem;font-weight:700;color:var(--navy);background:var(--gold);
+    flex:none;font-size:.68rem;font-weight:700;color:var(--navy);background:var(--select);
     padding:1px 7px;border-radius:var(--r-sm);line-height:1.5;
   }
-  .nav-tab.current .nav-saved-count{background:#171308;color:var(--gold)}
+  .nav-tab.current .nav-saved-count{background:#171308;color:var(--select)}
   @media (max-width:520px){
     .nav{padding:10px 12px 0}
     .nav-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;overflow:visible}
@@ -247,7 +248,7 @@
   .pill.active{background:var(--navy);border-color:var(--navy);color:#fff}
   .pill-count{display:block;font-size:.66rem;font-weight:500;opacity:.65;margin-top:2px}
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]) .pill.active{background:var(--gold);border-color:var(--gold);color:#171308}
+    :root:not([data-theme="light"]) .pill.active{background:var(--select);border-color:var(--select);color:#171308}
     :root:not([data-theme="light"]) .pill:hover{color:var(--gold-bright)}
   }
   /* Signature motif: batches read left to right as a staircase — Freshies on the bottom step, Super Seniors on top */
@@ -267,7 +268,7 @@
   }
   .toggle-group{display:flex;flex-direction:column;gap:8px}
   .toggle-line{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--ink-soft)}
-  .toggle-line input{width:16px;height:16px;accent-color:var(--gold)}
+  .toggle-line input{width:16px;height:16px;accent-color:var(--select)}
   .reset-btn{
     background:none;border:1px solid var(--line);color:var(--ink-soft);
     padding:7px 12px;border-radius:var(--r-md);font-size:.82rem;cursor:pointer;font-family:inherit;
@@ -612,7 +613,7 @@
 
 <footer>
   <img class="footer-logo" src="logo-full.png" alt="MEA Cares, Career Exploration Series" />
-  Take the next step towards your future career paths!
+  Come as you are
 </footer>
 
 <div class="overlay" id="overlay">
@@ -706,6 +707,9 @@
     // 9 Type | 10 Industry | 11 Company | 12 Position | 13 Function | 14 Job Desc | 15 Skills
     // 16 Paid | 17 Required | 18 Work Set-up | 19 Email | 20 Source | 22 Name
     var out = [];
+    // optional "Schedule" column (e.g. Jan-Feb, yearlong): found by its header, so it shows up as soon as the column is added
+    var schedIdx = -1;
+    (rows[1] || []).forEach(function(h, i){ if (schedIdx < 0 && /^schedule\b/i.test((h || "").trim())) schedIdx = i; });
     for (var r = 2; r < rows.length; r++) {
       var row = rows[r];
       if (!row || !row[11] || !row[11].trim()) continue; // no Company => skip
@@ -714,6 +718,7 @@
         status: (row[6]||"").trim() || "Open",
         inputDate: (row[7]||"").trim(),
         deadline: (row[8]||"").trim() || "TBA",
+        schedule: schedIdx >= 0 ? (row[schedIdx]||"").trim() : "",
         type: (row[9]||"").trim(),
         industry: (row[10]||"").trim(),
         company: (row[11]||"").trim(),
@@ -882,7 +887,8 @@
       '<h3>'+esc(o.company)+'</h3>' +
       '<p class="position">'+esc(role)+'</p>' +
       '<div class="tag-row">'+tags.join("")+'</div>' +
-      '<div class="deadline">Deadline: <b class="mono">'+esc(o.deadline)+'</b></div>'
+      '<div class="deadline">Deadline: <b class="mono">'+esc(o.deadline)+'</b>' +
+        (o.schedule ? ' <span class="sep" aria-hidden="true">·</span> Schedule: <b>'+esc(o.schedule)+'</b>' : '') + '</div>'
     );
   }
 
@@ -1023,6 +1029,7 @@
 
     html += '<div class="modal-grid">';
     html += '<div><span>Deadline</span><b class="mono">'+esc(o.deadline)+'</b></div>';
+    if (o.schedule) html += '<div><span>Schedule</span><b>'+esc(o.schedule)+'</b></div>';
     html += '<div><span>Work set-up</span><b>'+esc(o.setup || "Not specified")+'</b></div>';
     html += '<div><span>Function</span><b>'+esc(o.fn || "Not specified")+'</b></div>';
     html += '<div><span>Required?</span><b>'+(o.required ? "Yes" : "No")+'</b></div>';

@@ -24,6 +24,7 @@
     --gold:#FFE445;
     --gold-bright:#FFE445;
     --gold-light:#FFF4B4;
+    --select:#E3CA55; /* calmer than brand gold, for selected states */
     --cream:#F2EFE8;
     --paper:#FFFFFF;
     --ink:#1C2945;
@@ -89,13 +90,13 @@
   .nav-tab svg{flex:none;opacity:.85}
   .nav-tab:hover{background:rgba(255,228,69,.14);color:#fff;border-color:rgba(255,228,69,.45)}
   .nav-tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
-  .nav-tab.current{background:var(--gold);border-color:var(--gold);color:#171308;cursor:default}
+  .nav-tab.current{background:var(--select);border-color:var(--select);color:#171308;cursor:default}
   .nav-tab.current svg{opacity:1}
   .nav-saved-count{
-    flex:none;font-size:.68rem;font-weight:700;color:var(--navy);background:var(--gold);
+    flex:none;font-size:.68rem;font-weight:700;color:var(--navy);background:var(--select);
     padding:1px 7px;border-radius:999px;line-height:1.5;
   }
-  .nav-tab.current .nav-saved-count{background:#171308;color:var(--gold)}
+  .nav-tab.current .nav-saved-count{background:#171308;color:var(--select)}
   @media (max-width:520px){
     .nav{padding:10px 12px 0}
     .nav-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;overflow:visible}
@@ -117,7 +118,18 @@
 
   /* ---------- Timeline ---------- */
   /* Signature: a vertical spine, the brand's staircase turned on its side — each event is a step, "today" is where you're standing */
-  .timeline-wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px}
+  .timeline-controls{
+    max-width:760px;margin:0 auto;padding:28px 20px 0;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    font-size:.88rem;color:var(--ink-soft);
+  }
+  .timeline-controls #viewLabel{font-weight:600;color:var(--ink)}
+  .view-toggle{
+    background:none;border:1px solid var(--line);color:var(--ink-soft);padding:8px 14px;border-radius:var(--r-md);
+    font-size:.82rem;font-family:inherit;cursor:pointer;transition:border-color .18s ease,color .18s ease;
+  }
+  .view-toggle:hover{border-color:var(--gold);color:var(--ink)}
+  .timeline-wrap{max-width:760px;margin:0 auto;padding:24px 20px 80px}
   .month-group{margin-bottom:38px}
   .month-heading{
     font-family:'Besley',serif;font-weight:600;font-size:1.3rem;margin:0 0 16px;
@@ -156,10 +168,10 @@
     scroll-margin-top:150px;position:relative;z-index:1;
     display:flex;align-items:center;gap:12px;margin:18px 0;
   }
-  .today-marker::before, .today-marker::after{content:"";flex:1;height:2px;background:var(--gold)}
+  .today-marker::before, .today-marker::after{content:"";flex:1;height:2px;background:var(--select)}
   .today-marker span{
     flex:none;font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:700;
-    letter-spacing:.1em;text-transform:uppercase;color:var(--navy);background:var(--gold);
+    letter-spacing:.1em;text-transform:uppercase;color:var(--navy);background:var(--select);
     padding:4px 10px;border-radius:var(--r-sm);
   }
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .today-marker span{color:#171308} }
@@ -215,11 +227,15 @@
 </div>
 <div id="errorState" class="error" style="display:none"></div>
 <div id="emptyState" class="empty" style="display:none">No events on the timeline yet. Check back soon.</div>
+<div class="timeline-controls" id="timelineControls" style="display:none">
+  <span id="viewLabel"></span>
+  <button type="button" class="view-toggle" id="viewToggle">Show full timeline</button>
+</div>
 <div class="timeline-wrap" id="timelineWrap" style="display:none"></div>
 
 <footer>
   <img class="footer-logo" src="logo-full.png" alt="MEA Cares, Career Exploration Series" />
-  Take the next step towards your future career paths!
+  Come as you are
 </footer>
 
 <script>
@@ -233,7 +249,7 @@
   var POLL_INTERVAL_MS = 60000;
 
   var els = {};
-  ["loadingState","errorState","emptyState","timelineWrap","nav","navSavedCount"]
+  ["loadingState","errorState","emptyState","timelineWrap","nav","navSavedCount","timelineControls","viewLabel","viewToggle"]
     .forEach(function(id){ els[id] = document.getElementById(id); });
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -282,7 +298,8 @@
     var year = parseInt(m[2], 10);
     if (monthIdx === -1 || isNaN(year)) return null;
     var nums = (dateStr || "").match(/\d+/g);
-    var day = nums ? parseInt(nums[nums.length - 1], 10) : 1; // a range counts as upcoming until its last day
+    if (!nums) return new Date(year, monthIdx + 1, 0); // no date yet (TBA): upcoming until the month ends
+    var day = parseInt(nums[nums.length - 1], 10); // a range counts as upcoming until its last day
     if (!(day >= 1 && day <= 31)) day = 1;
     return new Date(year, monthIdx, day);
   }
@@ -341,14 +358,32 @@
     return -1; // everything's in the past
   }
 
-  function render(events){
+  var allEvents = [];
+  var showAll = false;
+
+  // by default show only the upcoming month: the month holding the next event that hasn't happened yet
+  // (or the last month on the timeline if everything has passed)
+  function visibleEvents(events){
+    if (showAll || !events.length) return events;
+    var i = findTodayIndex(events);
+    var month = events[i === -1 ? events.length - 1 : i].month;
+    return events.filter(function(ev){ return ev.month === month; });
+  }
+
+  function render(all){
+    allEvents = all;
+    var events = visibleEvents(all);
     if (!events.length) {
       els.emptyState.style.display = "block";
       els.timelineWrap.style.display = "none";
+      els.timelineControls.style.display = "none";
       return;
     }
     els.emptyState.style.display = "none";
     els.timelineWrap.style.display = "block";
+    els.timelineControls.style.display = "flex";
+    els.viewLabel.textContent = showAll ? "Showing the full timeline" : "Showing " + events[0].month;
+    els.viewToggle.textContent = showAll ? "Show only the upcoming month" : "Show full timeline";
 
     var todayIdx = findTodayIndex(events);
     var html = "", lastMonth = null;
@@ -401,6 +436,14 @@
   window.addEventListener("scroll", function(){
     els.nav.classList.toggle("scrolled", window.scrollY > 12);
   }, { passive: true });
+
+  els.viewToggle.addEventListener("click", function(){
+    showAll = !showAll;
+    render(allEvents);
+    var m = document.getElementById("todayMarker");
+    if (!showAll) window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    else if (m) m.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+  });
 
   loadData();
   setInterval(loadData, POLL_INTERVAL_MS);
