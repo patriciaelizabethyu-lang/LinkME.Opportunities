@@ -436,13 +436,17 @@
   @media (max-width:480px){ .alumni-cols{grid-template-columns:1fr} }
   .apply-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:18px}
   .apply-btn{
-    background:var(--navy);color:#fff;text-decoration:none;padding:10px 18px;border-radius:var(--r-md);
-    font-weight:600;font-size:.88rem;display:inline-block;transition:transform .2s ease;
+    background:var(--tab-on);color:#fff;text-decoration:none;padding:10px 18px;border-radius:var(--r-md);
+    font-weight:700;font-size:.88rem;display:inline-block;transition:transform .2s ease;
   }
   .apply-btn:hover{transform:translateY(-1px)}
+  .apply-actions{display:flex;flex-wrap:wrap;gap:10px}
+  .apply-btn.secondary{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .apply-btn:focus-visible{outline:2px solid var(--tab-on);outline-offset:2px}
   .apply-note{margin:0;font-size:.84rem;color:var(--ink-soft);line-height:1.5}
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]) .apply-btn{background:var(--gold);color:#171308}
+    :root:not([data-theme="light"]) .apply-btn{background:var(--tab-on);color:#fff}
+    :root:not([data-theme="light"]) .apply-btn.secondary{background:transparent;color:var(--ink)}
   }
 
   footer{
@@ -708,35 +712,57 @@
   function boolish(v){ return String(v).trim().toUpperCase() === "TRUE" || String(v).trim().toLowerCase() === "yes"; }
 
   function mapRows(rows){
-    // row[0] blank | 1-5: batch flags 29,28,27,26,25 | 6 Status | 7 Input Date | 8 Deadline
-    // 9 Type | 10 Industry | 11 Company | 12 Position | 13 Function | 14 Job Desc | 15 Skills
-    // 16 Paid | 17 Required | 18 Work Set-up | 19 Email | 20 Source | 22 Name
+    // Columns are found by their header names (row 2 of the CSV), so adding or moving a column in the sheet
+    // doesn't break the site. The old fixed positions are the fallback if a header can't be found.
+    var header = (rows[1] || []).map(function(h){ return (h || "").trim().toLowerCase(); });
+    function col(fallback){
+      for (var i = 1; i < arguments.length; i++) {
+        var idx = header.indexOf(arguments[i]);
+        if (idx !== -1) return idx;
+      }
+      return fallback;
+    }
+    function colMatch(re){
+      for (var i = 0; i < header.length; i++) if (re.test(header[i])) return i;
+      return -1;
+    }
+    var C = {
+      b29: col(1, "29", "29.0"), b28: col(2, "28", "28.0"), b27: col(3, "27", "27.0"), b26: col(4, "26", "26.0"), b25: col(5, "25", "25.0"),
+      status: col(6, "status"), input: col(7, "input date"), deadline: col(8, "deadline"),
+      type: col(9, "type"), industry: col(10, "industry"), company: col(11, "company"),
+      position: col(12, "position or role", "position"), fn: col(13, "function"),
+      desc: col(14, "job description"), skills: col(15, "relevant skills needed", "relevant skills"),
+      paid: col(16, "paid"), required: col(17, "required?", "required"), setup: col(18, "work set-up", "work setup"),
+      email: col(19, "e-mail address", "email address", "email"), source: col(20, "source"), name: col(22, "name"),
+      schedule: colMatch(/^schedule\b/),
+      link: colMatch(/^(application |apply |job post |job )?link\b|link to (the )?(job|application)/)
+    };
+    function cell(row, i){ return i >= 0 ? (row[i] || "").trim() : ""; }
     var out = [];
-    // optional "Schedule" column (e.g. Jan-Feb, yearlong): found by its header, so it shows up as soon as the column is added
-    var schedIdx = -1;
-    (rows[1] || []).forEach(function(h, i){ if (schedIdx < 0 && /^schedule\b/i.test((h || "").trim())) schedIdx = i; });
     for (var r = 2; r < rows.length; r++) {
       var row = rows[r];
-      if (!row || !row[11] || !row[11].trim()) continue; // no Company => skip
+      if (!row || !cell(row, C.company)) continue; // no Company => skip
+      var link = cell(row, C.link);
       out.push({
-        batches: { "29": boolish(row[1]), "28": boolish(row[2]), "27": boolish(row[3]), "26": boolish(row[4]), "25": boolish(row[5]) },
-        status: (row[6]||"").trim() || "Open",
-        inputDate: (row[7]||"").trim(),
-        deadline: (row[8]||"").trim() || "TBA",
-        schedule: schedIdx >= 0 ? (row[schedIdx]||"").trim() : "",
-        type: (row[9]||"").trim(),
-        industry: (row[10]||"").trim(),
-        company: (row[11]||"").trim(),
-        position: (row[12]||"").trim(),
-        fn: (row[13]||"").trim(),
-        description: (row[14]||"").trim(),
-        skills: (row[15]||"").trim(),
-        paid: boolish(row[16]),
-        required: boolish(row[17]),
-        setup: (row[18]||"").trim(),
-        email: (row[19]||"").trim(),
-        source: (row[20]||"").trim(),
-        name: (row[22]||"").trim(),
+        batches: { "29": boolish(row[C.b29]), "28": boolish(row[C.b28]), "27": boolish(row[C.b27]), "26": boolish(row[C.b26]), "25": boolish(row[C.b25]) },
+        status: cell(row, C.status) || "Open",
+        inputDate: cell(row, C.input),
+        deadline: cell(row, C.deadline) || "TBA",
+        schedule: cell(row, C.schedule),
+        link: /^https?:\/\//i.test(link) ? link : "", // only real web links ever become a button
+        type: cell(row, C.type),
+        industry: cell(row, C.industry),
+        company: cell(row, C.company),
+        position: cell(row, C.position),
+        fn: cell(row, C.fn),
+        description: cell(row, C.desc),
+        skills: cell(row, C.skills),
+        paid: boolish(row[C.paid]),
+        required: boolish(row[C.required]),
+        setup: cell(row, C.setup),
+        email: cell(row, C.email),
+        source: cell(row, C.source),
+        name: cell(row, C.name),
         _idx: r
       });
     }
@@ -1077,8 +1103,11 @@
     }
 
     html += '<div class="apply-row">';
-    if (o.email) {
-      html += '<a class="apply-btn" href="mailto:'+esc(o.email)+'">Apply via email</a>';
+    if (o.link || o.email) {
+      html += '<div class="apply-actions">';
+      if (o.link) html += '<a class="apply-btn" href="'+esc(o.link)+'" target="_blank" rel="noopener noreferrer">Apply now</a>';
+      if (o.email) html += '<a class="apply-btn' + (o.link ? ' secondary' : '') + '" href="mailto:'+esc(o.email)+'">Apply via email</a>';
+      html += '</div>';
       html += '<p class="apply-note">Posted via ' + esc(o.source || "the MEA CARES list") + '</p>';
     } else {
       html += '<p class="apply-note">No direct apply link here. This was posted via ' + esc(o.source || "the MEA CARES list") +
