@@ -7,8 +7,8 @@ description: >
   Corporation," a building where every initiative is a different floor,
   linked by an elevator. LinkME is the floor whose job is literally
   "connecting from one place to another" — so its signature motif is the
-  staircase: batches climb it left to right, and one watermarked flight
-  rises behind the hero.
+  staircase: batches climb it left to right, and the brand's office scene
+  with its staircase sits behind each page title.
 colors:
   primary: "#1C2945"
   primary-strong: "#10182B"
@@ -31,57 +31,57 @@ colors:
   danger-bg: "#F6E9E7"
 typography:
   display:
-    fontFamily: Besley
+    fontFamily: Poppins
     fontSize: 56px
     fontWeight: 600
     lineHeight: 1.08
     letterSpacing: -0.02em
   h1:
-    fontFamily: Besley
+    fontFamily: Poppins
     fontSize: 40px
     fontWeight: 600
     lineHeight: 1.12
     letterSpacing: -0.01em
   h2:
-    fontFamily: Besley
+    fontFamily: Poppins
     fontSize: 28px
     fontWeight: 600
     lineHeight: 1.2
     letterSpacing: -0.005em
   h3:
-    fontFamily: Besley
+    fontFamily: Poppins
     fontSize: 20px
     fontWeight: 600
     lineHeight: 1.3
   body-lg:
-    fontFamily: IBM Plex Sans
+    fontFamily: Arimo
     fontSize: 18px
     fontWeight: 400
     lineHeight: 1.6
   body-md:
-    fontFamily: IBM Plex Sans
+    fontFamily: Arimo
     fontSize: 16px
     fontWeight: 400
     lineHeight: 1.6
   body-sm:
-    fontFamily: IBM Plex Sans
+    fontFamily: Arimo
     fontSize: 14px
     fontWeight: 400
     lineHeight: 1.55
   label-md:
-    fontFamily: IBM Plex Sans
+    fontFamily: Arimo
     fontSize: 13px
     fontWeight: 600
     lineHeight: 1.3
     letterSpacing: 0.01em
   label-caps:
-    fontFamily: IBM Plex Sans
+    fontFamily: Arimo
     fontSize: 11px
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: 0.08em
   caption:
-    fontFamily: IBM Plex Sans
+    fontFamily: Arimo
     fontSize: 12px
     fontWeight: 500
     lineHeight: 1.4
@@ -265,27 +265,14 @@ small text on its own — pair it with Tertiary Ink instead.
 
 ## Typography
 
-The branding guide's own typography page was an unfilled template with no
-typeface specified, so there was no brand mandate to follow or break —
-which left the system's original pairing (Fraunces + Inter) free to be
-reconsidered. It was replaced: Fraunces read as soft, editorial, slightly
-twee for a tool handling real deadlines and real applications, and the
-cream-background-plus-serif-display combination is one of the most common
-defaults in AI-generated design, not a choice made for this brief.
-
-**Besley (slab serif, 600/700, italic 500/600) now carries every
-headline, the step numerals, and month headings.** A slab serif's
-defining trait is its serifs — flat, rectangular feet bracketing each
-stem — which is a literal, legible echo of the staircase motif at the
-level of individual letterforms. It reads sturdier and more confident
-than Fraunces' old-style warmth, without tipping into cold or generic.
-
-**IBM Plex Sans (400/500/600) now carries body copy, labels, and UI
-text**, replacing Inter. It pairs with IBM Plex Mono — already in use for
-dates and counts — as one deliberate "Plex" voice handling two roles
-(reading and data) instead of three unrelated families doing one role
-each. This is also why the system dropped from three type families to
-two: tighter, and every choice now has a stated reason.
+Matched to the LinkME banner and the branding guide. The banner's "LinkME"
+wordmark is a very heavy geometric sans, so headlines use **Poppins**
+(700/800), the closest widely available match, set tight. The branding
+guide's own body text is Arial-style, so body copy, labels and UI use
+**Arimo**, which is metrically the same as Arial. **IBM Plex Mono** stays
+for dates, counts and deadlines only, because tabular figures are easier
+to scan. This replaced a slab serif (Besley) and IBM Plex Sans: those were
+a pleasant pairing but nothing in the brand looked like them.
 
 ## Layout
 
@@ -331,12 +318,12 @@ running wider than it is tall.
   staggering. Desktop/tablet only (`min-width:641px`); at narrower widths
   the row wraps to 2–3 columns and the stagger is switched off rather than
   left to collide.
-- **Hero watermark (signature):** A single staircase illustration from
-  LinkME's own asset page in the branding guide sits behind the hero copy,
-  bottom-right, at ~15% opacity with `mix-blend-mode: screen` so it reads
-  as a faint rising flight rather than clip-art. This and the batch stairs
-  are the system's only two uses of the motif — everywhere else (cards,
-  filters, footer) stays quiet by design.
+- **Banner and office background:** The MEA CARES / LinkME banner
+  (`header.webp`) sits at the top of every page. The same office scene
+  without text (`office-bg.webp`) sits behind each page's title area under
+  a light wash (a dark wash in dark mode), so the brand's staircase and
+  elevator show through without fighting the text. The batch stairs
+  remain the one place the staircase becomes structure.
 - **Lists:** Each row gets a 1px Border bottom rule and `spacing.md`
   vertical padding; no zebra-striping.
 - **Tooltips:** Ink Navy background, white caption-sized text,
@@ -353,14 +340,14 @@ running wider than it is tall.
   color as a fill — keeping status legible while staying quiet next to
   Gold, the system's one interactive accent.
 
-- **Page tabs:** The same four tabs sit under the logo on every page
-  (Opportunities, Event Timeline, Previous Internships, Saved), always
-  visible, never behind a menu. Each has an icon. The current page is
-  solid Gold with dark text; the others are muted tabs that brighten on
-  hover. Saved goes last because it is a personal view, not a page. On
-  phones the four become equal columns with the icon above the label so
-  none is ever cut off. A tab bar replaced a hamburger menu because a
-  hamburger hides where the pages are.
+- **Page tabs:** The same five tabs sit under the banner on every page
+  (Opportunities, Event Timeline, Previous Internships, Async Documents,
+  Saved), always visible, never behind a menu. Each has an icon. The
+  current page is solid brand Royal Blue with white text; the others are
+  light blue tabs that darken on hover. Saved goes last because it is a
+  personal view, not a page. On phones the five become equal columns with
+  the icon above a one-word label (Browse, Events, Alumni, Documents,
+  Saved) so none is ever cut off.
 - **Timeline:** A vertical spine, the staircase motif turned on its side.
   Each event is a Gold dot on the spine; past events fade; a "Today"
   marker splits past from upcoming and the page scrolls to it on load.
@@ -385,8 +372,8 @@ running wider than it is tall.
 
 - Do use Gold (tertiary) only for accents, secondary actions, and active
   states — never as a body text color at full saturation.
-- Do keep the staircase motif to its two named places (batch stairs, hero
-  watermark). Don't add a third — a per-card stair icon, a stair-shaped
+- Do keep the staircase motif to its two named places (batch stairs, the
+  office scene behind page titles). Don't add a third — a per-card stair icon, a stair-shaped
   divider between every section — the moment it shows up twice more it
   stops reading as a signature and starts reading as wallpaper.
 - Do use `rounded.sm`–`rounded.lg` for every button, chip, card, and input,
@@ -397,6 +384,6 @@ running wider than it is tall.
   default; size them to their content.
 - Don't reach for an SVG icon before checking whether color, weight, or a
   text label already solves the problem.
-- Do keep Besley exclusively for headlines (H3 and above).
+- Do keep Poppins for headlines only; never set body copy, labels or data in it.
 - Do use `typography.data-md` (mono) for any deadline, date, or count a
   student is expected to scan.

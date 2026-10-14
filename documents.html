@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Async Documents | LinkME Opportunity Finder</title>
+<meta property="og:site_name" content="LinkME Opportunity Finder" />
+<meta property="og:title" content="Async Documents | LinkME Opportunity Finder" />
+<meta property="og:description" content="Guides and materials from MEA CARES initiatives that you can read at your own pace." />
+<meta property="og:type" content="website" />
+<meta name="description" content="Guides and materials from MEA CARES initiatives that you can read at your own pace." />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Arimo:wght@400;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* MEA CARES official palette, LinkME (staircase) expression — see DESIGN.md */
+    --navy:#1C2945;
+    --navy-deep:#10182B;
+    --navy-light:#1E5BBD;
+    --gold:#FFE445;
+    --gold-bright:#FFE445;
+    --gold-light:#FFF4B4;
+    --select:#E3CA55; /* calmer than brand gold, for selected states */
+    --cream:#F2EFE8;
+    --paper:#FFFFFF;
+    --ink:#1C2945;
+    --ink-soft:#57647E;
+    --line:#E4E0D3;
+    --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px;
+    --radius:16px;
+    --shadow: 0 1px 2px rgba(28,41,69,.06), 0 8px 24px rgba(28,41,69,.06);
+    --shadow-lg: 0 12px 32px rgba(28,41,69,.16), 0 2px 8px rgba(28,41,69,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#0E1524; --navy-deep:#080B14; --navy-light:#4C87DD; --gold:#FFE445; --gold-bright:#FFE445; --gold-light:#3A331C;
+      --cream:#14181F; --paper:#1B2230; --ink:#ECEEF5; --ink-soft:#9FADBC;
+      --line:#2A333C;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+      --shadow-lg: 0 16px 40px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--cream);color:var(--ink);
+    font-family:'Arimo',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:'Poppins',system-ui,sans-serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  a{color:inherit}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  }
+
+  /* ---------- Brand colours for the banner, nav and hero (light by default, dark follows the system) ---------- */
+  :root{
+    --tab-on:#1E5BBD;
+    --nav-bg:#FFFFFF; --nav-line:#D3E1F0;
+    --tab-bg:#E7F0FA; --tab-line:#C6DBF0; --tab-ink:#1C2945; --tab-hover:#D3E5F8;
+    --hero-ink:#1C2945; --hero-ink-soft:#3F506D; --hero-accent:#1E5BBD; --hero-rule:rgba(28,41,69,.14);
+    --hero-veil-a:rgba(255,255,255,.66); --hero-veil-b:rgba(240,246,252,.82);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --tab-on:#3B77D6;
+      --nav-bg:rgba(14,21,36,.97); --nav-line:rgba(255,255,255,.14);
+      --tab-bg:rgba(255,255,255,.07); --tab-line:rgba(255,255,255,.16); --tab-ink:#cdd6e8; --tab-hover:rgba(117,186,255,.18);
+      --hero-ink:#FFFFFF; --hero-ink-soft:#c7cee0; --hero-accent:#75BAFF; --hero-rule:rgba(255,255,255,.12);
+      --hero-veil-a:rgba(10,16,28,.80); --hero-veil-b:rgba(8,12,22,.90);
+    }
+  }
+
+  /* ---------- Banner + nav: real tabs, the current page is the blue one ---------- */
+  .site-banner{background:#EEF3F8;line-height:0}
+  .site-banner img{display:block;width:100%;max-width:1600px;height:auto;max-height:360px;object-fit:cover;object-position:center 55%;margin:0 auto}
+  .nav{
+    position:sticky;top:0;z-index:40;background:var(--nav-bg);
+    backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);
+    padding:10px 20px 0;border-bottom:2px solid var(--tab-on);
+    transition:box-shadow .3s ease;
+  }
+  .nav.scrolled{box-shadow:0 8px 24px rgba(28,41,69,.16)}
+  .nav-inner{max-width:1100px;margin:0 auto}
+  .nav-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .nav-tabs::-webkit-scrollbar{display:none}
+  .nav-tab:first-child{margin-left:auto}
+  .nav-tab:last-child{margin-right:auto}
+  .nav-tab{
+    flex:none;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+    padding:10px 15px;font-family:inherit;font-size:.88rem;font-weight:700;color:var(--tab-ink);
+    background:var(--tab-bg);border:1px solid var(--tab-line);border-bottom:none;
+    border-radius:10px 10px 0 0;text-decoration:none;cursor:pointer;
+    transition:background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .nav-tab svg{flex:none;opacity:.85}
+  .nav-tab:hover{background:var(--tab-hover);border-color:var(--tab-on)}
+  .nav-tab:focus-visible{outline:2px solid var(--tab-on);outline-offset:-2px}
+  .nav-tab.current{background:var(--tab-on);border-color:var(--tab-on);color:#fff;cursor:default}
+  .nav-tab.current svg{opacity:1}
+  .lbl-short{display:none}
+  .nav-saved-count{
+    flex:none;font-size:.68rem;font-weight:700;color:#171308;background:var(--select);
+    padding:1px 7px;border-radius:var(--r-sm);line-height:1.5;
+  }
+  @media (max-width:640px){
+    .nav{padding:8px 10px 0}
+    .nav-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;overflow:visible}
+    .nav-tab:first-child, .nav-tab:last-child{margin:0}
+    .nav-tab{
+      position:relative;flex-direction:column;justify-content:flex-start;gap:4px;white-space:normal;
+      padding:8px 2px 7px;font-size:.66rem;line-height:1.2;text-align:center;
+    }
+    .nav-tab svg{width:18px;height:18px}
+    .lbl-full{display:none}
+    .lbl-short{display:inline}
+    .nav-saved-count{position:absolute;top:2px;right:3px;padding:0 4px;font-size:.58rem}
+  }
+
+  /* ---------- Header ---------- */
+  .page-header{
+    background:linear-gradient(180deg, var(--hero-veil-a), var(--hero-veil-b)), url('office-bg.webp') center/cover no-repeat;
+    color:var(--hero-ink);padding:40px 20px 36px;text-align:center;
+  }
+  .page-header h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:0 0 10px;font-weight:800;letter-spacing:-.02em;color:var(--hero-ink)}
+  .page-header p{margin:0 auto;color:var(--hero-ink-soft);max-width:52ch;line-height:1.6;font-size:.98rem}
+
+  /* ---------- Async documents ---------- */
+  .doc-wrap{max-width:860px;margin:0 auto;padding:32px 20px 80px}
+  .doc-controls{margin-bottom:22px;max-width:320px}
+  .doc-controls label{
+    display:block;font-size:.72rem;font-weight:700;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;
+  }
+  .doc-controls select{
+    width:100%;padding:11px 12px;border-radius:var(--r-md);border:1px solid var(--line);
+    background:var(--paper);color:var(--ink);font-size:.92rem;font-family:inherit;
+  }
+  .doc-controls select:hover{border-color:var(--tab-on)}
+  .doc-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;margin-bottom:12px;box-shadow:var(--shadow);
+  }
+  .doc-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+  .doc-tag{
+    font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:var(--r-sm);
+    text-transform:uppercase;letter-spacing:.06em;background:var(--gold-light);color:#716009;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .doc-tag{color:var(--gold)} }
+  .doc-date{font-size:.74rem;color:var(--ink-soft)}
+  .doc-card h2{margin:0 0 6px;font-size:1.15rem;font-weight:700;color:var(--navy);line-height:1.3}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .doc-card h2{color:#fff} }
+  .doc-card p{margin:0 0 14px;font-size:.92rem;line-height:1.55;color:var(--ink-soft)}
+  .doc-open{
+    display:inline-flex;align-items:center;gap:8px;background:var(--tab-on);color:#fff;text-decoration:none;
+    padding:10px 16px;border-radius:var(--r-md);font-weight:700;font-size:.88rem;transition:transform .2s ease;
+  }
+  .doc-open:hover{transform:translateY(-1px)}
+  .doc-open:focus-visible{outline:2px solid var(--tab-on);outline-offset:2px}
+  .doc-empty{
+    text-align:center;padding:44px 20px;border:2px dashed var(--line);border-radius:var(--radius);color:var(--ink-soft);
+  }
+  .doc-empty svg{color:var(--tab-on);margin-bottom:10px}
+  .doc-empty h2{margin:0 0 6px;font-size:1.2rem;color:var(--navy)}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .doc-empty h2{color:#fff} }
+  .doc-empty p{margin:0 auto;max-width:44ch;line-height:1.55}
+
+  .empty, .loading, .error{
+    max-width:760px;margin:60px auto;padding:0 20px;text-align:center;color:var(--ink-soft);
+  }
+  .error{color:#A3403A}
+  .brand-pulse{
+    width:40px;height:40px;margin:0 auto 14px;
+    background:url('logo-mark.png') center/contain no-repeat;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.45;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
+
+  footer{
+    max-width:1100px;margin:0 auto;padding:20px 20px 50px;
+    font-size:.78rem;color:var(--ink-soft);text-align:center;line-height:1.6;
+  }
+  .footer-logo{height:36px;width:auto;display:block;margin:0 auto 14px;opacity:.8}
+  .tip{
+    position:fixed;display:none;z-index:100;max-width:240px;pointer-events:none;
+    background:var(--navy-deep);color:#fff;border:1px solid rgba(255,228,69,.35);border-radius:var(--r-md);
+    padding:8px 11px;font-size:.78rem;font-weight:500;line-height:1.4;text-align:left;
+    box-shadow:var(--shadow-lg);
+  }
+</style>
+</head>
+<body>
+
+<header class="site-banner">
+  <img src="header.webp" width="1600" height="500" alt="MEA CARES Career Exploration Series. LinkME. Come as you are." fetchpriority="high" />
+</header>
+
+<nav class="nav" id="nav" aria-label="Pages">
+  <div class="nav-inner">
+    <div class="nav-tabs" id="navTabs">
+      <a class="nav-tab" href="index.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span class="lbl-full">Opportunities</span><span class="lbl-short">Browse</span></a>
+      <a class="nav-tab" href="events.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="lbl-full">Event Timeline</span><span class="lbl-short">Events</span></a>
+      <a class="nav-tab" href="previous.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg><span class="lbl-full">Previous Internships</span><span class="lbl-short">Alumni</span></a>
+      <a class="nav-tab current" aria-current="page" href="documents.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span class="lbl-full">Async Documents</span><span class="lbl-short">Documents</span></a>
+      <a class="nav-tab" href="index.html?saved=1" data-tip="Listings you saved with the bookmark icon. They stay on this device only."><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg><span>Saved</span><span class="nav-saved-count mono" id="navSavedCount">0</span></a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-header">
+  <h1>Async Documents</h1>
+  <p>Read at your own pace. Guides and materials from our initiatives, whenever you need them.</p>
+</header>
+
+<div id="loadingState" class="loading">
+  <div class="brand-pulse" aria-hidden="true"></div>
+  Loading documents…
+</div>
+<div id="errorState" class="error" style="display:none"></div>
+
+<main class="doc-wrap" id="docWrap" style="display:none">
+  <div class="doc-controls" id="docControls" style="display:none">
+    <label for="f-initiative">Initiative</label>
+    <select id="f-initiative"><option value="">All initiatives</option></select>
+  </div>
+  <div id="docList"></div>
+  <div class="doc-empty" id="docEmpty" style="display:none">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+    <h2>No documents yet</h2>
+    <p>The first one, from NExpo, is coming soon. Check back here and it will appear on its own.</p>
+  </div>
+</main>
+
+<footer>
+  <img class="footer-logo" src="logo-full.png" alt="MEA Cares, Career Exploration Series" />
+  Come as you are.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var SHEET_ID = "1wHf6J1uOP3a9qCdv-YSJqLkdrbXMDOmbJHmmvCiUGvg";
+  var DOCS_URL = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+    "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent("Async Documents");
+  var POLL_INTERVAL_MS = 60000;
+
+  var els = {};
+  ["loadingState","errorState","docWrap","docControls","docList","docEmpty","f-initiative","nav","navSavedCount"]
+    .forEach(function(id){ els[id] = document.getElementById(id); });
+
+  (function showSavedCount(){
+    var count = 0;
+    try {
+      var raw = localStorage.getItem("linkme_saved_v1");
+      count = raw ? JSON.parse(raw).length : 0;
+    } catch (e) { /* private mode etc, just show 0 */ }
+    els.navSavedCount.textContent = count;
+  })();
+
+  function parseCSV(text){
+    var rows = [], row = [], field = "", i = 0, inQuotes = false, len = text.length;
+    while (i < len) {
+      var ch = text[i];
+      if (inQuotes) {
+        if (ch === '"') {
+          if (text[i+1] === '"') { field += '"'; i += 2; continue; }
+          inQuotes = false; i++; continue;
+        }
+        field += ch; i++; continue;
+      } else {
+        if (ch === '"') { inQuotes = true; i++; continue; }
+        if (ch === ',') { row.push(field); field = ""; i++; continue; }
+        if (ch === '\r') { i++; continue; }
+        if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ""; i++; continue; }
+        field += ch; i++; continue;
+      }
+    }
+    row.push(field); rows.push(row);
+    return rows;
+  }
+
+  // Columns are found by header name (Title, Initiative, Description, Link, Date posted), in any order.
+  // If the "Async Documents" tab does not exist yet, Google answers with a different tab, which has no
+  // Title and Link headers, so it is treated as "no documents yet".
+  function mapDocs(rows){
+    var hIdx = -1, cols = {};
+    for (var r = 0; r < Math.min(rows.length, 4) && hIdx < 0; r++) {
+      var c = {};
+      (rows[r] || []).forEach(function(h, i){
+        var k = (h || "").trim().toLowerCase();
+        if (k === "title") c.title = i;
+        else if (k === "initiative") c.initiative = i;
+        else if (k === "description") c.description = i;
+        else if (k === "link") c.link = i;
+        else if (k === "date posted" || k === "date") c.date = i;
+      });
+      if (c.title !== undefined && c.link !== undefined) { hIdx = r; cols = c; }
+    }
+    if (hIdx < 0) return [];
+    var get = function(row, k){ return cols[k] === undefined ? "" : (row[cols[k]] || "").trim(); };
+    var out = [];
+    for (var i = hIdx + 1; i < rows.length; i++) {
+      var row = rows[i];
+      if (!row) continue;
+      var title = get(row, "title"), link = get(row, "link");
+      if (!title || !/^https?:\/\//i.test(link)) continue; // needs a title and a web link
+      out.push({ title: title, initiative: get(row, "initiative"), description: get(row, "description"),
+                 link: link, date: get(row, "date"), _idx: i });
+    }
+    return out.reverse(); // newest rows first
+  }
+
+  function esc(s){
+    return String(s||"").replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  var docs = [];
+
+  function refreshInitiatives(){
+    var sel = els["f-initiative"], prev = sel.value, seen = {};
+    docs.forEach(function(d){ if (d.initiative) seen[d.initiative] = true; });
+    var names = Object.keys(seen).sort(function(a,b){ return a.localeCompare(b); });
+    while (sel.options.length > 1) sel.remove(1);
+    names.forEach(function(n){ var o = document.createElement("option"); o.value = n; o.textContent = n; sel.appendChild(o); });
+    if (names.indexOf(prev) !== -1) sel.value = prev;
+    els.docControls.style.display = names.length > 1 ? "block" : "none";
+  }
+
+  function render(){
+    var ini = els["f-initiative"].value;
+    var rows = docs.filter(function(d){ return !ini || d.initiative === ini; });
+    els.docEmpty.style.display = docs.length ? "none" : "block";
+    els.docList.innerHTML = rows.map(function(d){
+      return '<article class="doc-card"><div class="doc-top">' +
+        (d.initiative ? '<span class="doc-tag">' + esc(d.initiative) + '</span>' : '<span></span>') +
+        (d.date ? '<span class="doc-date">' + esc(d.date) + '</span>' : '') + '</div>' +
+        '<h2>' + esc(d.title) + '</h2>' +
+        (d.description ? '<p>' + esc(d.description) + '</p>' : '') +
+        '<a class="doc-open" href="' + esc(d.link) + '" target="_blank" rel="noopener noreferrer">Open document</a></article>';
+    }).join("");
+  }
+
+  els["f-initiative"].addEventListener("change", render);
+
+  function loadData(){
+    return fetch(DOCS_URL)
+      .then(function(res){
+        if (!res.ok) throw new Error("fetch failed (" + res.status + ")");
+        return res.text();
+      })
+      .then(function(text){
+        docs = mapDocs(parseCSV(text));
+        els.loadingState.style.display = "none";
+        els.errorState.style.display = "none";
+        els.docWrap.style.display = "block";
+        refreshInitiatives();
+        render();
+      })
+      .catch(function(){
+        // a missing tab or a hiccup is not worth alarming anyone: show the friendly empty state
+        els.loadingState.style.display = "none";
+        els.docWrap.style.display = "block";
+        docs = [];
+        refreshInitiatives();
+        render();
+      });
+  }
+
+  (function revealCurrentTab(){
+    var tabs = document.getElementById("navTabs"), cur = tabs && tabs.querySelector(".nav-tab.current");
+    if (cur) tabs.scrollLeft = Math.max(0, cur.offsetLeft - 20);
+  })();
+  window.addEventListener("scroll", function(){
+    els.nav.classList.toggle("scrolled", window.scrollY > 12);
+  }, { passive: true });
+
+  loadData();
+  setInterval(loadData, POLL_INTERVAL_MS);
+})();
+</script>
+<script>
+(function(){
+  var tip = document.createElement("div");
+  tip.className = "tip"; tip.setAttribute("role", "tooltip");
+  document.body.appendChild(tip);
+  function show(el){
+    tip.textContent = el.getAttribute("data-tip");
+    tip.style.display = "block";
+    var r = el.getBoundingClientRect(), t = tip.getBoundingClientRect();
+    var left = Math.min(Math.max(8, r.left + r.width / 2 - t.width / 2), window.innerWidth - t.width - 8);
+    var top = r.bottom + 8;
+    if (top + t.height > window.innerHeight - 8) top = r.top - t.height - 8;
+    tip.style.left = left + "px"; tip.style.top = top + "px";
+  }
+  function hide(){ tip.style.display = "none"; }
+  document.addEventListener("mouseover", function(e){ var el = e.target.closest && e.target.closest("[data-tip]"); if (el) show(el); });
+  document.addEventListener("mouseout", function(e){ if (e.target.closest && e.target.closest("[data-tip]")) hide(); });
+  document.addEventListener("focusin", function(e){ var el = e.target.closest && e.target.closest("[data-tip]"); if (el) show(el); });
+  document.addEventListener("focusout", hide);
+  window.addEventListener("scroll", hide, { passive: true });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") hide(); });
+})();
+</script>
+</body>
+</html>
