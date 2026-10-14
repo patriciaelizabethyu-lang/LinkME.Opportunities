@@ -345,7 +345,14 @@
   }
   .tag.paid{background:var(--gold-light);border-color:transparent;color:#716009}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tag.paid{color:var(--gold)} }
-  .card .deadline{font-size:.78rem;color:var(--ink-soft);margin-top:auto;padding-top:6px}
+  .card-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:auto;padding-top:6px}
+  .card .deadline{font-size:.78rem;color:var(--ink-soft)}
+  .card-apply{
+    flex:none;display:inline-flex;align-items:center;gap:5px;background:var(--tab-on);color:#fff;text-decoration:none;
+    padding:6px 12px;border-radius:var(--r-sm);font-size:.78rem;font-weight:700;transition:transform .2s ease;
+  }
+  .card-apply:hover{transform:translateY(-1px)}
+  .card-apply:focus-visible{outline:2px solid var(--tab-on);outline-offset:2px}
   .card .deadline b{color:var(--ink)}
 
   .empty, .loading, .error{
@@ -632,12 +639,15 @@
 (function(){
   "use strict";
 
-  var SHEET_ID = "1j5IcIHUrjys-FYrpzz5LqMAuNCE98Zg3cXJXogvRxR0";
-  var SHEET_NAME = "[FOR CORE] Input Here";
-  var CSV_URL = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
-    "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(SHEET_NAME);
+  // Listings are read straight from the input sheet (where the form adds new rows), not the mirrored copy
+  var LISTINGS_SHEET_ID = "163y38NJQItfSg1noVbOJPKd79XK2MUfS2pS9VAqMnnE";
+  var LISTINGS_SHEET_NAME = "Sheet1";
+  var CSV_URL = "https://docs.google.com/spreadsheets/d/" + LISTINGS_SHEET_ID +
+    "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(LISTINGS_SHEET_NAME);
+  // Alumni responses still live in the opportunities sheet
+  var REVIEWS_SHEET_ID = "1j5IcIHUrjys-FYrpzz5LqMAuNCE98Zg3cXJXogvRxR0";
   var REVIEWS_SHEET_NAME = "Sheet24";
-  var REVIEWS_URL = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+  var REVIEWS_URL = "https://docs.google.com/spreadsheets/d/" + REVIEWS_SHEET_ID +
     "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(REVIEWS_SHEET_NAME);
 
   var PAGE_SIZE = 24;
@@ -933,8 +943,11 @@
       '<h3>'+esc(o.company)+'</h3>' +
       '<p class="position">'+esc(role)+'</p>' +
       '<div class="tag-row">'+tags.join("")+'</div>' +
-      '<div class="deadline">Deadline: <b class="mono">'+esc(o.deadline)+'</b>' +
-        (o.schedule ? ' <span class="sep" aria-hidden="true">·</span> Schedule: <b>'+esc(o.schedule)+'</b>' : '') + '</div>'
+      '<div class="card-foot"><div class="deadline">Deadline: <b class="mono">'+esc(o.deadline)+'</b>' +
+        (o.schedule ? ' <span class="sep" aria-hidden="true">·</span> Schedule: <b>'+esc(o.schedule)+'</b>' : '') + '</div>' +
+        (o.link ? '<a class="card-apply" href="'+esc(o.link)+'" target="_blank" rel="noopener noreferrer" aria-label="Apply to ' + esc(o.company) + ' (opens in a new tab)">Apply' +
+          '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>' : '') +
+      '</div>'
     );
   }
 
@@ -953,7 +966,7 @@
       card.setAttribute("tabindex", "0");
       card.innerHTML = cardHTML(o);
       card.addEventListener("click", function(e){
-        if (e.target.closest(".save-btn")) return;
+        if (e.target.closest(".save-btn") || e.target.closest(".card-apply")) return;
         openModal(o);
       });
       card.addEventListener("keydown", function(e){
