@@ -483,6 +483,64 @@
     .step h3{margin:0;font-size:1rem}
     .scroll-cue{margin-top:14px}
   }
+  /* little touches */
+  .save-btn.pop svg{animation:savePop .38s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes savePop{0%{transform:scale(.7)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+  .nav-saved-count.bump{animation:countBump .4s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes countBump{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
+  .card:active{transform:translateY(-1px) scale(.995)}
+  .pill:active,.reset-btn:active,.show-more:active,.apply-btn:active,.card-apply:active,.save-btn:active{transform:scale(.96)}
+  .card-in{animation:cardIn .45s cubic-bezier(.16,.8,.3,1) backwards}
+  @keyframes cardIn{from{opacity:0;transform:translateY(12px)}}
+  .toast{
+    position:fixed;left:50%;bottom:22px;z-index:90;transform:translate(-50%,16px);opacity:0;pointer-events:none;
+    display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);
+    background:var(--hero-ink);color:var(--paper);padding:11px 14px 11px 16px;border-radius:var(--r-sm);
+    font-size:.86rem;font-weight:600;box-shadow:var(--shadow-lg);
+    transition:opacity .22s ease, transform .28s cubic-bezier(.16,.8,.3,1);
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  .toast button{background:none;border:0;padding:2px 4px;color:inherit;font:inherit;font-weight:800;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  .to-top{
+    position:fixed;right:16px;bottom:18px;z-index:80;width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+    background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:var(--r-sm);box-shadow:var(--shadow);cursor:pointer;
+    opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .2s ease, transform .2s ease, border-color .18s ease;
+  }
+  .to-top.show{opacity:1;transform:none;pointer-events:auto}
+  .to-top:hover{border-color:var(--gold)}
+  .kbd-hint{font-family:"IBM Plex Mono",monospace;font-size:.7rem;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-soft);margin-left:6px}
+  /* first-visit welcome */
+  .welcome{position:fixed;inset:0;z-index:120;display:flex;padding:16px;
+    background:rgba(10,16,28,.72);opacity:0;transition:opacity .3s ease;overflow-y:auto}
+  .welcome[hidden]{display:none}
+  .welcome.in{opacity:1}
+  .welcome-card{margin:auto;width:min(460px,100%);background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow-lg);overflow:hidden;transform:translateY(14px) scale(.98);transition:transform .4s cubic-bezier(.16,.8,.3,1)}
+  .welcome.in .welcome-card{transform:none}
+  .welcome-card img{display:block;width:100%;height:auto}
+  .welcome-body{padding:20px 22px 22px}
+  .welcome-body h2{margin:0 0 6px;font-size:1.25rem;font-weight:800;letter-spacing:-.01em}
+  .welcome-body p{margin:0 0 12px;color:var(--ink-soft);font-size:.94rem;line-height:1.55}
+  .welcome-body ul{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:8px}
+  .welcome-body li{font-size:.92rem;line-height:1.45;padding-left:22px;position:relative}
+  .welcome-body li::before{content:"";position:absolute;left:2px;top:.5em;width:8px;height:8px;border-radius:2px;background:var(--gold)}
+  .welcome-go{width:100%;border:0;border-radius:var(--r-sm);padding:12px 16px;font:inherit;font-weight:800;font-size:.95rem;cursor:pointer;
+    background:var(--navy);color:var(--paper);transition:transform .18s ease, background .18s ease}
+  .welcome-go:hover{background:var(--navy-light);transform:translateY(-1px)}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .welcome-go{background:var(--gold);color:#171308}
+    :root:not([data-theme="light"]) .welcome-go:hover{background:var(--gold-bright)}
+  }
+  .welcome-go:active{transform:scale(.98)}
+  .welcome-status{margin:10px 0 0;font-size:.78rem;color:var(--ink-soft);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
+  .welcome-status i{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1.2s ease-in-out infinite}
+  .welcome-status.ready i{animation:none;background:#2e9d5b}
+
+  /* soft light that follows the pointer across the hero */
+  .hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .4s ease;
+    background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%), color-mix(in srgb, var(--hero-accent) 22%, transparent), transparent 70%)}
+  .hero.lit::after{opacity:1}
+  @media (hover:none), (prefers-reduced-motion: reduce){ .hero::after{display:none} }
 </style>
 </head>
 <body>
@@ -692,6 +750,37 @@
   }
   function updateSavedCountBadges(){
     els.navSavedCount.textContent = savedSet.size;
+  }
+  var toastT;
+  function showToast(msg, undoFn){
+    var toastEl = document.getElementById("toast");
+    toastEl.innerHTML = "";
+    toastEl.appendChild(document.createTextNode(msg));
+    if (undoFn) {
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = "Undo";
+      b.addEventListener("click", function(){ undoFn(); toastEl.classList.remove("show"); });
+      toastEl.appendChild(b);
+    }
+    toastEl.classList.add("show");
+    clearTimeout(toastT);
+    toastT = setTimeout(function(){ toastEl.classList.remove("show"); }, 4500);
+  }
+  // pop the bookmark, bump the Saved count, and say what happened (with Undo)
+  function savedFeedback(o, btn, nowSaved){
+    if (!reduceMotion) {
+      btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop");
+      els.navSavedCount.classList.remove("bump"); void els.navSavedCount.offsetWidth; els.navSavedCount.classList.add("bump");
+    }
+    showToast(nowSaved ? "Saved. Find it under Saved at the top of the page." : "Removed from Saved.", function(){
+      toggleSaved(o);
+      render();
+      var mb = document.getElementById("modalSaveBtn");
+      if (mb && els.overlay.classList.contains("open")) {
+        var now = isSaved(o);
+        mb.classList.toggle("saved", now); mb.setAttribute("aria-pressed", now);
+      }
+    });
   }
 
   var state = { batch:"", type:"", industry:"", paid:"", required:"", setup:"", source:"", sort:"new", search:"", showClosed:false, savedOnly:false };
@@ -957,11 +1046,13 @@
     });
   }
 
+  var animateCards = true; // stagger the cards in once, on first paint, not on every filter change
   function renderGridRows(list){
     els.grid.innerHTML = "";
-    list.forEach(function(o){
+    list.forEach(function(o, idx){
       var card = document.createElement("div");
       card.className = "card";
+      if (animateCards && !reduceMotion && idx < 12) { card.classList.add("card-in"); card.style.animationDelay = (idx * 40) + "ms"; }
       card.setAttribute("role", "button");
       card.setAttribute("tabindex", "0");
       card.innerHTML = cardHTML(o);
@@ -982,10 +1073,12 @@
         saveBtn.setAttribute("aria-pressed", nowSaved);
         saveBtn.setAttribute("aria-label", nowSaved ? "Remove from saved" : "Save for later");
         saveBtn.setAttribute("data-tip", nowSaved ? "Saved. Tap to remove." : "Save this listing. Find it later under Saved.");
+        savedFeedback(o, saveBtn, nowSaved);
         if (state.savedOnly && !nowSaved) render();
       });
       els.grid.appendChild(card);
     });
+    if (list.length) animateCards = false;
   }
 
   // ---- when nothing matches exactly, rank every candidate by how many active filters/search terms it still satisfies ----
@@ -1164,6 +1257,7 @@
       modalSaveBtn.setAttribute("aria-pressed", nowSaved);
       modalSaveBtn.setAttribute("aria-label", nowSaved ? "Remove from saved" : "Save for later");
       modalSaveBtn.setAttribute("data-tip", nowSaved ? "Saved. Tap to remove." : "Save this listing. Find it later under Saved.");
+      savedFeedback(o, modalSaveBtn, nowSaved);
       render(); // keep the grid (and any saved-only view) in sync while the modal is open
     });
   }
@@ -1336,6 +1430,24 @@
 
 })();
 </script>
+<div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" hidden>
+  <div class="welcome-card">
+    <img src="header.webp" width="1600" height="500" alt="" />
+    <div class="welcome-body">
+      <h2 id="welcomeTitle">Welcome to the LinkME Opportunity Finder</h2>
+      <p>One place for the internships, jobs, and certifications that MEA CARES members share.</p>
+      <ul>
+        <li>Pick your batch to see what is open to you.</li>
+        <li>Search by company, role, or industry.</li>
+        <li>Tap the bookmark on a card to save it for later.</li>
+      </ul>
+      <button type="button" class="welcome-go" id="welcomeGo">Start browsing</button>
+      <p class="welcome-status" id="welcomeStatus"><i></i><span>Loading the latest listings</span></p>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button type="button" class="to-top" id="toTop" aria-label="Back to top" data-tip="Back to top"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <script>
 (function(){
   var tip = document.createElement("div");
@@ -1357,6 +1469,72 @@
   document.addEventListener("focusout", hide);
   window.addEventListener("scroll", hide, { passive: true });
   document.addEventListener("keydown", function(e){ if (e.key === "Escape") hide(); });
+})();
+</script>
+<script>
+(function(){
+  var search = document.getElementById("searchInput");
+  // "/" jumps to search, Esc clears it
+  document.addEventListener("keydown", function(e){
+    var t = e.target, typing = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable);
+    if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey && !document.documentElement.classList.contains("modal-open")) {
+      e.preventDefault(); search.focus(); search.select();
+    } else if (e.key === "Escape" && t === search && search.value) {
+      search.value = ""; search.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  });
+  search.setAttribute("aria-keyshortcuts", "/");
+  var top = document.getElementById("toTop");
+  var rm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.addEventListener("scroll", function(){ top.classList.toggle("show", window.scrollY > 900); }, { passive: true });
+  top.addEventListener("click", function(){ window.scrollTo({ top: 0, behavior: rm ? "auto" : "smooth" }); });
+})();
+</script>
+<script>
+(function(){
+  var KEY = "linkme-welcomed";
+  var w = document.getElementById("welcome"), go = document.getElementById("welcomeGo"), st = document.getElementById("welcomeStatus");
+  var seen = false;
+  try { seen = localStorage.getItem(KEY) === "1"; } catch (e) {}
+  var deepLink = /[?&]saved=1/.test(location.search);
+  if (!seen && !deepLink) {
+    w.hidden = false;
+    document.documentElement.classList.add("modal-open");
+    requestAnimationFrame(function(){ w.classList.add("in"); go.focus(); });
+    // flip the status line once the listings are on screen
+    var t0 = Date.now(), poll = setInterval(function(){
+      var loading = document.getElementById("loadingState");
+      var done = document.querySelector(".card") || (loading && loading.style.display === "none");
+      if (done || Date.now() - t0 > 15000) {
+        clearInterval(poll); st.classList.add("ready");
+        st.querySelector("span").textContent = done ? "Listings are ready" : "Still loading, you can start anyway";
+      }
+    }, 300);
+  }
+  function close(){
+    if (w.hidden) return;
+    w.classList.remove("in");
+    try { localStorage.setItem(KEY, "1"); } catch (e) {}
+    setTimeout(function(){ w.hidden = true; document.documentElement.classList.remove("modal-open"); }, 300);
+  }
+  go.addEventListener("click", close);
+  w.addEventListener("click", function(e){ if (e.target === w) close(); });
+  document.addEventListener("keydown", function(e){
+    if (w.hidden) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "Tab") { e.preventDefault(); go.focus(); } // the one button is the only stop
+  });
+
+  // hero light follows the pointer
+  var hero = document.querySelector(".hero"), raf = 0, px = 0, py = 0;
+  if (hero && window.matchMedia && window.matchMedia("(hover:hover)").matches) {
+    hero.addEventListener("pointermove", function(e){
+      var r = hero.getBoundingClientRect(); px = e.clientX - r.left; py = e.clientY - r.top;
+      hero.classList.add("lit");
+      if (!raf) raf = requestAnimationFrame(function(){ hero.style.setProperty("--mx", px + "px"); hero.style.setProperty("--my", py + "px"); raf = 0; });
+    });
+    hero.addEventListener("pointerleave", function(){ hero.classList.remove("lit"); });
+  }
 })();
 </script>
 </body>
