@@ -214,6 +214,24 @@
     padding:8px 11px;font-size:.78rem;font-weight:500;line-height:1.4;text-align:left;
     box-shadow:var(--shadow-lg);
   }
+  /* page backdrop: the banner's office scene, washed out, with a blue and a yellow glow from the brand palette */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(900px circle at 8% 0%, rgba(30,91,189,.16), transparent 60%),
+      radial-gradient(800px circle at 100% 100%, rgba(255,228,69,.34), transparent 55%),
+      linear-gradient(rgba(242,239,232,.87), rgba(242,239,232,.93)),
+      url('office-bg.webp') center top / cover no-repeat;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) body::before{
+      background:
+        radial-gradient(900px circle at 8% 0%, rgba(76,135,221,.14), transparent 60%),
+        radial-gradient(800px circle at 100% 100%, rgba(255,228,69,.06), transparent 55%),
+        linear-gradient(rgba(20,24,31,.93), rgba(20,24,31,.97)),
+        url('office-bg.webp') center top / cover no-repeat;
+    }
+  }
 </style>
 </head>
 <body>
