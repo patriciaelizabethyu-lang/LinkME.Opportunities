@@ -886,6 +886,7 @@
       btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop");
       els.navSavedCount.classList.remove("bump"); void els.navSavedCount.offsetWidth; els.navSavedCount.classList.add("bump");
     }
+    if (nowSaved && window.linkmeTrack) window.linkmeTrack("Saved: " + (o.company || "unknown"));
     if (nowSaved && !reduceMotion) {
       var r = btn.getBoundingClientRect(), cols = ["#4488E8", "#FFE445", "#8FBFFF", "#F2DE3A", "#1E5BBD"];
       for (var n = 0; n < 12; n++) {
@@ -1696,6 +1697,23 @@
     if (!raf) raf = requestAnimationFrame(tick);
   }, { passive: true });
   g.style.transform = "translate(" + x + "px," + y + "px)"; // rests near the top until the first move
+})();
+</script>
+<script data-goatcounter="https://meacareslinkme.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+<script>
+(function(){
+  // anonymous click counts in GoatCounter: which listings get Apply clicks and saves
+  window.linkmeTrack = function(label){
+    try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: label, title: label, event: true }); } catch (e) {}
+  };
+  document.addEventListener("click", function(e){
+    var a = e.target.closest && e.target.closest(".card-apply, .apply-btn");
+    if (!a) return;
+    var host = a.closest(".card"), el = host ? host.querySelector("h3") : document.getElementById("modalTitle");
+    var name = el ? el.textContent.trim() : "unknown";
+    window.linkmeTrack("Apply: " + name);
+  });
 })();
 </script>
 </body>
