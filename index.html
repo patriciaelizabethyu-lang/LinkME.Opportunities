@@ -828,6 +828,15 @@
 
   function boolish(v){ return String(v).trim().toUpperCase() === "TRUE" || String(v).trim().toLowerCase() === "yes"; }
 
+  // links.json holds the job-post links the form collected for listings added before the sheet had an Application Link column.
+  // A link typed into the sheet always wins; this only fills the gaps.
+  var linkFallback = {};
+  var linksReady = fetch("links.json").then(function(r){ return r.ok ? r.json() : {}; }).then(function(j){ linkFallback = j || {}; }).catch(function(){});
+  function fallbackLink(company, position){
+    var norm = function(x){ return String(x || "").trim().toLowerCase().replace(/\s+/g, " "); };
+    var l = linkFallback[norm(company) + "|" + norm(position)];
+    return l && /^https?:\/\//i.test(l) ? l : "";
+  }
   function mapRows(rows){
     // Columns are found by their header names (row 2 of the CSV), so adding or moving a column in the sheet
     // doesn't break the site. The old fixed positions are the fallback if a header can't be found.
@@ -866,7 +875,7 @@
         inputDate: cell(row, C.input),
         deadline: cell(row, C.deadline) || "TBA",
         schedule: cell(row, C.schedule),
-        link: /^https?:\/\//i.test(link) ? link : "", // only real web links ever become a button
+        link: /^https?:\/\//i.test(link) ? link : fallbackLink(cell(row, C.company), cell(row, C.position)), // only real web links ever become a button
         type: cell(row, C.type),
         industry: cell(row, C.industry),
         company: cell(row, C.company),
@@ -1406,7 +1415,7 @@
   }
 
   function loadData(){
-    return fetch(CSV_URL)
+    return linksReady.then(function(){ return fetch(CSV_URL); })
       .then(function(res){
         if (!res.ok) throw new Error("Sheet fetch failed (" + res.status + ")");
         return res.text();
