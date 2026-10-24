@@ -407,7 +407,7 @@
   .overlay.in .modal{transform:translateY(0) scale(1);opacity:1}
   .modal-close{
     position:absolute;top:14px;right:14px;background:var(--cream);border:1px solid var(--line);
-    width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;color:var(--ink-soft);
+    width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;color:var(--ink-soft);
     transition:all .18s ease;
   }
   .modal-close:hover{background:var(--gold-light);border-color:var(--gold);color:var(--ink)}
@@ -603,7 +603,7 @@
   .footer-contact a:focus-visible{outline:2px solid var(--tab-on, var(--navy-light));outline-offset:2px;border-radius:2px}
   /* warmth and personality */
   .hero-hi{margin:0 0 10px;font-family:'Poppins',system-ui,sans-serif;font-weight:600;font-size:1rem;color:var(--hero-ink-soft)}
-  .wave-hand{display:inline-block;margin-right:.35em;transform-origin:70% 80%;animation:waveHand 2.4s ease-in-out 1.2s 2}
+  .wave-hand{display:inline-block;vertical-align:-4px;margin-right:.4em;color:var(--hero-accent);transform-origin:70% 80%;animation:waveHand 2.4s ease-in-out 1.2s 2}
   @keyframes waveHand{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
   .hero h1 em{position:relative;z-index:0;white-space:nowrap}
   .hero h1 em::before{content:"";position:absolute;z-index:-1;left:-.1em;right:-.1em;bottom:.04em;height:.46em;background:var(--gold);border-radius:3px;
@@ -674,7 +674,7 @@
 <section class="hero" id="top">
   <div class="hero-notes" aria-hidden="true"><svg class="hn l1" viewBox="0 0 50 58"><g><path d="M2 2h46v42l-10 12H2z" fill="#4488E8"/><path d="M38 56V44h10z" fill="rgba(16,24,43,.16)"/><circle cx="25" cy="7" r="3.6" fill="#10182B"/><rect x="9" y="18" width="30" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="27" width="24" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="36" width="28" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/></g></svg><svg class="hn l2" viewBox="0 0 50 58"><g><path d="M2 2h46v42l-10 12H2z" fill="#F2DE3A"/><path d="M38 56V44h10z" fill="rgba(16,24,43,.16)"/><circle cx="25" cy="7" r="3.6" fill="#10182B"/><rect x="9" y="18" width="28" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="27" width="32" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="36" width="18" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/></g></svg><svg class="hn r1" viewBox="0 0 50 58"><g><path d="M2 2h46v42l-10 12H2z" fill="#8FBFFF"/><path d="M38 56V44h10z" fill="rgba(16,24,43,.16)"/><circle cx="25" cy="7" r="3.6" fill="#10182B"/><rect x="9" y="18" width="32" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="27" width="22" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="36" width="28" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/></g></svg><svg class="hn r2" viewBox="0 0 50 58"><g><path d="M2 2h46v42l-10 12H2z" fill="#FFF4B4"/><path d="M38 56V44h10z" fill="rgba(16,24,43,.16)"/><circle cx="25" cy="7" r="3.6" fill="#10182B"/><rect x="9" y="18" width="26" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="27" width="30" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="36" width="20" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/></g></svg></div>
   <div class="hero-inner">
-    <p class="hero-hi reveal d1"><span class="wave-hand" aria-hidden="true">&#128075;</span> <span id="heroHi">Hi there!</span></p>
+    <p class="hero-hi reveal d1"><span class="wave-hand" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span> <span id="heroHi">Hi there!</span></p>
     <h1 class="reveal d1">Find your next <em>opportunity</em></h1>
     <p class="reveal d2">Search and filter internships, certifications, and jobs by batch and industry. Good luck!</p>
     <p class="hero-live reveal d3" id="heroLive" hidden><span><b id="heroLiveN">0</b> open right now across <b id="heroLiveI">0</b> industries</span></p>
@@ -1311,7 +1311,7 @@
   function openModal(o){
     var role = o.position || o.name || "Opportunity";
     var saved = isSaved(o);
-    var html = '<button class="modal-close" id="modalClose" aria-label="Close">✕</button>';
+    var html = '<button class="modal-close" id="modalClose" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
     html += '<button type="button" class="save-btn modal-save' + (saved ? ' saved' : '') + '" id="modalSaveBtn" aria-pressed="' + saved + '" aria-label="' +
       (saved ? "Remove from saved" : "Save for later") + '" data-tip="' + (saved ? "Saved. Tap to remove." : "Save this listing. Find it later under Saved.") + '">' + BOOKMARK_SVG + '</button>';
     html += '<h2 id="modalTitle">'+esc(o.company)+'</h2>';
