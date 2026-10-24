@@ -612,11 +612,9 @@
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]) .hero h1 em::before{height:.11em;bottom:-.06em;border-radius:2px}
   }
-  .hero-live{margin:16px auto 0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:.92rem;color:var(--hero-ink-soft)}
+  .hero-live{margin:16px auto 0;display:flex;align-items:center;justify-content:center;font-size:.92rem;color:var(--hero-ink-soft)}
   .hero-live[hidden]{display:none}
   .hero-live b{color:var(--hero-ink);font-family:'IBM Plex Mono',ui-monospace,monospace}
-  .live-dot{width:9px;height:9px;border-radius:50%;background:#2e9d5b;box-shadow:0 0 0 0 rgba(46,157,91,.5);animation:livePulse 1.8s ease-out infinite}
-  @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(46,157,91,.5)}100%{box-shadow:0 0 0 10px rgba(46,157,91,0)}}
   .how-it-works{position:relative;z-index:1}
   .hero-notes{position:absolute;inset:0;pointer-events:none;z-index:0;display:none}
   @media (min-width:1100px){ .hero-notes{display:block} }
@@ -630,7 +628,7 @@
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .badge.new{color:var(--gold)} }
   .confetti{position:fixed;z-index:150;width:7px;height:7px;border-radius:2px;pointer-events:none;animation:confetti .75s cubic-bezier(.2,.8,.3,1) forwards}
   @keyframes confetti{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--cx),var(--cy)) rotate(var(--cr))}}
-  @media (prefers-reduced-motion: reduce){ .wave-hand,.hn g,.live-dot{animation:none} .hero h1 em::before{animation:none;transform:rotate(-1.2deg) scaleX(1)} }
+  @media (prefers-reduced-motion: reduce){ .wave-hand,.hn g{animation:none} .hero h1 em::before{animation:none;transform:rotate(-1.2deg) scaleX(1)} }
 </style>
 </head>
 <body>
@@ -679,7 +677,7 @@
     <p class="hero-hi reveal d1"><span class="wave-hand" aria-hidden="true">&#128075;</span> <span id="heroHi">Hi there!</span></p>
     <h1 class="reveal d1">Find your next <em>opportunity</em></h1>
     <p class="reveal d2">Search and filter internships, certifications, and jobs by batch and industry. Good luck!</p>
-    <p class="hero-live reveal d3" id="heroLive" hidden><span class="live-dot" aria-hidden="true"></span><span><b id="heroLiveN">0</b> open right now across <b id="heroLiveI">0</b> industries</span></p>
+    <p class="hero-live reveal d3" id="heroLive" hidden><span><b id="heroLiveN">0</b> open right now across <b id="heroLiveI">0</b> industries</span></p>
   </div>
   <div class="how-it-works reveal d5">
     <div class="step">
@@ -1661,7 +1659,7 @@
 
   // greeting by time of day
   var hr = new Date().getHours(), hi = document.getElementById("heroHi");
-  if (hi) hi.textContent = (hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening") + "! Let's find your next step.";
+  if (hi) hi.textContent = (hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening") + "!";
   // hero notes drift with the pointer
   var heroEl = document.querySelector(".hero");
   if (heroEl && window.matchMedia && window.matchMedia("(hover:hover)").matches) {
