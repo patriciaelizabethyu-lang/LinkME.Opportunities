@@ -509,46 +509,39 @@
   .to-top.show{opacity:1;transform:none;pointer-events:auto}
   .to-top:hover{border-color:var(--gold)}
   .kbd-hint{font-family:"IBM Plex Mono",monospace;font-size:.7rem;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-soft);margin-left:6px}
-  /* ---------- Loading screen: the LinkME steps build, a marker climbs them, then the screen lifts away ---------- */
-  .splash{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:24px;text-align:center;
-    color:#fff;background:radial-gradient(900px circle at 50% 38%, #24407a 0%, transparent 60%), linear-gradient(160deg,#10182B,#1C2945 62%,#1E3C73);
+  /* ---------- Loading screen: the banner's own scene, logo and LinkME wordmark ---------- */
+  .splash{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;color:#fff;
+    background:linear-gradient(180deg, rgba(16,24,43,.50), rgba(16,24,43,.80)), url('office-bg.webp') center/cover no-repeat, #1C2945;
     transition:transform .8s cubic-bezier(.77,0,.18,1);animation:splashFailsafe 0s 14s forwards;--k:1}
   .splash.quick{--k:.5}
   .splash.leave{transform:translateY(-101%);pointer-events:none}
   @keyframes splashFailsafe{to{visibility:hidden}}
-  .splash-art{width:min(260px,66vw);height:auto;overflow:visible;margin-bottom:22px}
-  .splash-step{transform-origin:50% 100%;transform:scaleY(0);animation:stepUp calc(.55s*var(--k)) cubic-bezier(.2,.9,.3,1.2) forwards;animation-delay:calc(var(--i)*.17s*var(--k) + .15s)}
-  @keyframes stepUp{to{transform:scaleY(1)}}
-  .splash-dot{animation:climb calc(2.3s*var(--k)) cubic-bezier(.45,0,.35,1) forwards;animation-delay:calc(1s*var(--k));transform:translate(28px,82px);opacity:0}
-  @keyframes climb{
-    0%{transform:translate(28px,82px);opacity:0}
-    6%{opacity:1}
-    17%{transform:translate(48px,50px)} 26%{transform:translate(68px,64px)}
-    34%{transform:translate(88px,32px)} 43%{transform:translate(108px,46px)}
-    51%{transform:translate(128px,14px)} 60%{transform:translate(148px,28px)}
-    68%{transform:translate(168px,-4px)} 77%,100%{transform:translate(188px,10px);opacity:1}
-  }
-  .splash-top{animation:topGlow .6s ease forwards;animation-delay:calc(3.1s*var(--k));fill:#2a4a8f}
-  @keyframes topGlow{to{fill:#FFE445}}
-  .splash-name{font-family:'Poppins',system-ui,sans-serif;font-weight:800;font-size:clamp(2.2rem,8vw,3.2rem);letter-spacing:-.02em;line-height:1;margin:0;
-    opacity:0;transform:translateY(14px);animation:splashIn .7s cubic-bezier(.16,.8,.3,1) forwards;animation-delay:calc(.5s*var(--k))}
-  .splash-name span{color:#FFE445}
-  .splash-sub{margin:8px 0 0;font-size:1rem;color:#c7d3ee;opacity:0;animation:splashIn .7s ease forwards;animation-delay:calc(.9s*var(--k))}
-  .splash-lines{margin:18px 0 0;display:grid;gap:6px;max-width:34ch;font-size:.95rem;line-height:1.5;color:#e4ebfa}
-  .splash-lines p{margin:0;opacity:0;animation:splashIn .7s ease forwards}
-  .splash-lines p:nth-child(1){animation-delay:1.5s}
-  .splash-lines p:nth-child(2){animation-delay:2.1s}
+  .splash-logo{width:min(200px,52vw);height:auto;background:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.28);
+    opacity:0;transform:translateY(-16px) scale(.94);animation:logoDrop .7s cubic-bezier(.2,1.2,.3,1) forwards;animation-delay:calc(.1s*var(--k))}
+  @keyframes logoDrop{to{opacity:1;transform:none}}
+  .splash-word{width:min(440px,82vw);height:auto;margin-top:26px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.35));
+    clip-path:inset(0 100% 0 0);transform:translateY(10px);animation:wordWipe .9s cubic-bezier(.65,0,.2,1) forwards;animation-delay:calc(.55s*var(--k))}
+  @keyframes wordWipe{to{clip-path:inset(0 0 0 0);transform:none}}
+  /* the three figures from the logo, in its three colours, hop while the listings load */
+  .splash-dots{display:flex;gap:12px;margin-top:30px;height:22px;align-items:flex-end}
+  .splash-dots i{width:14px;height:14px;border-radius:50%;display:block;opacity:0;animation:dotIn .4s ease forwards, hop .9s ease-in-out infinite;
+    animation-delay:calc(1.3s*var(--k)), calc(1.3s*var(--k))}
+  .splash-dots i:nth-child(1){background:#4488E8}
+  .splash-dots i:nth-child(2){background:#8FBFFF;animation-delay:calc(1.3s*var(--k) + .12s), calc(1.3s*var(--k) + .15s)}
+  .splash-dots i:nth-child(3){background:#F2DE3A;animation-delay:calc(1.3s*var(--k) + .24s), calc(1.3s*var(--k) + .3s)}
+  @keyframes dotIn{to{opacity:1}}
+  @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-12px)}}
+  .splash.ready .splash-dots i{animation:dotIn .2s forwards;opacity:1;transform:translateY(-3px) scale(1.15);transition:transform .3s cubic-bezier(.2,1.6,.4,1)}
+  .splash-lines{margin:20px 0 0;display:grid;gap:6px;max-width:34ch;font-size:.95rem;line-height:1.5;color:#f1f5ff;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+  .splash-lines p{margin:0;opacity:0;transform:translateY(8px);animation:splashIn .7s ease forwards}
+  .splash-lines p:nth-child(1){animation-delay:1.7s}
+  .splash-lines p:nth-child(2){animation-delay:2.3s}
   @keyframes splashIn{to{opacity:1;transform:none}}
-  .splash-bar{position:relative;width:min(200px,56vw);height:3px;border-radius:2px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:26px}
-  .splash-bar::before{content:"";position:absolute;inset:0;width:40%;background:#FFE445;border-radius:2px;animation:barRun 1.3s ease-in-out infinite}
-  .splash.ready .splash-bar::before{animation:none;width:100%;transition:width .35s ease}
-  @keyframes barRun{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
-  .splash-status{margin:10px 0 0;font-size:.78rem;color:#9fb3dd;letter-spacing:.02em}
-  .splash-skip{position:absolute;bottom:18px;left:0;right:0;font-size:.72rem;color:#7f93c2;opacity:0;animation:splashIn .6s ease forwards;animation-delay:1.8s}
+  .splash-status{margin:14px 0 0;font-size:.78rem;color:#d3def5;letter-spacing:.02em;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+  .splash-skip{position:absolute;bottom:18px;left:0;right:0;margin:0;font-size:.72rem;color:#c3d1f0;opacity:0;animation:splashIn .6s ease forwards;animation-delay:2s}
   @media (prefers-reduced-motion: reduce){
-    .splash-step,.splash-name,.splash-sub,.splash-lines p,.splash-skip{animation:none;transform:none;opacity:1}
-    .splash-dot{animation:none;opacity:0}.splash-top{animation:none;fill:#FFE445}.splash{transition:opacity .4s ease}
-    .splash.leave{transform:none;opacity:0}
+    .splash-logo,.splash-word,.splash-dots i,.splash-lines p,.splash-skip{animation:none;transform:none;opacity:1;clip-path:none}
+    .splash{transition:opacity .4s ease}.splash.leave{transform:none;opacity:0}
   }
 
   /* soft light that follows the pointer across the hero */
@@ -584,21 +577,13 @@
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Loading the LinkME Opportunity Finder">
-  <svg class="splash-art" viewBox="0 0 220 120" aria-hidden="true">
-    <rect class="splash-step" style="--i:0" x="10" y="90" width="36" height="20" rx="3" fill="#1E5BBD"/>
-    <rect class="splash-step" style="--i:1" x="50" y="72" width="36" height="38" rx="3" fill="#2b6cc9"/>
-    <rect class="splash-step" style="--i:2" x="90" y="54" width="36" height="56" rx="3" fill="#3a7fd6"/>
-    <rect class="splash-step" style="--i:3" x="130" y="36" width="36" height="74" rx="3" fill="#4C87DD"/>
-    <rect class="splash-step splash-top" style="--i:4" x="170" y="18" width="36" height="92" rx="3" fill="#2a4a8f"/>
-    <circle class="splash-dot" r="7" cx="0" cy="0" fill="#fff" stroke="#FFE445" stroke-width="3"/>
-  </svg>
-  <h1 class="splash-name">Link<span>ME</span></h1>
-  <p class="splash-sub">Come as you are.</p>
+  <img class="splash-logo" src="logo-full.png" alt="MEA CARES, Career Exploration Series" />
+  <img class="splash-word" src="linkme-wordmark.webp" width="496" height="177" alt="LinkME. Come as you are." />
+  <div class="splash-dots" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="splash-lines" id="splashLines">
     <p>Internships, jobs, and certifications shared by MEA CARES members.</p>
     <p>Pick your batch, search, and bookmark what you like.</p>
   </div>
-  <div class="splash-bar" aria-hidden="true"></div>
   <p class="splash-status" id="splashStatus">Loading the latest listings</p>
   <p class="splash-skip">Tap anywhere to skip</p>
 </div>
@@ -1548,7 +1533,7 @@
   var seen = false;
   try { seen = localStorage.getItem(KEY) === "1"; } catch (e) {}
   var quick = seen || /[?&]saved=1/.test(location.search);
-  var t0 = Date.now(), minMs = quick ? 1500 : 3600, left = false;
+  var t0 = Date.now(), minMs = quick ? 1500 : 3400, left = false;
   document.documentElement.classList.add("modal-open");
   if (quick) { sp.classList.add("quick"); document.getElementById("splashLines").style.display = "none"; sp.querySelector(".splash-skip").style.display = "none"; }
   function leave(){
