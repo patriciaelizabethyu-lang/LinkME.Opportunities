@@ -509,32 +509,47 @@
   .to-top.show{opacity:1;transform:none;pointer-events:auto}
   .to-top:hover{border-color:var(--gold)}
   .kbd-hint{font-family:"IBM Plex Mono",monospace;font-size:.7rem;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-soft);margin-left:6px}
-  /* first-visit welcome */
-  .welcome{position:fixed;inset:0;z-index:120;display:flex;padding:16px;
-    background:rgba(10,16,28,.72);opacity:0;transition:opacity .3s ease;overflow-y:auto}
-  .welcome[hidden]{display:none}
-  .welcome.in{opacity:1}
-  .welcome-card{margin:auto;width:min(460px,100%);background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:var(--radius);
-    box-shadow:var(--shadow-lg);overflow:hidden;transform:translateY(14px) scale(.98);transition:transform .4s cubic-bezier(.16,.8,.3,1)}
-  .welcome.in .welcome-card{transform:none}
-  .welcome-card img{display:block;width:100%;height:auto}
-  .welcome-body{padding:20px 22px 22px}
-  .welcome-body h2{margin:0 0 6px;font-size:1.25rem;font-weight:800;letter-spacing:-.01em}
-  .welcome-body p{margin:0 0 12px;color:var(--ink-soft);font-size:.94rem;line-height:1.55}
-  .welcome-body ul{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:8px}
-  .welcome-body li{font-size:.92rem;line-height:1.45;padding-left:22px;position:relative}
-  .welcome-body li::before{content:"";position:absolute;left:2px;top:.5em;width:8px;height:8px;border-radius:2px;background:var(--gold)}
-  .welcome-go{width:100%;border:0;border-radius:var(--r-sm);padding:12px 16px;font:inherit;font-weight:800;font-size:.95rem;cursor:pointer;
-    background:var(--navy);color:var(--paper);transition:transform .18s ease, background .18s ease}
-  .welcome-go:hover{background:var(--navy-light);transform:translateY(-1px)}
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]) .welcome-go{background:var(--gold);color:#171308}
-    :root:not([data-theme="light"]) .welcome-go:hover{background:var(--gold-bright)}
+  /* ---------- Loading screen: the LinkME steps build, a marker climbs them, then the screen lifts away ---------- */
+  .splash{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:24px;text-align:center;
+    color:#fff;background:radial-gradient(900px circle at 50% 38%, #24407a 0%, transparent 60%), linear-gradient(160deg,#10182B,#1C2945 62%,#1E3C73);
+    transition:transform .8s cubic-bezier(.77,0,.18,1);animation:splashFailsafe 0s 14s forwards;--k:1}
+  .splash.quick{--k:.5}
+  .splash.leave{transform:translateY(-101%);pointer-events:none}
+  @keyframes splashFailsafe{to{visibility:hidden}}
+  .splash-art{width:min(260px,66vw);height:auto;overflow:visible;margin-bottom:22px}
+  .splash-step{transform-origin:50% 100%;transform:scaleY(0);animation:stepUp calc(.55s*var(--k)) cubic-bezier(.2,.9,.3,1.2) forwards;animation-delay:calc(var(--i)*.17s*var(--k) + .15s)}
+  @keyframes stepUp{to{transform:scaleY(1)}}
+  .splash-dot{animation:climb calc(2.3s*var(--k)) cubic-bezier(.45,0,.35,1) forwards;animation-delay:calc(1s*var(--k));transform:translate(28px,82px);opacity:0}
+  @keyframes climb{
+    0%{transform:translate(28px,82px);opacity:0}
+    6%{opacity:1}
+    17%{transform:translate(48px,50px)} 26%{transform:translate(68px,64px)}
+    34%{transform:translate(88px,32px)} 43%{transform:translate(108px,46px)}
+    51%{transform:translate(128px,14px)} 60%{transform:translate(148px,28px)}
+    68%{transform:translate(168px,-4px)} 77%,100%{transform:translate(188px,10px);opacity:1}
   }
-  .welcome-go:active{transform:scale(.98)}
-  .welcome-status{margin:10px 0 0;font-size:.78rem;color:var(--ink-soft);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
-  .welcome-status i{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1.2s ease-in-out infinite}
-  .welcome-status.ready i{animation:none;background:#2e9d5b}
+  .splash-top{animation:topGlow .6s ease forwards;animation-delay:calc(3.1s*var(--k));fill:#2a4a8f}
+  @keyframes topGlow{to{fill:#FFE445}}
+  .splash-name{font-family:'Poppins',system-ui,sans-serif;font-weight:800;font-size:clamp(2.2rem,8vw,3.2rem);letter-spacing:-.02em;line-height:1;margin:0;
+    opacity:0;transform:translateY(14px);animation:splashIn .7s cubic-bezier(.16,.8,.3,1) forwards;animation-delay:calc(.5s*var(--k))}
+  .splash-name span{color:#FFE445}
+  .splash-sub{margin:8px 0 0;font-size:1rem;color:#c7d3ee;opacity:0;animation:splashIn .7s ease forwards;animation-delay:calc(.9s*var(--k))}
+  .splash-lines{margin:18px 0 0;display:grid;gap:6px;max-width:34ch;font-size:.95rem;line-height:1.5;color:#e4ebfa}
+  .splash-lines p{margin:0;opacity:0;animation:splashIn .7s ease forwards}
+  .splash-lines p:nth-child(1){animation-delay:1.5s}
+  .splash-lines p:nth-child(2){animation-delay:2.1s}
+  @keyframes splashIn{to{opacity:1;transform:none}}
+  .splash-bar{position:relative;width:min(200px,56vw);height:3px;border-radius:2px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:26px}
+  .splash-bar::before{content:"";position:absolute;inset:0;width:40%;background:#FFE445;border-radius:2px;animation:barRun 1.3s ease-in-out infinite}
+  .splash.ready .splash-bar::before{animation:none;width:100%;transition:width .35s ease}
+  @keyframes barRun{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+  .splash-status{margin:10px 0 0;font-size:.78rem;color:#9fb3dd;letter-spacing:.02em}
+  .splash-skip{position:absolute;bottom:18px;left:0;right:0;font-size:.72rem;color:#7f93c2;opacity:0;animation:splashIn .6s ease forwards;animation-delay:1.8s}
+  @media (prefers-reduced-motion: reduce){
+    .splash-step,.splash-name,.splash-sub,.splash-lines p,.splash-skip{animation:none;transform:none;opacity:1}
+    .splash-dot{animation:none;opacity:0}.splash-top{animation:none;fill:#FFE445}.splash{transition:opacity .4s ease}
+    .splash.leave{transform:none;opacity:0}
+  }
 
   /* soft light that follows the pointer across the hero */
   .hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .4s ease;
@@ -568,6 +583,25 @@
 </style>
 </head>
 <body>
+<div class="splash" id="splash" role="status" aria-live="polite" aria-label="Loading the LinkME Opportunity Finder">
+  <svg class="splash-art" viewBox="0 0 220 120" aria-hidden="true">
+    <rect class="splash-step" style="--i:0" x="10" y="90" width="36" height="20" rx="3" fill="#1E5BBD"/>
+    <rect class="splash-step" style="--i:1" x="50" y="72" width="36" height="38" rx="3" fill="#2b6cc9"/>
+    <rect class="splash-step" style="--i:2" x="90" y="54" width="36" height="56" rx="3" fill="#3a7fd6"/>
+    <rect class="splash-step" style="--i:3" x="130" y="36" width="36" height="74" rx="3" fill="#4C87DD"/>
+    <rect class="splash-step splash-top" style="--i:4" x="170" y="18" width="36" height="92" rx="3" fill="#2a4a8f"/>
+    <circle class="splash-dot" r="7" cx="0" cy="0" fill="#fff" stroke="#FFE445" stroke-width="3"/>
+  </svg>
+  <h1 class="splash-name">Link<span>ME</span></h1>
+  <p class="splash-sub">Come as you are.</p>
+  <div class="splash-lines" id="splashLines">
+    <p>Internships, jobs, and certifications shared by MEA CARES members.</p>
+    <p>Pick your batch, search, and bookmark what you like.</p>
+  </div>
+  <div class="splash-bar" aria-hidden="true"></div>
+  <p class="splash-status" id="splashStatus">Loading the latest listings</p>
+  <p class="splash-skip">Tap anywhere to skip</p>
+</div>
 
 <header class="site-banner">
   <img src="header.webp" width="1600" height="500" alt="MEA CARES Career Exploration Series. LinkME. Come as you are." fetchpriority="high" />
@@ -1463,22 +1497,6 @@
 
 })();
 </script>
-<div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" hidden>
-  <div class="welcome-card">
-    <img src="header.webp" width="1600" height="500" alt="" />
-    <div class="welcome-body">
-      <h2 id="welcomeTitle">Welcome to the LinkME Opportunity Finder</h2>
-      <p>One place for the internships, jobs, and certifications that MEA CARES members share.</p>
-      <ul>
-        <li>Pick your batch to see what is open to you.</li>
-        <li>Search by company, role, or industry.</li>
-        <li>Tap the bookmark on a card to save it for later.</li>
-      </ul>
-      <button type="button" class="welcome-go" id="welcomeGo">Start browsing</button>
-      <p class="welcome-status" id="welcomeStatus"><i></i><span>Loading the latest listings</span></p>
-    </div>
-  </div>
-</div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <button type="button" class="to-top" id="toTop" aria-label="Back to top" data-tip="Back to top"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <script>
@@ -1526,37 +1544,28 @@
 <script>
 (function(){
   var KEY = "linkme-welcomed";
-  var w = document.getElementById("welcome"), go = document.getElementById("welcomeGo"), st = document.getElementById("welcomeStatus");
+  var sp = document.getElementById("splash"), st = document.getElementById("splashStatus");
   var seen = false;
   try { seen = localStorage.getItem(KEY) === "1"; } catch (e) {}
-  var deepLink = /[?&]saved=1/.test(location.search);
-  if (!seen && !deepLink) {
-    w.hidden = false;
-    document.documentElement.classList.add("modal-open");
-    requestAnimationFrame(function(){ w.classList.add("in"); go.focus(); });
-    // flip the status line once the listings are on screen
-    var t0 = Date.now(), poll = setInterval(function(){
-      var loading = document.getElementById("loadingState");
-      var done = document.querySelector(".card") || (loading && loading.style.display === "none");
-      if (done || Date.now() - t0 > 15000) {
-        clearInterval(poll); st.classList.add("ready");
-        st.querySelector("span").textContent = done ? "Listings are ready" : "Still loading, you can start anyway";
-      }
-    }, 300);
-  }
-  function close(){
-    if (w.hidden) return;
-    w.classList.remove("in");
+  var quick = seen || /[?&]saved=1/.test(location.search);
+  var t0 = Date.now(), minMs = quick ? 1500 : 3600, left = false;
+  document.documentElement.classList.add("modal-open");
+  if (quick) { sp.classList.add("quick"); document.getElementById("splashLines").style.display = "none"; sp.querySelector(".splash-skip").style.display = "none"; }
+  function leave(){
+    if (left) return; left = true;
+    sp.classList.add("ready", "leave");
     try { localStorage.setItem(KEY, "1"); } catch (e) {}
-    setTimeout(function(){ w.hidden = true; document.documentElement.classList.remove("modal-open"); }, 300);
+    setTimeout(function(){ sp.remove(); document.documentElement.classList.remove("modal-open"); }, 900);
   }
-  go.addEventListener("click", close);
-  w.addEventListener("click", function(e){ if (e.target === w) close(); });
-  document.addEventListener("keydown", function(e){
-    if (w.hidden) return;
-    if (e.key === "Escape") close();
-    else if (e.key === "Tab") { e.preventDefault(); go.focus(); } // the one button is the only stop
-  });
+  var poll = setInterval(function(){
+    var loading = document.getElementById("loadingState");
+    var loaded = document.querySelector(".card") || (loading && loading.style.display === "none");
+    var waited = Date.now() - t0;
+    if (loaded && !sp.classList.contains("ready")) { sp.classList.add("ready"); st.textContent = "Listings ready"; }
+    if ((loaded && waited >= minMs) || waited > 14000) { clearInterval(poll); leave(); }
+  }, 150);
+  sp.addEventListener("click", function(){ if (Date.now() - t0 > 600) leave(); });
+  document.addEventListener("keydown", function(e){ if (!left && sp.isConnected && Date.now() - t0 > 600 && (e.key === "Escape" || e.key === "Enter")) leave(); });
 
   // hero light follows the pointer
   var hero = document.querySelector(".hero"), raf = 0, px = 0, py = 0;
