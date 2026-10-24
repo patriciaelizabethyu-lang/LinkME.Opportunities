@@ -242,6 +242,12 @@
   .footer-contact a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;transition:color .18s ease}
   .footer-contact a:hover{color:var(--tab-on, var(--navy-light))}
   .footer-contact a:focus-visible{outline:2px solid var(--tab-on, var(--navy-light));outline-offset:2px;border-radius:2px}
+  .page-header h1{position:relative;z-index:0;display:inline-block}
+  .page-header h1::after{content:"";position:absolute;z-index:-1;left:-.12em;right:-.12em;bottom:.04em;height:.4em;background:var(--gold);border-radius:3px;
+    transform:rotate(-1deg) scaleX(0);transform-origin:left center;animation:titleMark .8s cubic-bezier(.65,0,.2,1) .5s forwards}
+  @keyframes titleMark{to{transform:rotate(-1deg) scaleX(1)}}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .page-header h1::after{height:.1em;bottom:-.06em} }
+  @media (prefers-reduced-motion: reduce){ .page-header h1::after{animation:none;transform:rotate(-1deg) scaleX(1)} }
 </style>
 </head>
 <body>

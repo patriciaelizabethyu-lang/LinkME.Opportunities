@@ -601,6 +601,36 @@
   .footer-contact a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;transition:color .18s ease}
   .footer-contact a:hover{color:var(--tab-on, var(--navy-light))}
   .footer-contact a:focus-visible{outline:2px solid var(--tab-on, var(--navy-light));outline-offset:2px;border-radius:2px}
+  /* warmth and personality */
+  .hero-hi{margin:0 0 10px;font-family:'Poppins',system-ui,sans-serif;font-weight:600;font-size:1rem;color:var(--hero-ink-soft)}
+  .wave-hand{display:inline-block;margin-right:.35em;transform-origin:70% 80%;animation:waveHand 2.4s ease-in-out 1.2s 2}
+  @keyframes waveHand{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+  .hero h1 em{position:relative;z-index:0;white-space:nowrap}
+  .hero h1 em::before{content:"";position:absolute;z-index:-1;left:-.1em;right:-.1em;bottom:.04em;height:.46em;background:var(--gold);border-radius:3px;
+    transform:rotate(-1.2deg) scaleX(0);transform-origin:left center;animation:markIn .8s cubic-bezier(.65,0,.2,1) 1.1s forwards}
+  @keyframes markIn{to{transform:rotate(-1.2deg) scaleX(1)}}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .hero h1 em::before{height:.11em;bottom:-.06em;border-radius:2px}
+  }
+  .hero-live{margin:16px auto 0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:.92rem;color:var(--hero-ink-soft)}
+  .hero-live[hidden]{display:none}
+  .hero-live b{color:var(--hero-ink);font-family:'IBM Plex Mono',ui-monospace,monospace}
+  .live-dot{width:9px;height:9px;border-radius:50%;background:#2e9d5b;box-shadow:0 0 0 0 rgba(46,157,91,.5);animation:livePulse 1.8s ease-out infinite}
+  @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(46,157,91,.5)}100%{box-shadow:0 0 0 10px rgba(46,157,91,0)}}
+  .how-it-works{position:relative;z-index:1}
+  .hero-notes{position:absolute;inset:0;pointer-events:none;z-index:0;display:none}
+  @media (min-width:1100px){ .hero-notes{display:block} }
+  .hn{position:absolute;width:58px;height:68px;overflow:visible;opacity:.95;filter:drop-shadow(0 8px 12px rgba(28,41,69,.18));
+    transform:translate(calc(var(--px,0)*var(--dp)*1px), calc(var(--py,0)*var(--dp)*1px)) rotate(var(--r));transition:transform .5s ease-out}
+  .hn g{animation:noteBob 5s ease-in-out infinite;animation-delay:var(--bd)}
+  @keyframes noteBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .hn.l1{left:6%;top:10%;--r:-8deg;--dp:14;--bd:0s}.hn.l2{left:11%;top:27%;--r:6deg;--dp:-10;--bd:1.2s}
+  .hn.r1{right:7%;top:9%;--r:7deg;--dp:-12;--bd:.6s}.hn.r2{right:12%;top:26%;--r:-5deg;--dp:10;--bd:1.8s}
+  .badge.new{background:var(--gold-light);color:#716009}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .badge.new{color:var(--gold)} }
+  .confetti{position:fixed;z-index:150;width:7px;height:7px;border-radius:2px;pointer-events:none;animation:confetti .75s cubic-bezier(.2,.8,.3,1) forwards}
+  @keyframes confetti{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--cx),var(--cy)) rotate(var(--cr))}}
+  @media (prefers-reduced-motion: reduce){ .wave-hand,.hn g,.live-dot{animation:none} .hero h1 em::before{animation:none;transform:rotate(-1.2deg) scaleX(1)} }
 </style>
 </head>
 <body>
@@ -644,9 +674,12 @@
 </nav>
 
 <section class="hero" id="top">
+  <div class="hero-notes" aria-hidden="true"><svg class="hn l1" viewBox="0 0 50 58"><g><path d="M2 2h46v42l-10 12H2z" fill="#4488E8"/><path d="M38 56V44h10z" fill="rgba(16,24,43,.16)"/><circle cx="25" cy="7" r="3.6" fill="#10182B"/><rect x="9" y="18" width="30" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="27" width="24" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="36" width="28" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/></g></svg><svg class="hn l2" viewBox="0 0 50 58"><g><path d="M2 2h46v42l-10 12H2z" fill="#F2DE3A"/><path d="M38 56V44h10z" fill="rgba(16,24,43,.16)"/><circle cx="25" cy="7" r="3.6" fill="#10182B"/><rect x="9" y="18" width="28" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="27" width="32" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="36" width="18" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/></g></svg><svg class="hn r1" viewBox="0 0 50 58"><g><path d="M2 2h46v42l-10 12H2z" fill="#8FBFFF"/><path d="M38 56V44h10z" fill="rgba(16,24,43,.16)"/><circle cx="25" cy="7" r="3.6" fill="#10182B"/><rect x="9" y="18" width="32" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="27" width="22" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="36" width="28" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/></g></svg><svg class="hn r2" viewBox="0 0 50 58"><g><path d="M2 2h46v42l-10 12H2z" fill="#FFF4B4"/><path d="M38 56V44h10z" fill="rgba(16,24,43,.16)"/><circle cx="25" cy="7" r="3.6" fill="#10182B"/><rect x="9" y="18" width="26" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="27" width="30" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/><rect x="9" y="36" width="20" height="3.2" rx="1.6" fill="rgba(16,24,43,.26)"/></g></svg></div>
   <div class="hero-inner">
+    <p class="hero-hi reveal d1"><span class="wave-hand" aria-hidden="true">&#128075;</span> <span id="heroHi">Hi there!</span></p>
     <h1 class="reveal d1">Find your next <em>opportunity</em></h1>
     <p class="reveal d2">Search and filter internships, certifications, and jobs by batch and industry. Good luck!</p>
+    <p class="hero-live reveal d3" id="heroLive" hidden><span class="live-dot" aria-hidden="true"></span><span><b id="heroLiveN">0</b> open right now across <b id="heroLiveI">0</b> industries</span></p>
   </div>
   <div class="how-it-works reveal d5">
     <div class="step">
@@ -672,7 +705,7 @@
 
 <div class="controls-wrap" id="browse">
   <div class="controls">
-    <div class="batch-label">Your batch</div>
+    <div class="batch-label">Which batch are you?</div>
     <div class="batch-row" id="batchRow" aria-label="Filter by batch"></div>
 
     <div class="search-row">
@@ -854,6 +887,19 @@
     if (!reduceMotion) {
       btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop");
       els.navSavedCount.classList.remove("bump"); void els.navSavedCount.offsetWidth; els.navSavedCount.classList.add("bump");
+    }
+    if (nowSaved && !reduceMotion) {
+      var r = btn.getBoundingClientRect(), cols = ["#4488E8", "#FFE445", "#8FBFFF", "#F2DE3A", "#1E5BBD"];
+      for (var n = 0; n < 12; n++) {
+        var p = document.createElement("span"), ang = (Math.PI * 2 * n) / 12 + Math.random() * .5, dist = 28 + Math.random() * 30;
+        p.className = "confetti";
+        p.style.left = (r.left + r.width / 2 - 3) + "px"; p.style.top = (r.top + r.height / 2 - 3) + "px";
+        p.style.background = cols[n % cols.length];
+        p.style.setProperty("--cx", Math.cos(ang) * dist + "px"); p.style.setProperty("--cy", Math.sin(ang) * dist - 10 + "px");
+        p.style.setProperty("--cr", (Math.random() * 360 - 180) + "deg");
+        document.body.appendChild(p);
+        setTimeout(function(el){ el.remove(); }.bind(null, p), 800);
+      }
     }
     showToast(nowSaved ? "Saved. Find it under Saved at the top of the page." : "Removed from Saved.", function(){
       toggleSaved(o);
@@ -1052,6 +1098,13 @@
     return o.status.toLowerCase() === "open" && !isDeadlinePassed(o) && !isStale(o);
   }
 
+  // added to the sheet in the last 7 days and still open
+  function isNewListing(o){
+    if (!isOpenNow(o)) return false;
+    var added = parseDate(o.inputDate);
+    return added !== null && (Date.now() - added) / 86400000 <= 7 && added <= Date.now() + 86400000;
+  }
+
   function isClosingSoon(o){
     if (o.status.toLowerCase() !== "open") return false;
     var t = parseDate(o.deadline);
@@ -1113,6 +1166,7 @@
     if (o.setup) tags.push('<span class="tag">'+esc(o.setup)+'</span>');
     tags.push('<span class="tag paid">'+(o.paid ? "Paid" : "Unpaid")+'</span>');
     var badges = badge(o);
+    if (isNewListing(o)) badges += '<span class="badge new">New</span>';
     if (isClosingSoon(o)) badges += '<span class="badge soon">Closing soon</span>';
     if (findReview(o)) badges += '<span class="badge alumni">Alumni insight</span>';
     var saved = isSaved(o);
@@ -1479,6 +1533,15 @@
     }
   }
 
+  function updateHeroLive(){
+    var open = allRows.filter(isOpenNow);
+    var inds = {};
+    open.forEach(function(o){ if (o.industry) inds[o.industry] = 1; });
+    document.getElementById("heroLiveN").textContent = open.length;
+    document.getElementById("heroLiveI").textContent = Object.keys(inds).length;
+    document.getElementById("heroLive").hidden = open.length === 0;
+  }
+
   function loadData(){
     return linksReady.then(function(){ return fetch(CSV_URL); })
       .then(function(res){
@@ -1497,6 +1560,7 @@
           buildBatchPills();
           render();
         }
+        updateHeroLive();
       })
       .catch(function(err){
         if (!firstLoadDone) {
@@ -1595,6 +1659,18 @@
   sp.addEventListener("click", function(){ if (Date.now() - t0 > 600) leave(); });
   document.addEventListener("keydown", function(e){ if (!left && sp.isConnected && Date.now() - t0 > 600 && (e.key === "Escape" || e.key === "Enter")) leave(); });
 
+  // greeting by time of day
+  var hr = new Date().getHours(), hi = document.getElementById("heroHi");
+  if (hi) hi.textContent = (hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening") + "! Let's find your next step.";
+  // hero notes drift with the pointer
+  var heroEl = document.querySelector(".hero");
+  if (heroEl && window.matchMedia && window.matchMedia("(hover:hover)").matches) {
+    heroEl.addEventListener("pointermove", function(e){
+      var r = heroEl.getBoundingClientRect();
+      heroEl.style.setProperty("--px", ((e.clientX - r.left) / r.width - .5).toFixed(3));
+      heroEl.style.setProperty("--py", ((e.clientY - r.top) / r.height - .5).toFixed(3));
+    });
+  }
   // hero light follows the pointer
   var hero = document.querySelector(".hero"), raf = 0, px = 0, py = 0;
   if (hero && window.matchMedia && window.matchMedia("(hover:hover)").matches) {
