@@ -218,6 +218,10 @@
   .cursor-glow.on{opacity:1}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .cursor-glow{background:radial-gradient(circle, rgba(76,135,221,.22), rgba(255,228,69,.07) 45%, transparent 70%)} }
   @media (hover:none), (prefers-reduced-motion: reduce){ .cursor-glow{display:none} }
+  .footer-contact{margin:6px 0 0;font-size:.74rem}
+  .footer-contact a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;transition:color .18s ease}
+  .footer-contact a:hover{color:var(--tab-on, var(--navy-light))}
+  .footer-contact a:focus-visible{outline:2px solid var(--tab-on, var(--navy-light));outline-offset:2px;border-radius:2px}
 </style>
 </head>
 <body>
@@ -264,6 +268,7 @@
 <footer>
   <img class="footer-logo" src="logo-full.png" alt="MEA Cares, Career Exploration Series" />
   Come as you are.
+  <p class="footer-contact">Questions or concerns? Message <a href="https://www.facebook.com/patriciaelizabeth.yu/" target="_blank" rel="noopener noreferrer" aria-label="Patricia Yu on Facebook (opens in a new tab)">Patricia Yu</a>!</p>
 </footer>
 
 <script>
