@@ -509,39 +509,64 @@
   .to-top.show{opacity:1;transform:none;pointer-events:auto}
   .to-top:hover{border-color:var(--gold)}
   .kbd-hint{font-family:"IBM Plex Mono",monospace;font-size:.7rem;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-soft);margin-left:6px}
-  /* ---------- Loading screen: the banner's own scene, logo and LinkME wordmark ---------- */
-  .splash{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;color:#fff;
-    background:linear-gradient(180deg, rgba(16,24,43,.50), rgba(16,24,43,.80)), url('office-bg.webp') center/cover no-repeat, #1C2945;
-    transition:transform .8s cubic-bezier(.77,0,.18,1);animation:splashFailsafe 0s 14s forwards;--k:1}
-  .splash.quick{--k:.5}
-  .splash.leave{transform:translateY(-101%);pointer-events:none}
+  /* ---------- Loading screen: a lobby elevator. LinkME on the doors, three friends waiting, doors slide open to the site ---------- */
+  .splash{position:fixed;inset:0;z-index:200;overflow:hidden;animation:splashFailsafe 0s 14s forwards;--k:1}
+  .splash.quick{--k:.55}
   @keyframes splashFailsafe{to{visibility:hidden}}
-  .splash-logo{width:min(200px,52vw);height:auto;background:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.28);
-    opacity:0;transform:translateY(-16px) scale(.94);animation:logoDrop .7s cubic-bezier(.2,1.2,.3,1) forwards;animation-delay:calc(.1s*var(--k))}
+  .door{position:absolute;top:0;bottom:0;width:50%;overflow:hidden;transition:transform .95s cubic-bezier(.72,0,.18,1);
+    background:linear-gradient(180deg,#27459150 0%,#24407a 0%,#1C2945 58%,#10182B 100%)}
+  .door.l{left:0;box-shadow:inset -3px 0 0 rgba(0,0,0,.4), inset -10px 0 18px rgba(255,255,255,.05)}
+  .door.r{right:0;box-shadow:inset 3px 0 0 rgba(0,0,0,.4), inset 10px 0 18px rgba(255,255,255,.05)}
+  .splash.open .door.l{transform:translateX(-101%)}
+  .splash.open .door.r{transform:translateX(101%)}
+  /* both halves hold the same full-width scene, so everything lines up while the doors are shut and splits as they open */
+  .door-in{position:absolute;top:0;bottom:0;width:100vw;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;color:#fff}
+  .door.l .door-in{left:0}.door.r .door-in{right:0}
+  .splash-glow{position:absolute;inset:0;background:radial-gradient(620px circle at 50% 34%, rgba(255,228,69,.17), transparent 62%);pointer-events:none}
+  .splash-sheen{position:absolute;top:0;bottom:0;left:0;width:26vw;pointer-events:none;transform:translateX(-40vw) skewX(-18deg);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.11),transparent);animation:sheen 3.8s ease-in-out infinite;animation-delay:.6s}
+  @keyframes sheen{0%{transform:translateX(-40vw) skewX(-18deg)}55%,100%{transform:translateX(130vw) skewX(-18deg)}}
+
+  .floors{position:relative;display:flex;align-items:center;gap:10px;background:#0a0f1c;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:7px 14px;margin-bottom:18px;
+    opacity:0;animation:splashIn .5s ease forwards;animation-delay:calc(.1s*var(--k))}
+  .floors svg{width:12px;height:12px;fill:#FFE445;animation:arrowBob 1s ease-in-out infinite}
+  @keyframes arrowBob{0%,100%{transform:translateY(1px)}50%{transform:translateY(-2px)}}
+  .floors b{font:700 .8rem 'IBM Plex Mono',ui-monospace,monospace;color:#4d6190;animation:floorLit 3.2s steps(1,end) infinite;animation-delay:calc(var(--n)*.64s)}
+  @keyframes floorLit{0%{color:#FFE445;text-shadow:0 0 8px rgba(255,228,69,.7)}20%,100%{color:#4d6190;text-shadow:none}}
+  .splash.ready .floors b{animation:none;color:#FFE445;text-shadow:0 0 8px rgba(255,228,69,.7)}
+
+  .splash-logo{width:min(190px,50vw);height:auto;background:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 10px 28px rgba(0,0,0,.35);
+    opacity:0;transform:translateY(-18px) scale(.94);animation:logoDrop .7s cubic-bezier(.2,1.25,.3,1) forwards;animation-delay:calc(.25s*var(--k))}
   @keyframes logoDrop{to{opacity:1;transform:none}}
-  .splash-word{width:min(440px,82vw);height:auto;margin-top:26px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.35));
-    clip-path:inset(0 100% 0 0);transform:translateY(10px);animation:wordWipe .9s cubic-bezier(.65,0,.2,1) forwards;animation-delay:calc(.55s*var(--k))}
+  .splash-word{width:min(430px,82vw);height:auto;margin-top:22px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));
+    clip-path:inset(0 100% 0 0);transform:translateY(10px);animation:wordWipe .9s cubic-bezier(.65,0,.2,1) forwards;animation-delay:calc(.6s*var(--k))}
   @keyframes wordWipe{to{clip-path:inset(0 0 0 0);transform:none}}
-  /* the three figures from the logo, in its three colours, hop while the listings load */
-  .splash-dots{display:flex;gap:12px;margin-top:30px;height:22px;align-items:flex-end}
-  .splash-dots i{width:14px;height:14px;border-radius:50%;display:block;opacity:0;animation:dotIn .4s ease forwards, hop .9s ease-in-out infinite;
-    animation-delay:calc(1.3s*var(--k)), calc(1.3s*var(--k))}
-  .splash-dots i:nth-child(1){background:#4488E8}
-  .splash-dots i:nth-child(2){background:#8FBFFF;animation-delay:calc(1.3s*var(--k) + .12s), calc(1.3s*var(--k) + .15s)}
-  .splash-dots i:nth-child(3){background:#F2DE3A;animation-delay:calc(1.3s*var(--k) + .24s), calc(1.3s*var(--k) + .3s)}
-  @keyframes dotIn{to{opacity:1}}
-  @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-12px)}}
-  .splash.ready .splash-dots i{animation:dotIn .2s forwards;opacity:1;transform:translateY(-3px) scale(1.15);transition:transform .3s cubic-bezier(.2,1.6,.4,1)}
-  .splash-lines{margin:20px 0 0;display:grid;gap:6px;max-width:34ch;font-size:.95rem;line-height:1.5;color:#f1f5ff;text-shadow:0 1px 8px rgba(0,0,0,.4)}
-  .splash-lines p{margin:0;opacity:0;transform:translateY(8px);animation:splashIn .7s ease forwards}
-  .splash-lines p:nth-child(1){animation-delay:1.7s}
-  .splash-lines p:nth-child(2){animation-delay:2.3s}
+  .splash-lines{margin:16px 0 0;max-width:32ch;font-size:.95rem;line-height:1.5;color:#f1f5ff}
+  .splash-lines p{margin:0;opacity:0;animation:splashIn .7s ease forwards;animation-delay:1.7s}
   @keyframes splashIn{to{opacity:1;transform:none}}
-  .splash-status{margin:14px 0 0;font-size:.78rem;color:#d3def5;letter-spacing:.02em;text-shadow:0 1px 6px rgba(0,0,0,.4)}
-  .splash-skip{position:absolute;bottom:18px;left:0;right:0;margin:0;font-size:.72rem;color:#c3d1f0;opacity:0;animation:splashIn .6s ease forwards;animation-delay:2s}
+
+  /* the three figures from the logo: blue with a briefcase, light blue with coffee, yellow waving */
+  .crew{display:flex;align-items:flex-end;gap:6px;margin-top:22px;height:100px}
+  .fig{width:60px;height:auto;overflow:visible;opacity:0;transform:translateY(30px);transform-origin:50% 100%;
+    animation:figIn .6s cubic-bezier(.2,1.3,.35,1) forwards, hop 1.1s ease-in-out infinite;animation-delay:calc(1.1s*var(--k) + var(--d)), calc(1.7s*var(--k) + var(--d))}
+  @keyframes figIn{to{opacity:1;transform:none}}
+  @keyframes hop{0%,100%{transform:translateY(0) scale(1,1)}12%{transform:translateY(0) scale(1.06,.93)}45%{transform:translateY(-14px) scale(.97,1.04)}}
+  .fig .wave{transform-origin:52px 54px;animation:wave .7s ease-in-out infinite alternate}
+  @keyframes wave{from{transform:rotate(-14deg)}to{transform:rotate(22deg)}}
+  .fig .steam{animation:steam 1.6s ease-in-out infinite}
+  @keyframes steam{0%{opacity:0;transform:translateY(4px)}50%{opacity:.9}100%{opacity:0;transform:translateY(-5px)}}
+  .splash.ready .fig{animation:cheer .6s cubic-bezier(.3,1.4,.5,1) forwards;opacity:1}
+  @keyframes cheer{0%{transform:none}50%{transform:translateY(-34px) rotate(-6deg)}100%{transform:none}}
+
+  .splash-status{margin:14px 0 0;font-size:.84rem;font-weight:600;color:#dbe5fb;letter-spacing:.01em;min-height:1.3em}
+  .splash-skip{position:absolute;bottom:16px;left:0;right:0;margin:0;font-size:.72rem;color:#9fb3dd;opacity:0;animation:splashIn .6s ease forwards;animation-delay:2s}
+  .splash.quick .splash-lines,.splash.quick .splash-skip{display:none}
+  @media (max-height:640px){ .crew{height:78px}.fig{width:46px}.splash-lines{display:none}.splash-word{margin-top:12px} }
   @media (prefers-reduced-motion: reduce){
-    .splash-logo,.splash-word,.splash-dots i,.splash-lines p,.splash-skip{animation:none;transform:none;opacity:1;clip-path:none}
-    .splash{transition:opacity .4s ease}.splash.leave{transform:none;opacity:0}
+    .splash-logo,.splash-word,.floors,.fig,.splash-lines p,.splash-skip{animation:none;transform:none;opacity:1;clip-path:none}
+    .fig .wave,.fig .steam,.splash-sheen,.floors svg{animation:none}
+    .splash.ready .fig{animation:none}
+    .door{transition:opacity .5s ease}.splash.open .door.l,.splash.open .door.r{transform:none;opacity:0}
   }
 
   /* soft light that follows the pointer across the hero */
@@ -577,15 +602,26 @@
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Loading the LinkME Opportunity Finder">
-  <img class="splash-logo" src="logo-full.png" alt="MEA CARES, Career Exploration Series" />
-  <img class="splash-word" src="linkme-wordmark.webp" width="496" height="177" alt="LinkME. Come as you are." />
-  <div class="splash-dots" aria-hidden="true"><i></i><i></i><i></i></div>
-  <div class="splash-lines" id="splashLines">
-    <p>Internships, jobs, and certifications shared by MEA CARES members.</p>
-    <p>Pick your batch, search, and bookmark what you like.</p>
-  </div>
-  <p class="splash-status" id="splashStatus">Loading the latest listings</p>
-  <p class="splash-skip">Tap anywhere to skip</p>
+  <div class="door l"><div class="door-in">
+    <div class="splash-glow"></div><div class="splash-sheen"></div>
+    <div class="floors"><svg viewBox="0 0 12 12"><path d="M6 1l5 9H1z"/></svg><b style="--n:0">1</b><b style="--n:1">2</b><b style="--n:2">3</b><b style="--n:3">4</b><b style="--n:4">5</b></div>
+    <img class="splash-logo" src="logo-full.png" alt="" />
+    <img class="splash-word" src="linkme-wordmark.webp" width="496" height="177" alt="" />
+    <div class="splash-lines"><p>Internships, jobs, and certifications shared by MEA CARES members.</p></div>
+    <div class="crew"><svg class="fig" style="--d:0s" viewBox="0 0 70 92"><path d="M8 90V56a22 22 0 0 1 44 0v34z" fill="#4488E8"/><circle cx="30" cy="24" r="13" fill="#4488E8"/><circle cx="25.5" cy="23" r="1.9" fill="#10182B"/><circle cx="34.5" cy="23" r="1.9" fill="#10182B"/><path d="M25 29q5 5 10 0" fill="none" stroke="#10182B" stroke-width="2" stroke-linecap="round"/><rect x="40" y="64" width="24" height="17" rx="3" fill="#8a6a4f"/><path d="M46 64v-5h12v5" fill="none" stroke="#8a6a4f" stroke-width="3"/><rect x="40" y="70" width="24" height="3" fill="#6d513b"/></svg><svg class="fig" style="--d:0.13s" viewBox="0 0 70 92"><path d="M8 90V56a22 22 0 0 1 44 0v34z" fill="#8FBFFF"/><circle cx="30" cy="24" r="13" fill="#8FBFFF"/><circle cx="25.5" cy="23" r="1.9" fill="#10182B"/><circle cx="34.5" cy="23" r="1.9" fill="#10182B"/><path d="M25 29q5 5 10 0" fill="none" stroke="#10182B" stroke-width="2" stroke-linecap="round"/><rect x="41" y="62" width="15" height="17" rx="3" fill="#E8C9A0"/><rect x="41" y="62" width="15" height="5" rx="2" fill="#fff"/><path class="steam" d="M45 57q-3-4 0-8M52 57q-3-4 0-8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><svg class="fig" style="--d:0.26s" viewBox="0 0 70 92"><path d="M8 90V56a22 22 0 0 1 44 0v34z" fill="#F2DE3A"/><circle cx="30" cy="24" r="13" fill="#F2DE3A"/><circle cx="25.5" cy="23" r="1.9" fill="#10182B"/><circle cx="34.5" cy="23" r="1.9" fill="#10182B"/><path d="M25 29q5 5 10 0" fill="none" stroke="#10182B" stroke-width="2" stroke-linecap="round"/><g class="wave"><path d="M52 54L64 38" stroke="#F2DE3A" stroke-width="8" stroke-linecap="round"/></g></svg></div>
+    <p class="splash-status">Warming up the listings</p>
+    <p class="splash-skip">Tap anywhere to skip</p>
+  </div></div>
+  <div class="door r" aria-hidden="true"><div class="door-in">
+    <div class="splash-glow"></div><div class="splash-sheen"></div>
+    <div class="floors"><svg viewBox="0 0 12 12"><path d="M6 1l5 9H1z"/></svg><b style="--n:0">1</b><b style="--n:1">2</b><b style="--n:2">3</b><b style="--n:3">4</b><b style="--n:4">5</b></div>
+    <img class="splash-logo" src="logo-full.png" alt="" />
+    <img class="splash-word" src="linkme-wordmark.webp" width="496" height="177" alt="" />
+    <div class="splash-lines"><p>Internships, jobs, and certifications shared by MEA CARES members.</p></div>
+    <div class="crew"><svg class="fig" style="--d:0s" viewBox="0 0 70 92"><path d="M8 90V56a22 22 0 0 1 44 0v34z" fill="#4488E8"/><circle cx="30" cy="24" r="13" fill="#4488E8"/><circle cx="25.5" cy="23" r="1.9" fill="#10182B"/><circle cx="34.5" cy="23" r="1.9" fill="#10182B"/><path d="M25 29q5 5 10 0" fill="none" stroke="#10182B" stroke-width="2" stroke-linecap="round"/><rect x="40" y="64" width="24" height="17" rx="3" fill="#8a6a4f"/><path d="M46 64v-5h12v5" fill="none" stroke="#8a6a4f" stroke-width="3"/><rect x="40" y="70" width="24" height="3" fill="#6d513b"/></svg><svg class="fig" style="--d:0.13s" viewBox="0 0 70 92"><path d="M8 90V56a22 22 0 0 1 44 0v34z" fill="#8FBFFF"/><circle cx="30" cy="24" r="13" fill="#8FBFFF"/><circle cx="25.5" cy="23" r="1.9" fill="#10182B"/><circle cx="34.5" cy="23" r="1.9" fill="#10182B"/><path d="M25 29q5 5 10 0" fill="none" stroke="#10182B" stroke-width="2" stroke-linecap="round"/><rect x="41" y="62" width="15" height="17" rx="3" fill="#E8C9A0"/><rect x="41" y="62" width="15" height="5" rx="2" fill="#fff"/><path class="steam" d="M45 57q-3-4 0-8M52 57q-3-4 0-8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><svg class="fig" style="--d:0.26s" viewBox="0 0 70 92"><path d="M8 90V56a22 22 0 0 1 44 0v34z" fill="#F2DE3A"/><circle cx="30" cy="24" r="13" fill="#F2DE3A"/><circle cx="25.5" cy="23" r="1.9" fill="#10182B"/><circle cx="34.5" cy="23" r="1.9" fill="#10182B"/><path d="M25 29q5 5 10 0" fill="none" stroke="#10182B" stroke-width="2" stroke-linecap="round"/><g class="wave"><path d="M52 54L64 38" stroke="#F2DE3A" stroke-width="8" stroke-linecap="round"/></g></svg></div>
+    <p class="splash-status">Warming up the listings</p>
+    <p class="splash-skip">Tap anywhere to skip</p>
+  </div></div>
 </div>
 
 <header class="site-banner">
@@ -1529,24 +1565,27 @@
 <script>
 (function(){
   var KEY = "linkme-welcomed";
-  var sp = document.getElementById("splash"), st = document.getElementById("splashStatus");
+  var sp = document.getElementById("splash");
   var seen = false;
   try { seen = localStorage.getItem(KEY) === "1"; } catch (e) {}
   var quick = seen || /[?&]saved=1/.test(location.search);
-  var t0 = Date.now(), minMs = quick ? 1500 : 3400, left = false;
+  var t0 = Date.now(), minMs = quick ? 1700 : 3600, left = false;
   document.documentElement.classList.add("modal-open");
-  if (quick) { sp.classList.add("quick"); document.getElementById("splashLines").style.display = "none"; sp.querySelector(".splash-skip").style.display = "none"; }
+  if (quick) sp.classList.add("quick");
+  var statuses = ["Warming up the listings", "Stacking the sticky notes", "Pouring the coffee", "Almost there"], si = 0;
+  function say(t){ sp.querySelectorAll(".splash-status").forEach(function(el){ el.textContent = t; }); }
+  var rot = setInterval(function(){ if (left) return; si = Math.min(si + 1, statuses.length - 1); say(statuses[si]); }, 1100);
   function leave(){
-    if (left) return; left = true;
-    sp.classList.add("ready", "leave");
+    if (left) return; left = true; clearInterval(rot);
     try { localStorage.setItem(KEY, "1"); } catch (e) {}
-    setTimeout(function(){ sp.remove(); document.documentElement.classList.remove("modal-open"); }, 900);
+    sp.classList.add("ready"); say("Doors opening");   // the friends cheer first
+    setTimeout(function(){ sp.classList.add("open"); }, 650);
+    setTimeout(function(){ sp.remove(); document.documentElement.classList.remove("modal-open"); }, 1750);
   }
   var poll = setInterval(function(){
     var loading = document.getElementById("loadingState");
     var loaded = document.querySelector(".card") || (loading && loading.style.display === "none");
     var waited = Date.now() - t0;
-    if (loaded && !sp.classList.contains("ready")) { sp.classList.add("ready"); st.textContent = "Listings ready"; }
     if ((loaded && waited >= minMs) || waited > 14000) { clearInterval(poll); leave(); }
   }, 150);
   sp.addEventListener("click", function(){ if (Date.now() - t0 > 600) leave(); });
