@@ -253,14 +253,7 @@
     :root:not([data-theme="light"]) .pill.active{background:var(--tab-on);border-color:var(--tab-on);color:#fff}
     :root:not([data-theme="light"]) .pill:hover{color:var(--gold-bright)}
   }
-  /* Signature motif: batches read left to right as a staircase — Freshies on the bottom step, Super Seniors on top */
-  @media (min-width:641px){
-    .batch-row .pill:nth-child(1){transform:translateY(12px)}
-    .batch-row .pill:nth-child(2){transform:translateY(6px)}
-    .batch-row .pill:nth-child(3){transform:translateY(0)}
-    .batch-row .pill:nth-child(4){transform:translateY(-6px)}
-    .batch-row .pill:nth-child(5){transform:translateY(-12px)}
-  }
+  /* batch boxes sit level in one even row */
   @media (max-width:640px){ .batch-row{grid-template-columns:repeat(3,1fr);padding-top:18px} }
   @media (max-width:380px){ .batch-row{grid-template-columns:repeat(2,1fr)} }
 
@@ -510,6 +503,7 @@
   .to-top:hover{border-color:var(--gold)}
   .kbd-hint{font-family:"IBM Plex Mono",monospace;font-size:.7rem;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-soft);margin-left:6px}
   /* ---------- Loading screen: a lobby elevator. LinkME on the doors, three friends waiting, doors slide open to the site ---------- */
+  .no-splash .splash{display:none}
   .splash{position:fixed;inset:0;z-index:200;overflow:hidden;animation:splashFailsafe 0s 14s forwards;--k:1}
   .splash.quick{--k:.55}
   @keyframes splashFailsafe{to{visibility:hidden}}
@@ -570,7 +564,7 @@
 
   /* soft light that follows the pointer across the hero */
   .hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .4s ease;
-    background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%), color-mix(in srgb, var(--hero-accent) 22%, transparent), transparent 70%)}
+    background:radial-gradient(210px circle at var(--mx,50%) var(--my,50%), color-mix(in srgb, var(--hero-accent) 22%, transparent), transparent 70%)}
   .hero.lit::after{opacity:1}
   @media (hover:none), (prefers-reduced-motion: reduce){ .hero::after{display:none} }
   /* page backdrop: the banner's office scene, washed out, with a blue and a yellow glow from the brand palette */
@@ -592,7 +586,7 @@
     }
   }
   /* cursor glow: follows the pointer over the whole page and stays where it was left */
-  .cursor-glow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;z-index:-1;pointer-events:none;border-radius:50%;
+  .cursor-glow{position:fixed;left:0;top:0;width:300px;height:300px;margin:-150px 0 0 -150px;z-index:-1;pointer-events:none;border-radius:50%;
     background:radial-gradient(circle, rgba(30,91,189,.18), rgba(255,228,69,.10) 45%, transparent 70%);opacity:0;transition:opacity .6s ease;will-change:transform}
   .cursor-glow.on{opacity:1}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .cursor-glow{background:radial-gradient(circle, rgba(76,135,221,.22), rgba(255,228,69,.07) 45%, transparent 70%)} }
@@ -633,6 +627,7 @@
     background:var(--paper);color:var(--ink);font-size:.86rem;line-height:1.5}
   .stale-notice[hidden]{display:none}
 </style>
+<script>try { if (sessionStorage.getItem("linkme-splash-seen")) document.documentElement.classList.add("no-splash"); } catch (e) {}</script>
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Loading the LinkME Opportunity Finder">
@@ -1742,6 +1737,11 @@
 (function(){
   var KEY = "linkme-welcomed";
   var sp = document.getElementById("splash");
+  // the elevator plays once when someone arrives. Moving between pages, or tapping Opportunities, never shows it again this visit.
+  var skipSplash = document.documentElement.classList.contains("no-splash");
+  try { sessionStorage.setItem("linkme-splash-seen", "1"); } catch (e) {}
+  if (skipSplash) { if (sp) sp.remove(); }
+  else {
   var seen = false;
   try { seen = localStorage.getItem(KEY) === "1"; } catch (e) {}
   var quick = seen || /[?&]saved=1/.test(location.search);
@@ -1766,6 +1766,7 @@
   }, 150);
   sp.addEventListener("click", function(){ if (Date.now() - t0 > 600) leave(); });
   document.addEventListener("keydown", function(e){ if (!left && sp.isConnected && Date.now() - t0 > 600 && (e.key === "Escape" || e.key === "Enter")) leave(); });
+  }
 
   // greeting by time of day
   var hr = new Date().getHours(), hi = document.getElementById("heroHi");
