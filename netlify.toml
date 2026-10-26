@@ -1,0 +1,36 @@
+# Netlify settings for the LinkME Opportunity Finder.
+# The site is plain HTML, CSS and JavaScript, so there is no build step.
+
+[build]
+  publish = "."
+
+# Safe defaults for every page
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Pages: always check for a fresh copy, so a deploy shows up straight away
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Images and icons change rarely: keep them for a week
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# Fallback apply links: an hour is enough
+[[headers]]
+  for = "/links.json"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
