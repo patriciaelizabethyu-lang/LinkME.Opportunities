@@ -212,12 +212,6 @@
         url('office-bg.webp') center top / cover no-repeat;
     }
   }
-  /* cursor glow: follows the pointer over the whole page and stays where it was left */
-  .cursor-glow{position:fixed;left:0;top:0;width:300px;height:300px;margin:-150px 0 0 -150px;z-index:-1;pointer-events:none;border-radius:50%;
-    background:radial-gradient(circle, rgba(30,91,189,.18), rgba(255,228,69,.10) 45%, transparent 70%);opacity:0;transition:opacity .6s ease;will-change:transform}
-  .cursor-glow.on{opacity:1}
-  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .cursor-glow{background:radial-gradient(circle, rgba(76,135,221,.22), rgba(255,228,69,.07) 45%, transparent 70%)} }
-  @media (hover:none), (prefers-reduced-motion: reduce){ .cursor-glow{display:none} }
   .footer-contact{margin:6px 0 0;font-size:.74rem}
   .footer-contact a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;transition:color .18s ease}
   .footer-contact a:hover{color:var(--tab-on, var(--navy-light))}
@@ -443,24 +437,6 @@
   document.addEventListener("focusout", hide);
   window.addEventListener("scroll", hide, { passive: true });
   document.addEventListener("keydown", function(e){ if (e.key === "Escape") hide(); });
-})();
-</script>
-<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-<script>
-(function(){
-  var g = document.getElementById("cursorGlow");
-  if (!g || !window.matchMedia || !window.matchMedia("(hover:hover)").matches) return;
-  var tx = window.innerWidth * .6, ty = 260, x = tx, y = ty, raf = 0;
-  function tick(){
-    x += (tx - x) * .14; y += (ty - y) * .14;               // eased, so it trails the pointer a little
-    g.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px)";
-    raf = (Math.abs(tx - x) > .5 || Math.abs(ty - y) > .5) ? requestAnimationFrame(tick) : 0;
-  }
-  document.addEventListener("pointermove", function(e){
-    tx = e.clientX; ty = e.clientY; g.classList.add("on");
-    if (!raf) raf = requestAnimationFrame(tick);
-  }, { passive: true });
-  g.style.transform = "translate(" + x + "px," + y + "px)"; // rests near the top until the first move
 })();
 </script>
 <script data-goatcounter="https://meacareslinkme.goatcounter.com/count"

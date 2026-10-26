@@ -562,11 +562,22 @@
     .door{transition:opacity .5s ease}.splash.open .door.l,.splash.open .door.r{transform:none;opacity:0}
   }
 
-  /* soft light that follows the pointer across the hero */
-  .hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .4s ease;
-    background:radial-gradient(210px circle at var(--mx,50%) var(--my,50%), color-mix(in srgb, var(--hero-accent) 22%, transparent), transparent 70%)}
+  /* the washed-out office scene shows in full colour in a small circle around the pointer, and stays where it was left */
+  .hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .5s ease;
+    background:url('office-bg.webp') center/cover no-repeat;filter:saturate(1.3) contrast(1.05);
+    -webkit-mask-image:radial-gradient(150px circle at var(--mx,50%) var(--my,50%), #000 0, rgba(0,0,0,.9) 50%, transparent 100%);
+            mask-image:radial-gradient(150px circle at var(--mx,50%) var(--my,50%), #000 0, rgba(0,0,0,.9) 50%, transparent 100%)}
   .hero.lit::after{opacity:1}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .hero.lit::after{opacity:.6} }
   @media (hover:none), (prefers-reduced-motion: reduce){ .hero::after{display:none} }
+  /* cards lean toward the pointer, and the title gets a highlighter swipe */
+  .card{transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,0px));will-change:transform}
+  .card:hover{--ty:-3px;transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,0px))}
+  .card:active{--ty:-1px;transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,0px))}
+  .card h3{width:fit-content;max-width:100%;background:linear-gradient(var(--gold),var(--gold)) no-repeat 0 92% / 0 .42em;transition:background-size .35s cubic-bezier(.65,0,.2,1)}
+  .card:hover h3,.card:focus-visible h3{background-size:100% .42em}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .card h3{background-size:0 .12em} :root:not([data-theme="light"]) .card:hover h3,:root:not([data-theme="light"]) .card:focus-visible h3{background-size:100% .12em} }
+  @media (hover:none), (prefers-reduced-motion: reduce){ .card,.card:hover,.card:active{transform:none} .card h3{transition:none} }
   /* page backdrop: the banner's office scene, washed out, with a blue and a yellow glow from the brand palette */
   body::before{
     content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
@@ -585,12 +596,6 @@
         url('office-bg.webp') center top / cover no-repeat;
     }
   }
-  /* cursor glow: follows the pointer over the whole page and stays where it was left */
-  .cursor-glow{position:fixed;left:0;top:0;width:300px;height:300px;margin:-150px 0 0 -150px;z-index:-1;pointer-events:none;border-radius:50%;
-    background:radial-gradient(circle, rgba(30,91,189,.18), rgba(255,228,69,.10) 45%, transparent 70%);opacity:0;transition:opacity .6s ease;will-change:transform}
-  .cursor-glow.on{opacity:1}
-  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .cursor-glow{background:radial-gradient(circle, rgba(76,135,221,.22), rgba(255,228,69,.07) 45%, transparent 70%)} }
-  @media (hover:none), (prefers-reduced-motion: reduce){ .cursor-glow{display:none} }
   .footer-contact{margin:6px 0 0;font-size:.74rem}
   .footer-contact a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;transition:color .18s ease}
   .footer-contact a:hover{color:var(--tab-on, var(--navy-light))}
@@ -1791,24 +1796,6 @@
   }
 })();
 </script>
-<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-<script>
-(function(){
-  var g = document.getElementById("cursorGlow");
-  if (!g || !window.matchMedia || !window.matchMedia("(hover:hover)").matches) return;
-  var tx = window.innerWidth * .6, ty = 260, x = tx, y = ty, raf = 0;
-  function tick(){
-    x += (tx - x) * .14; y += (ty - y) * .14;               // eased, so it trails the pointer a little
-    g.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px)";
-    raf = (Math.abs(tx - x) > .5 || Math.abs(ty - y) > .5) ? requestAnimationFrame(tick) : 0;
-  }
-  document.addEventListener("pointermove", function(e){
-    tx = e.clientX; ty = e.clientY; g.classList.add("on");
-    if (!raf) raf = requestAnimationFrame(tick);
-  }, { passive: true });
-  g.style.transform = "translate(" + x + "px," + y + "px)"; // rests near the top until the first move
-})();
-</script>
 <script data-goatcounter="https://meacareslinkme.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 <script>
@@ -1823,6 +1810,24 @@
     var host = a.closest(".card"), el = host ? host.querySelector("h3") : document.getElementById("modalTitle");
     var name = el ? el.textContent.trim() : "unknown";
     window.linkmeTrack("Apply: " + name);
+  });
+})();
+</script>
+<script>
+(function(){
+  // listing cards lean a few degrees toward the pointer
+  var grid = document.getElementById("grid");
+  if (!grid || !window.matchMedia || !window.matchMedia("(hover:hover)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  grid.addEventListener("pointermove", function(e){
+    var c = e.target.closest(".card"); if (!c) return;
+    var r = c.getBoundingClientRect();
+    c.style.setProperty("--ry", (((e.clientX - r.left) / r.width - .5) * 7).toFixed(2) + "deg");
+    c.style.setProperty("--rx", ((-((e.clientY - r.top) / r.height - .5)) * 7).toFixed(2) + "deg");
+  });
+  grid.addEventListener("pointerout", function(e){
+    var c = e.target.closest(".card");
+    if (!c || (e.relatedTarget && c.contains(e.relatedTarget))) return;
+    c.style.setProperty("--rx", "0deg"); c.style.setProperty("--ry", "0deg");
   });
 })();
 </script>
