@@ -973,7 +973,58 @@
     if (runs.length > 1 && runs[0][0] === 0 && runs[runs.length - 1][1] === 11) runs[0][0] = runs.pop()[0];
     return runs.map(function(r){ return r[0] === r[1] ? MONTHS[r[0]] : MONTHS[r[0]] + "-" + MONTHS[r[1]]; }).concat(others).join(", ");
   }
+  // The form's own responses tab (Form Responses 1) read directly: each row is one submission, with the form's question titles as headers.
+  // Everything a listing needs is worked out here, so the sheet needs no formulas.
+  function formatNiceDate(v){
+    v = (v || "").trim();
+    if (!v || !/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(v)) return v;          // already words (March 9, 2026) or TBA: leave it
+    var t = Date.parse(v);
+    return isNaN(t) ? v : new Date(t).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  }
+  function mapFormRows(rows, hi){
+    var header = (rows[hi] || []).map(function(h){ return (h || "").trim().toLowerCase(); });
+    function find(){ for (var i = 0; i < arguments.length; i++) { var k = header.indexOf(arguments[i]); if (k !== -1) return k; } return -1; }
+    var C = {
+      time: find("timestamp"), company: find("company name"), position: find("position or role"),
+      type: find("type", "type of opportunity"), industry: find("industry"), fn: find("function"),
+      desc: find("job description"), skills: find("relevant skills needed"), paid: find("paid?"), required: find("required?"),
+      setup: find("work set-up", "work setup"), source: find("source", "where did you find it?"),
+      email: find("company email address", "company contact email"),        // the company's address, never the submitter's
+      batch: find("available to which batch?", "who is it open to?"), deadline: find("deadline of applying", "application deadline"),
+      link: find("link to job post", "link to apply"), schedule: find("schedule")
+    };
+    function cell(row, i){ return i >= 0 ? (row[i] || "").trim() : ""; }
+    var out = [];
+    for (var r = hi + 1; r < rows.length; r++) {
+      var row = rows[r];
+      var company = cell(row, C.company);
+      if (!row || !company) continue;
+      var picked = cell(row, C.batch).split(",").map(function(x){ return x.trim().toLowerCase(); });
+      var link = cell(row, C.link), deadline = cell(row, C.deadline), position = cell(row, C.position);
+      out.push({
+        batches: { "29": picked.indexOf("freshies") !== -1, "28": picked.indexOf("sophs") !== -1, "27": picked.indexOf("juns") !== -1,
+                   "26": picked.indexOf("seniors") !== -1, "25": picked.indexOf("super seniors") !== -1 },
+        status: "Open",
+        inputDate: formatNiceDate(cell(row, C.time).split(" ")[0]),
+        deadline: deadline ? formatNiceDate(deadline) : "TBA",
+        schedule: formatSchedule(cell(row, C.schedule)),
+        link: /^https?:\/\//i.test(link) ? link : fallbackLink(company, position),
+        type: cell(row, C.type), industry: cell(row, C.industry), company: company, position: position,
+        fn: cell(row, C.fn), description: cell(row, C.desc), skills: cell(row, C.skills),
+        paid: cell(row, C.paid).toLowerCase() === "yes", required: cell(row, C.required).toLowerCase() === "yes",
+        setup: cell(row, C.setup), email: cell(row, C.email), source: cell(row, C.source), name: (company + " " + position).trim(),
+        _idx: r
+      });
+    }
+    return out;
+  }
+
   function mapRows(rows){
+    // form responses straight from Google Forms (has Timestamp and Company Name, no Status column)
+    for (var f0 = 0; f0 < Math.min(rows.length, 8); f0++) {
+      var fl = (rows[f0] || []).map(function(x){ return (x || "").trim().toLowerCase(); });
+      if (fl.indexOf("company name") !== -1 && fl.indexOf("timestamp") !== -1 && fl.indexOf("status") === -1) return mapFormRows(rows, f0);
+    }
     // Columns are found by their header names (row 2 of the CSV), so adding or moving a column in the sheet
     // doesn't break the site. The old fixed positions are the fallback if a header can't be found.
     // The header row is the one holding both "Company" and "Status" (it sits on row 2 or 3 depending on how the sheet is shared).
