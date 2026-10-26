@@ -812,10 +812,11 @@
   "use strict";
 
   // Listings are read straight from the input sheet (where the form adds new rows), not the mirrored copy
-  var LISTINGS_SHEET_ID = "15nh5CNbwVUTjYNN8DLUd4YEieFfB-XlnoCL4ntUVhm4";
-  var LISTINGS_SHEET_NAME = "Sheet1";
+  // the team's Export Sheet tab (04 Export Sheet) in the form responses spreadsheet; it fills itself from the form
+  var LISTINGS_SHEET_ID = "1WV-OoBfg9aBfEvuJ_GF78NAeKr8SH-FyVWCwvH69LdA";
+  var LISTINGS_SHEET_GID = "11086570";
   var CSV_URL = "https://docs.google.com/spreadsheets/d/" + LISTINGS_SHEET_ID +
-    "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(LISTINGS_SHEET_NAME);
+    "/gviz/tq?tqx=out:csv&gid=" + LISTINGS_SHEET_GID;
   // Alumni responses still live in the opportunities sheet
   var REVIEWS_SHEET_ID = "1j5IcIHUrjys-FYrpzz5LqMAuNCE98Zg3cXJXogvRxR0";
   var REVIEWS_SHEET_NAME = "Sheet24";
@@ -947,6 +948,33 @@
     var l = linkFallback[norm(company) + "|" + norm(position)];
     return l && /^https?:\/\//i.test(l) ? l : "";
   }
+  // "Feb, Mar" -> "Feb-Mar", "Nov, Dec, Jan" -> "Nov-Jan", all 12 months -> "Yearlong"; anything else is kept as typed
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var MONTHS_FULL = ["january","february","march","april","may","june","july","august","september","october","november","december"];
+  function monthIndex(w){
+    w = String(w).toLowerCase().trim();
+    for (var i = 0; i < 12; i++) if (w === MONTHS[i].toLowerCase() || w === MONTHS_FULL[i]) return i;
+    if (w === "sept") return 8;
+    return (w.length >= 5 && w.slice(0, 3) === "nov") ? 10 : -1;
+  }
+  function formatSchedule(raw){
+    if (!raw) return "";
+    var months = [], others = [];
+    raw.split(",").map(function(p){ return p.trim(); }).filter(Boolean).forEach(function(p){
+      var i = monthIndex(p);
+      if (i === -1) { if (others.indexOf(p) === -1) others.push(p); }
+      else if (months.indexOf(i) === -1) months.push(i);
+    });
+    months.sort(function(a, b){ return a - b; });
+    if (months.length === 12) return (others.indexOf("Yearlong") === -1 ? ["Yearlong"] : []).concat(others).join(", ");
+    var runs = [];
+    months.forEach(function(m){
+      var last = runs[runs.length - 1];
+      if (last && m === last[1] + 1) last[1] = m; else runs.push([m, m]);
+    });
+    if (runs.length > 1 && runs[0][0] === 0 && runs[runs.length - 1][1] === 11) runs[0][0] = runs.pop()[0];
+    return runs.map(function(r){ return r[0] === r[1] ? MONTHS[r[0]] : MONTHS[r[0]] + "-" + MONTHS[r[1]]; }).concat(others).join(", ");
+  }
   function mapRows(rows){
     // Columns are found by their header names (row 2 of the CSV), so adding or moving a column in the sheet
     // doesn't break the site. The old fixed positions are the fallback if a header can't be found.
@@ -984,7 +1012,7 @@
         status: cell(row, C.status) || "Open",
         inputDate: cell(row, C.input),
         deadline: cell(row, C.deadline) || "TBA",
-        schedule: cell(row, C.schedule),
+        schedule: formatSchedule(cell(row, C.schedule)),
         link: /^https?:\/\//i.test(link) ? link : fallbackLink(cell(row, C.company), cell(row, C.position)), // only real web links ever become a button
         type: cell(row, C.type),
         industry: cell(row, C.industry),
