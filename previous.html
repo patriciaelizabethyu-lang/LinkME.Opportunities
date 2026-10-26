@@ -236,6 +236,11 @@
   @keyframes titleMark{to{transform:rotate(-1deg) scaleX(1)}}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .page-header h1::after{height:.1em;bottom:-.06em} }
   @media (prefers-reduced-motion: reduce){ .page-header h1::after{animation:none;transform:rotate(-1deg) scaleX(1)} }
+  .pi-crosslink{margin-top:10px !important;font-size:.88rem}
+  .pi-crosslink a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+  .pi-open{margin:0 0 18px;padding:10px 14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:var(--r-sm);background:var(--paper);font-size:.9rem;line-height:1.5}
+  .pi-open[hidden]{display:none}
+  .pi-open a{color:var(--tab-on, var(--navy-light));font-weight:700;text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -259,6 +264,7 @@
 <header class="page-header">
   <h1>Previous Internships</h1>
   <p>Wondering what an internship in your industry is really like? Pick an industry and role to read what MEA alumni said.</p>
+  <p class="pi-crosslink">These reviews also show inside the open listings on the <a href="index.html">Opportunities</a> page. Look for the <b>Alumni insight</b> badge on a card, then open the card to read them.</p>
 </header>
 
 <div id="loadingState" class="loading">
@@ -279,6 +285,7 @@
     </div>
   </div>
   <p class="pi-meta" id="piMeta"></p>
+  <p class="pi-open" id="piOpen" hidden></p>
   <div id="piResults"></div>
 </main>
 
@@ -298,7 +305,7 @@
   var POLL_INTERVAL_MS = 60000;
 
   var els = {};
-  ["loadingState","errorState","piWrap","piMeta","piResults","f-industry","f-role",
+  ["loadingState","errorState","piWrap","piMeta","piOpen","piResults","f-industry","f-role",
    "nav","navSavedCount"]
     .forEach(function(id){ els[id] = document.getElementById(id); });
 
@@ -408,8 +415,12 @@
       els.piMeta.textContent = all.length + " responses across " + uniqueSorted(all.map(function(x){ return x.industry; })).length +
         " industries. Choose an industry above to start reading.";
       els.piResults.innerHTML = "";
+      els.piOpen.hidden = true;
       return;
     }
+    els.piOpen.innerHTML = 'Looking to apply? The open <b>' + esc(ind) + '</b> listings are on the Opportunities page. ' +
+      '<a href="index.html?industry=' + encodeURIComponent(ind) + '">See open ' + esc(ind) + ' listings</a>';
+    els.piOpen.hidden = false;
     var rows = all.filter(function(x){ return x.industry === ind && (!role || x.role === role); });
     els.piMeta.textContent = rows.length + " response" + (rows.length === 1 ? "" : "s") + " in " + ind + (role ? ", " + role : "");
     var byRole = {};

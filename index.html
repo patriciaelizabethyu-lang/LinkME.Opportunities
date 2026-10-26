@@ -1607,6 +1607,14 @@
     buildBatchPills();
     wireControls();
     updateSavedCountBadges();
+    // a link like index.html?industry=Insurance opens the board already filtered to that industry
+    var wanted = new URLSearchParams(location.search).get("industry");
+    if (wanted) {
+      var indSel = document.getElementById("f-industry");
+      if (Array.prototype.some.call(indSel.options, function(o){ return o.value === wanted; })) {
+        indSel.value = wanted; state.industry = wanted;
+      }
+    }
     if (new URLSearchParams(location.search).get("saved") === "1") {
       state.savedOnly = true;
       els.showSaved.checked = true;
@@ -1614,7 +1622,7 @@
     render();
     els.loadingState.style.display = "none";
     firstLoadDone = true;
-    if (state.savedOnly) {
+    if (state.savedOnly || state.industry) {
       document.getElementById("browse").scrollIntoView({ behavior: "auto" });
     }
   }
