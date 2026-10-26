@@ -812,11 +812,9 @@
   "use strict";
 
   // Listings are read straight from the input sheet (where the form adds new rows), not the mirrored copy
-  // the team's Export Sheet tab (04 Export Sheet) in the form responses spreadsheet; it fills itself from the form
-  var LISTINGS_SHEET_ID = "1WV-OoBfg9aBfEvuJ_GF78NAeKr8SH-FyVWCwvH69LdA";
-  var LISTINGS_SHEET_GID = "11086570";
-  var CSV_URL = "https://docs.google.com/spreadsheets/d/" + LISTINGS_SHEET_ID +
-    "/gviz/tq?tqx=out:csv&gid=" + LISTINGS_SHEET_GID;
+  // The team's Export Sheet tab (04 Export Sheet), published to the web as CSV. Only that one tab is public;
+  // the rest of the spreadsheet (member directory, raw responses) stays private. Google refreshes it about every 5 minutes.
+  var CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-3VIzKthJuOI1nihl-02L_OoJ2rCf1LJuLAB-YBZAR5iexFSfMHL7Huagc6cna6Z79zDdoVTAYB1G/pub?gid=11086570&single=true&output=csv";
   // Alumni responses still live in the opportunities sheet
   var REVIEWS_SHEET_ID = "1j5IcIHUrjys-FYrpzz5LqMAuNCE98Zg3cXJXogvRxR0";
   var REVIEWS_SHEET_NAME = "Sheet24";
@@ -978,7 +976,13 @@
   function mapRows(rows){
     // Columns are found by their header names (row 2 of the CSV), so adding or moving a column in the sheet
     // doesn't break the site. The old fixed positions are the fallback if a header can't be found.
-    var header = (rows[1] || []).map(function(h){ return (h || "").trim().toLowerCase(); });
+    // The header row is the one holding both "Company" and "Status" (it sits on row 2 or 3 depending on how the sheet is shared).
+    var hi = 1;
+    for (var h0 = 0; h0 < Math.min(rows.length, 8); h0++) {
+      var lc = (rows[h0] || []).map(function(x){ return (x || "").trim().toLowerCase(); });
+      if (lc.indexOf("company") !== -1 && lc.indexOf("status") !== -1) { hi = h0; break; }
+    }
+    var header = (rows[hi] || []).map(function(h){ return (h || "").trim().toLowerCase(); });
     function col(fallback){
       for (var i = 1; i < arguments.length; i++) {
         var idx = header.indexOf(arguments[i]);
@@ -1003,7 +1007,7 @@
     };
     function cell(row, i){ return i >= 0 ? (row[i] || "").trim() : ""; }
     var out = [];
-    for (var r = 2; r < rows.length; r++) {
+    for (var r = hi + 1; r < rows.length; r++) {
       var row = rows[r];
       if (!row || !cell(row, C.company)) continue; // no Company => skip
       var link = cell(row, C.link);
