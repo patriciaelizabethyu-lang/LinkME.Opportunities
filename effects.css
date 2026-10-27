@@ -51,3 +51,31 @@
 :root[data-theme="light"].fog-on .hero-inner, :root[data-theme="light"].fog-on .how-it-works,
 :root[data-theme="light"].fog-on .results-meta, :root[data-theme="light"].fog-on .saved-note,
 :root[data-theme="light"].fog-on footer{background:rgba(255,255,255,.80)}
+
+/* ---------- Laptop sizing (about 1000 to 1700px wide): everything a notch smaller, so listings come into view sooner ---------- */
+@media (min-width:1000px) and (max-width:1700px){
+  html{font-size:15px}
+  .site-banner img{height:19vw;object-fit:cover;object-position:50% 38%}   /* a shorter banner; the logo and wordmark stay in frame */
+  .hero{padding:28px 0 34px}
+  .hero h1{font-size:2.4rem;margin-bottom:10px}
+  .hero p{font-size:.95rem}
+  .hero-hi{margin-bottom:6px}
+  .hero-live{margin-top:10px}
+  .fog-on .hero-inner{padding:16px 26px 18px}
+  .how-it-works{margin-top:18px;padding-top:14px;gap:12px}
+  .fog-on .how-it-works{padding:12px 22px}
+  .controls-wrap{margin-top:-44px}
+  .card{padding:14px}
+}
+
+/* the short tab labels from the phone layout (Browse, Events, Alumni, Documents, Saved) are used on every screen size */
+.nav-tab .lbl-full{display:none}
+.nav-tab .lbl-short{display:inline}
+
+/* the tabs look the same on every screen: icon over a short label, five equal tabs (the phone layout) */
+.nav{padding:8px 10px 0}
+.nav-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;overflow:visible;max-width:600px;margin:0 auto}
+.nav-tab:first-child,.nav-tab:last-child{margin:0}
+.nav-tab{position:relative;flex-direction:column;justify-content:flex-start;gap:4px;white-space:normal;padding:9px 4px 8px;font-size:.72rem;line-height:1.2;text-align:center}
+.nav-tab svg{width:19px;height:19px}
+.nav-saved-count{position:absolute;top:3px;right:6px;padding:0 5px;font-size:.6rem}
