@@ -52,7 +52,7 @@
     if (fixed) document.body.appendChild(canvas); else host.insertBefore(canvas, host.firstChild);
     var ctx = canvas.getContext("2d"), sharp = document.createElement("canvas"), sctx = sharp.getContext("2d");
     var tmp = document.createElement("canvas"), tctx = tmp.getContext("2d");
-    var W = 0, H = 0, S = 1, R = fixed ? 90 : 80, last = null, lastStamp = 0, running = false;
+    var W = 0, H = 0, S = 1, R = fixed ? 125 : 115, last = null, lastStamp = 0, running = false;
 
     function size() {
       W = fixed ? window.innerWidth : host.offsetWidth; H = fixed ? window.innerHeight : host.offsetHeight;
@@ -80,10 +80,10 @@
 
     function tick(now) {
       var idle = now - lastStamp;
-      if (idle > 5200) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); running = false; return; }
-      if (idle > 900) {                                   // the fog creeps back
+      if (idle > 8500) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); running = false; return; }
+      if (idle > 1600) {                                   // the fog creeps back
         ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalCompositeOperation = "destination-out";
-        ctx.fillStyle = "rgba(0,0,0,.022)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(0,0,0,.014)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.globalCompositeOperation = "source-over";
       }
       requestAnimationFrame(tick);
@@ -109,7 +109,7 @@
 
     // behind the whole page: lighter veil, so the wiped scene shows clearly between the cards
     fogs.push(new Fog(document.body, true, 0, function () {
-      return function (c) { return dark() ? "rgba(20,24,31,.55)" : "rgba(242,239,232,.42)"; };
+      return function (c) { return dark() ? "rgba(20,24,31,.28)" : "rgba(242,239,232,.10)"; };
     }));
 
     // the hero window: the same veil the hero normally has
@@ -119,8 +119,9 @@
       heroFog = new Fog(hero, false, .5, function () {
         return function (c, h) {
           var cs = getComputedStyle(root), g = c.createLinearGradient(0, 0, 0, h);
-          g.addColorStop(0, cs.getPropertyValue("--hero-veil-a").trim() || "rgba(255,255,255,.66)");
-          g.addColorStop(1, cs.getPropertyValue("--hero-veil-b").trim() || "rgba(240,246,252,.82)");
+          var d = dark();                                   // clear glass: far less veil than the frosted look
+          g.addColorStop(0, d ? "rgba(10,16,28,.35)" : "rgba(255,255,255,.12)");
+          g.addColorStop(1, d ? "rgba(8,12,22,.45)" : "rgba(240,246,252,.18)");
           return g;
         };
       });

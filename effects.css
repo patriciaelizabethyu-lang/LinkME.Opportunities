@@ -5,10 +5,10 @@
 .fog-page{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
 
 /* the frosted base: the same scene, blurred */
-.fog-on body::before{inset:-24px;filter:blur(6px)}
+.fog-on body::before{inset:-30px;filter:blur(12px) saturate(.75) brightness(1.04)}
 .fog-on .hero{background:none}
 .fog-on .hero::before{
-  content:"";position:absolute;inset:-14px;z-index:-3;filter:blur(6px);
+  content:"";position:absolute;inset:-24px;z-index:-3;filter:blur(12px) saturate(.75) brightness(1.04);
   background:linear-gradient(180deg, var(--hero-veil-a), var(--hero-veil-b)), url('office-bg.webp') center/cover no-repeat;
 }
 
