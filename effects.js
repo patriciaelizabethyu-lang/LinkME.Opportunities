@@ -70,7 +70,7 @@
       var d = R * 2 * S;
       tctx.setTransform(1, 0, 0, 1, 0, 0); tctx.globalCompositeOperation = "source-over"; tctx.clearRect(0, 0, d, d);
       var g = tctx.createRadialGradient(d / 2, d / 2, 0, d / 2, d / 2, d / 2);
-      g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(.55, "rgba(0,0,0,.9)"); g.addColorStop(1, "rgba(0,0,0,0)");
+      g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(.86, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)");
       tctx.fillStyle = g; tctx.fillRect(0, 0, d, d);
       tctx.globalCompositeOperation = "source-in";
       tctx.drawImage(sharp, -(x * S - d / 2), -(y * S - d / 2));
@@ -109,7 +109,7 @@
 
     // behind the whole page: lighter veil, so the wiped scene shows clearly between the cards
     fogs.push(new Fog(document.body, true, 0, function () {
-      return function (c) { return dark() ? "rgba(14,19,27,.78)" : "rgba(242,239,232,.30)"; };
+      return function (c) { return dark() ? "rgba(14,19,27,.10)" : "rgba(242,239,232,.12)"; };
     }));
 
     // the hero window: the same veil the hero normally has
@@ -120,8 +120,8 @@
         return function (c, h) {
           var cs = getComputedStyle(root), g = c.createLinearGradient(0, 0, 0, h);
           var d = dark();                                   // clear glass: far less veil than the frosted look
-          g.addColorStop(0, d ? "rgba(10,16,28,.80)" : "rgba(255,255,255,.34)");
-          g.addColorStop(1, d ? "rgba(8,12,22,.86)" : "rgba(240,246,252,.42)");
+          g.addColorStop(0, d ? "rgba(10,16,28,.08)" : "rgba(255,255,255,.10)");
+          g.addColorStop(1, d ? "rgba(8,12,22,.14)" : "rgba(240,246,252,.16)");
           return g;
         };
       });

@@ -19,21 +19,11 @@
              translate .6s cubic-bezier(.16,.8,.3,1) var(--rd,0ms), opacity .5s ease var(--rd,0ms);
 }
 
-/* keep the writing readable in dark mode even where the fog is wiped */
+/* Writing stays readable over the clear scene. Dark mode: white text with a dark outline. Light mode: dark text with a white outline. */
+:root{--fog-text-shadow:0 0 3px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.95), 0 0 16px rgba(255,255,255,.7)}
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]).fog-on .hero h1,
-  :root:not([data-theme="light"]).fog-on .hero p,
-  :root:not([data-theme="light"]).fog-on .how-it-works{text-shadow:0 1px 10px rgba(5,8,16,.85)}
-  :root:not([data-theme="light"]).fog-on .controls-wrap .batch-label,
-  :root:not([data-theme="light"]).fog-on .results-meta,
-  :root:not([data-theme="light"]).fog-on .page-header h1,
-  :root:not([data-theme="light"]).fog-on .page-header p{text-shadow:0 1px 8px rgba(5,8,16,.8)}
+  :root:not([data-theme="light"]){--fog-text-shadow:0 0 2px rgba(4,7,14,.98), 0 0 6px rgba(4,7,14,.95), 0 1px 14px rgba(4,7,14,.9)}
 }
-
-/* light mode: a soft white halo behind the writing, so it stays readable over the wiped (clear) scene */
-@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference){
-  .fog-on .hero h1, .fog-on .hero p, .fog-on .how-it-works h3, .fog-on .how-it-works p,
-  .fog-on .page-header h1, .fog-on .page-header p, .fog-on .batch-label, .fog-on .results-meta, .fog-on .saved-note, .fog-on footer{
-    text-shadow:0 0 10px rgba(255,255,255,.95), 0 0 3px rgba(255,255,255,.9)}
-}
-:root[data-theme="light"].fog-on .hero h1, :root[data-theme="light"].fog-on .hero p{text-shadow:0 0 10px rgba(255,255,255,.95), 0 0 3px rgba(255,255,255,.9)}
+.fog-on .hero h1, .fog-on .hero p, .fog-on .hero-hi, .fog-on .how-it-works h3, .fog-on .how-it-works p, .fog-on .step-num,
+.fog-on .page-header h1, .fog-on .page-header p, .fog-on .batch-label, .fog-on .results-meta, .fog-on .saved-note, .fog-on footer, .fog-on .hero-live{
+  text-shadow:var(--fog-text-shadow)}
