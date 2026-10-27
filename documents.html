@@ -222,8 +222,44 @@
   @keyframes titleMark{to{transform:rotate(-1deg) scaleX(1)}}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .page-header h1::after{height:.1em;bottom:-.06em} }
   @media (prefers-reduced-motion: reduce){ .page-header h1::after{animation:none;transform:rotate(-1deg) scaleX(1)} }
+
+/* forced dark mode (the toggle): the same rules as the dark-mode media query */
+
+    :root[data-theme="dark"]{
+      --navy:#0E1524; --navy-deep:#080B14; --navy-light:#4C87DD; --gold:#FFE445; --gold-bright:#FFE445; --gold-light:#3A331C;
+      --cream:#14181F; --paper:#1B2230; --ink:#ECEEF5; --ink-soft:#9FADBC;
+      --line:#2A333C;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+      --shadow-lg: 0 16px 40px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.3);
+    }
+  
+
+    :root[data-theme="dark"]{
+      --tab-on:#3B77D6;
+      --nav-bg:rgba(14,21,36,.97); --nav-line:rgba(255,255,255,.14);
+      --tab-bg:rgba(255,255,255,.07); --tab-line:rgba(255,255,255,.16); --tab-ink:#cdd6e8; --tab-hover:rgba(117,186,255,.18);
+      --hero-ink:#FFFFFF; --hero-ink-soft:#c7cee0; --hero-accent:#75BAFF; --hero-rule:rgba(255,255,255,.12);
+      --hero-veil-a:rgba(10,16,28,.80); --hero-veil-b:rgba(8,12,22,.90);
+    }
+  
+ :root[data-theme="dark"] .doc-tag{color:var(--gold)} 
+ :root[data-theme="dark"] .doc-card h2{color:#fff} 
+ :root[data-theme="dark"] .doc-empty h2{color:#fff} 
+
+    :root[data-theme="dark"] body::before{
+      background:
+        radial-gradient(900px circle at 8% 0%, rgba(76,135,221,.14), transparent 60%),
+        radial-gradient(800px circle at 100% 100%, rgba(255,228,69,.06), transparent 55%),
+        linear-gradient(rgba(20,24,31,.93), rgba(20,24,31,.97)),
+        url('office-bg.webp') center top / cover no-repeat;
+    }
+  
+ :root[data-theme="dark"] .page-header h1::after{height:.1em;bottom:-.06em} 
+  :root[data-theme="dark"]{color-scheme:dark}
+  :root[data-theme="light"]{color-scheme:light}
 </style>
 <link rel="stylesheet" href="effects.css" />
+<script>try { var t = localStorage.getItem("linkme-theme"); if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 </head>
 <body>
 

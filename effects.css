@@ -27,3 +27,18 @@
 .fog-on .hero h1, .fog-on .hero p, .fog-on .hero-hi, .fog-on .how-it-works h3, .fog-on .how-it-works p, .fog-on .step-num,
 .fog-on .page-header h1, .fog-on .page-header p, .fog-on .batch-label, .fog-on .results-meta, .fog-on .saved-note, .fog-on footer, .fog-on .hero-live{
   text-shadow:var(--fog-text-shadow)}
+
+/* forced dark mode (the toggle): the same rules as the dark-mode media query */
+
+  :root[data-theme="dark"]{--fog-text-shadow:0 0 2px rgba(4,7,14,.98), 0 0 6px rgba(4,7,14,.95), 0 1px 14px rgba(4,7,14,.9)}
+
+
+/* light / dark toggle: bottom-left, opposite the back-to-top button */
+.theme-toggle{
+  position:fixed;left:16px;bottom:18px;z-index:80;width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+  background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:var(--r-sm,6px);box-shadow:var(--shadow);cursor:pointer;
+  transition:border-color .18s ease, transform .18s ease;
+}
+.theme-toggle:hover{border-color:var(--gold)}
+.theme-toggle:active{transform:scale(.94)}
+.theme-toggle:focus-visible{outline:2px solid var(--tab-on,#1E5BBD);outline-offset:2px}
