@@ -566,18 +566,19 @@
   .card{transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,0px));will-change:transform}
   .card:hover{--ty:-3px;transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,0px))}
   .card:active{--ty:-1px;transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,0px))}
-  /* the yellow highlighter runs under every line of a wrapped company name */
+  /* the yellow highlighter runs under every line of a wrapped company name. It is always there, with nothing to tap or hover:
+     it draws itself in when the card scrolls into view. */
   .card h3 .hl{
-    background:linear-gradient(var(--gold),var(--gold)) no-repeat 0 94% / 0 .42em;
+    --hl:.42em;
+    background:linear-gradient(var(--gold),var(--gold)) no-repeat 0 94% / 100% var(--hl);
     -webkit-box-decoration-break:clone;box-decoration-break:clone;
-    transition:background-size .35s cubic-bezier(.65,0,.2,1);
+    transition:background-size .6s cubic-bezier(.65,0,.2,1) .25s;
   }
-  .card:hover h3 .hl,.card:focus-visible h3 .hl{background-size:100% .42em}
-  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .card h3 .hl{background-size:0 .12em} :root:not([data-theme="light"]) .card:hover h3 .hl,:root:not([data-theme="light"]) .card:focus-visible h3 .hl{background-size:100% .12em} }
-  :root[data-theme="dark"] .card h3 .hl{background-size:0 .12em}
-  :root[data-theme="dark"] .card:hover h3 .hl,:root[data-theme="dark"] .card:focus-visible h3 .hl{background-size:100% .12em}
-  :root[data-theme="light"] .card h3 .hl{background-size:0 .42em}
-  :root[data-theme="light"] .card:hover h3 .hl,:root[data-theme="light"] .card:focus-visible h3 .hl{background-size:100% .42em}
+  .js-rise .card:not(.in) h3 .hl{background-size:0 var(--hl)}
+  /* dark mode: a thin line, so the white text stays readable */
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .card h3 .hl{--hl:.12em} }
+  :root[data-theme="dark"] .card h3 .hl{--hl:.12em}
+  :root[data-theme="light"] .card h3 .hl{--hl:.42em}
   @media (hover:none), (prefers-reduced-motion: reduce){ .card,.card:hover,.card:active{transform:none} .card h3 .hl{transition:none} }
   /* page backdrop: the banner's office scene, washed out, with a blue and a yellow glow from the brand palette */
   body::before{
