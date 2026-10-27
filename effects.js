@@ -79,7 +79,7 @@
     if (fixed) document.body.appendChild(canvas); else host.insertBefore(canvas, host.firstChild);
     var ctx = canvas.getContext("2d"), sharp = document.createElement("canvas"), sctx = sharp.getContext("2d");
     var tmp = document.createElement("canvas"), tctx = tmp.getContext("2d");
-    var W = 0, H = 0, S = 1, R = fixed ? 90 : 80, last = null, lastStamp = 0, running = false;
+    var W = 0, H = 0, S = 1, R = fixed ? 105 : 95, last = null, lastStamp = 0, running = false;
 
     function size() {
       W = fixed ? window.innerWidth : host.offsetWidth; H = fixed ? window.innerHeight : host.offsetHeight;
@@ -88,7 +88,7 @@
       canvas.width = sharp.width = Math.round(W * S); canvas.height = sharp.height = Math.round(H * S);
       sctx.setTransform(S, 0, 0, S, 0, 0); sctx.clearRect(0, 0, W, H);
       // the clear glass shows the scene at full strength: boosted colour, and no wash on top
-      if ("filter" in sctx) sctx.filter = "saturate(1.75) contrast(1.12)";
+      if ("filter" in sctx) sctx.filter = "saturate(2) contrast(1.15)";
       cover(sctx, W, H, anchorY);
       if ("filter" in sctx) sctx.filter = "none";
       tmp.width = tmp.height = Math.round(R * 2 * S);
@@ -137,7 +137,7 @@
 
     // behind the whole page: lighter veil, so the wiped scene shows clearly between the cards
     fogs.push(new Fog(document.body, true, 0, function () {
-      return function (c) { return dark() ? "rgba(14,19,27,.45)" : "rgba(242,239,232,.38)"; };
+      return function (c) { return dark() ? "rgba(14,19,27,0)" : "rgba(242,239,232,0)"; };
     }));
 
     // the hero window: the same veil the hero normally has

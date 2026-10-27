@@ -5,10 +5,10 @@
 .fog-page{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
 
 /* the frosted base: the same scene, blurred */
-.fog-on body::before{inset:-30px;filter:blur(12px) saturate(.75) brightness(1.04)}
+.fog-on body::before{inset:-30px;filter:blur(16px) saturate(.6) brightness(1.08)}
 .fog-on .hero{background:none}
 .fog-on .hero::before{
-  content:"";position:absolute;inset:-24px;z-index:-3;filter:blur(12px) saturate(.75) brightness(1.04);
+  content:"";position:absolute;inset:-24px;z-index:-3;filter:blur(16px) saturate(.6) brightness(1.08);
   background:linear-gradient(180deg, var(--hero-veil-a), var(--hero-veil-b)), url('office-bg.webp') center/cover no-repeat;
 }
 
@@ -29,15 +29,25 @@
 .theme-toggle:active{transform:scale(.94)}
 .theme-toggle:focus-visible{outline:2px solid var(--tab-on,#1E5BBD);outline-offset:2px}
 
-/* The writing never changes. Where the scene is wiped clear, the text sits on a calm frosted panel. */
-.fog-on .hero-inner, .fog-on .how-it-works{
-  backdrop-filter:blur(10px) saturate(1.05);-webkit-backdrop-filter:blur(10px) saturate(1.05);
-  background:rgba(255,255,255,.42);border-radius:20px;
+/* The writing never changes, and it is always readable: every block of text sits on its own mostly solid panel.
+   The wipe runs at full strength everywhere else. Contrast with the panel stays above 7:1 whatever the scene shows through. */
+.fog-on .hero-inner, .fog-on .how-it-works,
+.fog-on .results-meta, .fog-on .saved-note, .fog-on footer{
+  backdrop-filter:blur(14px) saturate(1.05);-webkit-backdrop-filter:blur(14px) saturate(1.05);
+  background:rgba(255,255,255,.80);border-radius:16px;
 }
 .fog-on .hero-inner{padding:24px 30px 26px}
 .fog-on .how-it-works{padding:20px 26px}
+.fog-on .results-meta, .fog-on .saved-note{padding:8px 14px;width:fit-content;max-width:100%}
+.fog-on footer{border-radius:20px 20px 0 0}
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]).fog-on .hero-inner, :root:not([data-theme="light"]).fog-on .how-it-works{background:rgba(10,16,28,.5)}
+  :root:not([data-theme="light"]).fog-on .hero-inner, :root:not([data-theme="light"]).fog-on .how-it-works,
+  :root:not([data-theme="light"]).fog-on .results-meta, :root:not([data-theme="light"]).fog-on .saved-note,
+  :root:not([data-theme="light"]).fog-on footer{background:rgba(10,16,28,.82)}
 }
-:root[data-theme="dark"].fog-on .hero-inner, :root[data-theme="dark"].fog-on .how-it-works{background:rgba(10,16,28,.5)}
-:root[data-theme="light"].fog-on .hero-inner, :root[data-theme="light"].fog-on .how-it-works{background:rgba(255,255,255,.42)}
+:root[data-theme="dark"].fog-on .hero-inner, :root[data-theme="dark"].fog-on .how-it-works,
+:root[data-theme="dark"].fog-on .results-meta, :root[data-theme="dark"].fog-on .saved-note,
+:root[data-theme="dark"].fog-on footer{background:rgba(10,16,28,.82)}
+:root[data-theme="light"].fog-on .hero-inner, :root[data-theme="light"].fog-on .how-it-works,
+:root[data-theme="light"].fog-on .results-meta, :root[data-theme="light"].fog-on .saved-note,
+:root[data-theme="light"].fog-on footer{background:rgba(255,255,255,.80)}
