@@ -60,9 +60,10 @@
       S = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = sharp.width = Math.round(W * S); canvas.height = sharp.height = Math.round(H * S);
       sctx.setTransform(S, 0, 0, S, 0, 0); sctx.clearRect(0, 0, W, H);
+      // the clear glass shows the scene at full strength: boosted colour, and no wash on top
+      if ("filter" in sctx) sctx.filter = "saturate(1.75) contrast(1.12)";
       cover(sctx, W, H, anchorY);
-      var v = veil();
-      sctx.fillStyle = v(sctx, H); sctx.fillRect(0, 0, W, H);
+      if ("filter" in sctx) sctx.filter = "none";
       tmp.width = tmp.height = Math.round(R * 2 * S);
     }
 
