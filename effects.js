@@ -109,7 +109,7 @@
 
     // behind the whole page: lighter veil, so the wiped scene shows clearly between the cards
     fogs.push(new Fog(document.body, true, 0, function () {
-      return function (c) { return dark() ? "rgba(14,19,27,.78)" : "rgba(242,239,232,.10)"; };
+      return function (c) { return dark() ? "rgba(14,19,27,.78)" : "rgba(242,239,232,.30)"; };
     }));
 
     // the hero window: the same veil the hero normally has
@@ -120,8 +120,8 @@
         return function (c, h) {
           var cs = getComputedStyle(root), g = c.createLinearGradient(0, 0, 0, h);
           var d = dark();                                   // clear glass: far less veil than the frosted look
-          g.addColorStop(0, d ? "rgba(10,16,28,.80)" : "rgba(255,255,255,.12)");
-          g.addColorStop(1, d ? "rgba(8,12,22,.86)" : "rgba(240,246,252,.18)");
+          g.addColorStop(0, d ? "rgba(10,16,28,.80)" : "rgba(255,255,255,.34)");
+          g.addColorStop(1, d ? "rgba(8,12,22,.86)" : "rgba(240,246,252,.42)");
           return g;
         };
       });
