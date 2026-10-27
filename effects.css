@@ -18,3 +18,14 @@
   transition:transform .2s cubic-bezier(.16,.8,.3,1), box-shadow .25s ease, border-color .25s ease,
              translate .6s cubic-bezier(.16,.8,.3,1) var(--rd,0ms), opacity .5s ease var(--rd,0ms);
 }
+
+/* keep the writing readable in dark mode even where the fog is wiped */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]).fog-on .hero h1,
+  :root:not([data-theme="light"]).fog-on .hero p,
+  :root:not([data-theme="light"]).fog-on .how-it-works{text-shadow:0 1px 10px rgba(5,8,16,.85)}
+  :root:not([data-theme="light"]).fog-on .controls-wrap .batch-label,
+  :root:not([data-theme="light"]).fog-on .results-meta,
+  :root:not([data-theme="light"]).fog-on .page-header h1,
+  :root:not([data-theme="light"]).fog-on .page-header p{text-shadow:0 1px 8px rgba(5,8,16,.8)}
+}
