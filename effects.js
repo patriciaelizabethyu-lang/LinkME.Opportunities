@@ -137,7 +137,7 @@
 
     // behind the whole page: lighter veil, so the wiped scene shows clearly between the cards
     fogs.push(new Fog(document.body, true, 0, function () {
-      return function (c) { return dark() ? "rgba(14,19,27,.10)" : "rgba(242,239,232,.12)"; };
+      return function (c) { return dark() ? "rgba(14,19,27,.45)" : "rgba(242,239,232,.38)"; };
     }));
 
     // the hero window: the same veil the hero normally has

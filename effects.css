@@ -19,20 +19,6 @@
              translate .6s cubic-bezier(.16,.8,.3,1) var(--rd,0ms), opacity .5s ease var(--rd,0ms);
 }
 
-/* Writing stays readable over the clear scene. Dark mode: white text with a dark outline. Light mode: dark text with a white outline. */
-:root{--fog-text-shadow:0 0 3px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.95), 0 0 16px rgba(255,255,255,.7)}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){--fog-text-shadow:0 0 2px rgba(4,7,14,.98), 0 0 6px rgba(4,7,14,.95), 0 1px 14px rgba(4,7,14,.9)}
-}
-.fog-on .hero h1, .fog-on .hero p, .fog-on .hero-hi, .fog-on .how-it-works h3, .fog-on .how-it-works p, .fog-on .step-num,
-.fog-on .page-header h1, .fog-on .page-header p, .fog-on .batch-label, .fog-on .results-meta, .fog-on .saved-note, .fog-on footer, .fog-on .hero-live{
-  text-shadow:var(--fog-text-shadow)}
-
-/* forced dark mode (the toggle): the same rules as the dark-mode media query */
-
-  :root[data-theme="dark"]{--fog-text-shadow:0 0 2px rgba(4,7,14,.98), 0 0 6px rgba(4,7,14,.95), 0 1px 14px rgba(4,7,14,.9)}
-
-
 /* light / dark toggle: bottom-left, opposite the back-to-top button */
 .theme-toggle{
   position:fixed;left:16px;bottom:18px;z-index:80;width:42px;height:42px;display:flex;align-items:center;justify-content:center;
@@ -42,3 +28,16 @@
 .theme-toggle:hover{border-color:var(--gold)}
 .theme-toggle:active{transform:scale(.94)}
 .theme-toggle:focus-visible{outline:2px solid var(--tab-on,#1E5BBD);outline-offset:2px}
+
+/* The writing never changes. Where the scene is wiped clear, the text sits on a calm frosted panel. */
+.fog-on .hero-inner, .fog-on .how-it-works{
+  backdrop-filter:blur(10px) saturate(1.05);-webkit-backdrop-filter:blur(10px) saturate(1.05);
+  background:rgba(255,255,255,.42);border-radius:20px;
+}
+.fog-on .hero-inner{padding:24px 30px 26px}
+.fog-on .how-it-works{padding:20px 26px}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]).fog-on .hero-inner, :root:not([data-theme="light"]).fog-on .how-it-works{background:rgba(10,16,28,.5)}
+}
+:root[data-theme="dark"].fog-on .hero-inner, :root[data-theme="dark"].fog-on .how-it-works{background:rgba(10,16,28,.5)}
+:root[data-theme="light"].fog-on .hero-inner, :root[data-theme="light"].fog-on .how-it-works{background:rgba(255,255,255,.42)}
